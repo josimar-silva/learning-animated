@@ -75,10 +75,14 @@ Every track gets its own site on a subdomain of learning-animated.com, and the h
 Requires [Node.js](https://nodejs.org/) 24+ and [just](https://just.systems/).
 
 ```bash
-just install  # install dependencies
-just test     # run every test suite
-just check    # lint, check formatting, and type-check
+just install    # install dependencies
+just test       # run every test suite
+just check      # lint, check formatting, and type-check
+just dev kafka  # run one site's dev server: home, kafka, quarkus, or java
+just build-all  # build every site into its own dist/
 ```
+
+`just dev` serves the site at [http://localhost:4321](http://localhost:4321) and reloads it as you edit. A track site serves its contents at `/`, a section at `/<section>/`, an animation at `/<section>/<id>/`, and the about page at `/about/`. Each animation SVG also has its own address for embedding elsewhere, `/embed/<id>.svg`.
 
 ## 🛠️ Available Recipes
 
@@ -90,9 +94,13 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just test`: Runs every test suite once with Vitest.
 - `just lint`: Lints the code with ESLint.
 - `just format`: Applies ESLint fixes, then formats with Prettier.
-- `just check`: Runs ESLint, the Prettier check, the TypeScript type-check for the root and each package, and `just style-check`.
+- `just check`: Runs ESLint, the Prettier check, the TypeScript type-check for the root and each package, `just style-check`, and `astro check` for each site.
 - `just style`: Re-embeds the canonical `LA-STYLE` block into every animation SVG under `tracks/*/src/content/animations`.
 - `just style-check`: Fails if the `LA-STYLE` block in any of those SVGs has drifted from `theme.css`.
+- `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, or `java`.
+- `just build <site>`: Builds one site into its `dist/` folder.
+- `just preview <site>`: Serves a built site with its production headers.
+- `just build-all`: Builds every site.
 - `just clean`: Removes coverage reports and build output.
 - `just pre-commit`: Runs `just check` and `just test`, to use before committing.
 
@@ -104,10 +112,14 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - **Timeline helpers.** `timeline.ts` reads a SMIL timeline as a function of loop time, so a test can ask what an element shows at any moment.
 - **Author helpers.** `author.ts` writes the timelines of generated SVGs: `show` turns intervals into a discrete opacity timeline, `move` turns waypoints into a translate animation, and `escapeXml` escapes text for markup.
 - **Contrast math.** `contrast.ts` computes WCAG relative luminance and contrast ratios, which the palette contrast test uses.
+- **The site kit.** [`packages/site-kit`](packages/site-kit) holds what every site shares: the Zod schemas for tracks, sections, and animations, the page and chrome components, the browser modules for playback and the theme toggle, and an Astro integration. The integration validates a site's content as Astro starts. After a build, it writes `_headers`, `robots.txt`, `sitemap.xml`, the `/embed/` SVGs, and an nginx config that sends the same headers.
+- **One site per track.** Each track in `tracks/<id>` is a thin Astro project: a `track.ts` that names the site, its content (`sections.json`, `about.md`, and one folder per animation under `src/content/animations`), and five pages that render the kit's components. The home page in `home/` lists the tracks that are live and counts each one's animations from its folder. A site stays out of search engines, with a `noindex` header and a `robots.txt` that disallows everything, until its `track.ts` sets `launched: true`.
 
 ## 🧪 Testing
 
-Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design` and `svg-kit`), with tests next to the code they cover, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check` and `just test` on every pull request and every push to `main`.
+Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, and `just build-all` on every pull request and every push to `main`.
+
+Each track's `test/content.test.ts` checks its content: the sections and animations validate, every SVG passes the contract below, and every id in the track's `embed-ids.txt` still exists, so a published embed keeps working. Kafka's [`test/attribution.test.ts`](tracks/kafka/test/attribution.test.ts) keeps the book's credit and the license links in place, in [`ATTRIBUTION.md`](tracks/kafka/ATTRIBUTION.md) and in this README.
 
 `assertSvgContract` in [`packages/svg-kit/src/contract.ts`](packages/svg-kit/src/contract.ts) is the contract for every animation SVG, and `contract.test.ts` pins each rule. A passing SVG:
 
@@ -128,8 +140,8 @@ Tests are written first and must fail before the code exists. `just test` runs [
 ## 🗂️ Project Layout
 
 ```
-justfile                        task runner (just ci, check, test, format, style)
-vitest.config.ts                the Vitest projects: every package plus test/repo
+justfile                        task runner (just ci, check, test, dev, build-all, style)
+vitest.config.ts                the Vitest projects: every package, every track, and test/repo
 docs/images/logo.svg            the project mark, drawn from the stage palette
 packages/design/theme.css       every color, font, and size (single source of truth)
 packages/design/signature.md    the aesthetic signature, in prose
@@ -137,6 +149,11 @@ packages/design/fonts/          Inter, self-hosted, with its license
 packages/design/src/            theme parser, LA-STYLE generator, and sync
 packages/design/bin/la-style.ts the sync CLI behind just style and just style-check
 packages/svg-kit/src/           parse, contract, timeline, author, and contrast helpers
+packages/site-kit/src/          schemas, content model, routes, headers, SEO, and the integration
+packages/site-kit/src/pages/    the pages every site renders, built from src/components
+packages/site-kit/src/client/   browser modules: playback, views, scrubber, steps, theme, and menu
+tracks/<id>/                    one Astro site per track: track.ts, content, pages, and tests
+home/                           the family home page for learning-animated.com
 test/repo/                      conventions, workflows, and palette contrast tests
 .github/workflows/              CI, CodeQL, and Scorecard
 ```
