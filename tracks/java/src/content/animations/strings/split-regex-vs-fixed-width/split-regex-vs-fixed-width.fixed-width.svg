@@ -1,0 +1,475 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 530" role="img" data-loop="20s">
+  <title>String.split vs fixed-width fields: fixed width</title>
+  <desc>The same decoder cuts the same two records at the offsets their layout fixes: the name in columns 0 to 11, then the two airports, the flight, and the seat. Five substring calls return the same five fields as split, and only the name needs strip() for its padding. No call compiles a Pattern or searches the record for spaces, and the second record, whose name is shorter, is cut at the same offsets.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="514" rx="16"/>
+  <text class="la-title" x="32" y="46">Fixed width: cut each field at its offset</text>
+  <text class="la-note" x="32" y="70">The layout fixes where every field starts and ends, so decode() cuts each one with substring.</text>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="88" width="448" height="160" rx="10"/>
+  <rect class="fill-stage stroke-grid stroke-1.5" x="488" y="88" width="448" height="160" rx="10"/>
+  <text class="font-sans text-label font-semibold fill-ink" x="504" y="112">what each call does</text>
+  <g class="font-sans text-offset font-semibold anchor-middle">
+    <text class="fill-sky" x="786" y="112">call 1</text>
+    <text class="fill-pink" x="880" y="112">call 2</text>
+  </g>
+  <path class="fill-none stroke-grid stroke-1.5" d="M 504 122 H 920"/>
+
+  <g data-role="code" class="font-mono text-offset">
+    <text class="fill-ink-muted" x="40" y="112">BoardingPass decode(String record) {</text>
+    <text class="fill-ink" x="69" y="129">return new BoardingPass(</text>
+    <text data-role="code-cut" data-field="name" class="fill-ink" x="98" y="146">record.substring(0, 12).strip(),</text>
+    <text data-role="code-cut" data-field="from" class="fill-ink" x="98" y="163">record.substring(13, 16),</text>
+    <text data-role="code-cut" data-field="to" class="fill-ink" x="98" y="180">record.substring(17, 20),</text>
+    <text data-role="code-cut" data-field="flight" class="fill-ink" x="98" y="197">record.substring(21, 27),</text>
+    <text data-role="code-cut" data-field="seat" class="fill-ink" x="98" y="214">record.substring(28, 32));</text>
+    <text class="fill-ink-muted" x="40" y="231">}</text>
+  </g>
+  <rect class="fill-none stroke-amber stroke-1.5" x="92" y="134" width="244" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.15;0.55;0.575" values="0;1;0;1;0"/>
+  </rect>
+  <rect class="fill-none stroke-amber stroke-1.5" x="92" y="151" width="244" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.15;0.2;0.575;0.6" values="0;1;0;1;0"/>
+  </rect>
+  <rect class="fill-none stroke-amber stroke-1.5" x="92" y="168" width="244" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.25;0.6;0.625" values="0;1;0;1;0"/>
+  </rect>
+  <rect class="fill-none stroke-amber stroke-1.5" x="92" y="185" width="244" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25;0.3;0.625;0.65" values="0;1;0;1;0"/>
+  </rect>
+  <rect class="fill-none stroke-amber stroke-1.5" x="92" y="202" width="244" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.3;0.325;0.65;0.675" values="0;1;0;1;0"/>
+  </rect>
+  <rect class="fill-none stroke-amber stroke-1.5" x="63" y="117" width="185" height="17" rx="4" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.325;0.5;0.675;0.975" values="0;1;0;1;0"/>
+  </rect>
+
+  <g class="text-offset">
+    <text class="font-mono fill-ink" x="504" y="144">substring(begin, end)</text>
+    <text class="font-mono fill-ink" x="504" y="172">Pattern.compile(regex)</text>
+    <text class="font-mono fill-ink" x="504" y="200">matcher(input).find()</text>
+    <text class="font-sans fill-ink-muted" x="504" y="228">ArrayList, then String[]</text>
+  </g>
+  <g>
+    <g data-role="substring-calls" data-call="1" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.325;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="746" y="129" width="80" height="22" rx="6"/>
+      <text class="font-mono text-offset fill-sky anchor-middle" x="786" y="144">5 calls</text>
+    </g>
+    <g data-role="substring-calls" data-call="2" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.675;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="840" y="129" width="80" height="22" rx="6"/>
+      <text class="font-mono text-offset fill-pink anchor-middle" x="880" y="144">5 calls</text>
+    </g>
+  </g>
+  <g class="font-sans text-offset fill-ink-muted anchor-middle">
+    <text x="786" y="172">none</text>
+    <text x="880" y="172">none</text>
+    <text x="786" y="200">none</text>
+    <text x="880" y="200">none</text>
+    <text x="786" y="228">none</text>
+    <text x="880" y="228">none</text>
+  </g>
+
+  <g class="font-sans text-label">
+    <g data-role="call-label" data-call="1">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5" values="1;0"/>
+      <text x="64" y="272"><tspan class="font-semibold fill-sky">call 1</tspan><tspan class="fill-ink-muted">, the first boarding pass</tspan></text>
+    </g>
+    <g data-role="call-label" data-call="2" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5;0.975" values="0;1;0"/>
+      <text x="64" y="272"><tspan class="font-semibold fill-pink">call 2</tspan><tspan class="fill-ink-muted">, the next boarding pass</tspan></text>
+    </g>
+  </g>
+  <text class="la-note anchor-end" x="672" y="272">records decoded</text>
+  <text class="la-note anchor-end" x="866" y="272">Pattern.compile calls</text>
+  <g class="font-mono font-bold anchor-middle" font-size="15">
+    <g data-role="decoded" data-count="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.325;0.975" values="1;0;1"/>
+      <text class="fill-ink-muted" x="690" y="272">0</text>
+    </g>
+    <g data-role="decoded" data-count="1" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.325;0.675" values="0;1;0"/>
+      <text class="fill-sky" x="690" y="272">1</text>
+    </g>
+    <g data-role="decoded" data-count="2" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.675;0.975" values="0;1;0"/>
+      <text class="fill-pink" x="690" y="272">2</text>
+    </g>
+    <g data-role="compiled" data-count="0">
+      <text class="fill-ink-muted" x="884" y="272">0</text>
+    </g>
+  </g>
+
+  <g class="font-sans text-offset fill-ink-muted anchor-middle">
+    <g data-role="layout-field" data-field="name" data-from="0" data-to="12">
+      <path class="fill-none stroke-slate stroke-1.5" d="M 65 303 V 299 H 373 V 303"/>
+      <text x="219" y="293">name</text>
+    </g>
+    <g data-role="layout-field" data-field="from" data-from="13" data-to="16">
+      <path class="fill-none stroke-slate stroke-1.5" d="M 403 303 V 299 H 477 V 303"/>
+      <text x="440" y="293">from</text>
+    </g>
+    <g data-role="layout-field" data-field="to" data-from="17" data-to="20">
+      <path class="fill-none stroke-slate stroke-1.5" d="M 507 303 V 299 H 581 V 303"/>
+      <text x="544" y="293">to</text>
+    </g>
+    <g data-role="layout-field" data-field="flight" data-from="21" data-to="27">
+      <path class="fill-none stroke-slate stroke-1.5" d="M 611 303 V 299 H 763 V 303"/>
+      <text x="687" y="293">flight</text>
+    </g>
+    <g data-role="layout-field" data-field="seat" data-from="28" data-to="32">
+      <path class="fill-none stroke-slate stroke-1.5" d="M 793 303 V 299 H 893 V 303"/>
+      <text x="843" y="293">seat</text>
+    </g>
+  </g>
+
+  <g data-role="cells">
+    <rect data-role="cell" data-offset="0" class="la-cell" x="64" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="1" class="la-cell" x="90" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="2" class="la-cell" x="116" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="3" class="la-cell" x="142" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="4" class="la-cell" x="168" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="5" class="la-cell" x="194" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="6" class="la-cell" x="220" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="7" class="la-cell" x="246" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="8" class="la-cell" x="272" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="9" class="la-cell" x="298" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="10" class="la-cell" x="324" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="11" class="la-cell" x="350" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="12" class="la-cell" x="376" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="13" class="la-cell" x="402" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="14" class="la-cell" x="428" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="15" class="la-cell" x="454" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="16" class="la-cell" x="480" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="17" class="la-cell" x="506" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="18" class="la-cell" x="532" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="19" class="la-cell" x="558" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="20" class="la-cell" x="584" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="21" class="la-cell" x="610" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="22" class="la-cell" x="636" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="23" class="la-cell" x="662" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="24" class="la-cell" x="688" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="25" class="la-cell" x="714" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="26" class="la-cell" x="740" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="27" class="la-cell" x="766" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="28" class="la-cell" x="792" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="29" class="la-cell" x="818" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="30" class="la-cell" x="844" y="308" width="24" height="32" rx="4"/>
+    <rect data-role="cell" data-offset="31" class="la-cell" x="870" y="308" width="24" height="32" rx="4"/>
+  </g>
+
+  <g class="font-mono anchor-middle" font-size="15">
+    <g data-role="record" data-call="1">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5" values="1;0"/>
+      <text data-role="char" class="fill-ink" x="76" y="329">O</text>
+      <text data-role="char" class="fill-ink" x="102" y="329">K</text>
+      <text data-role="char" class="fill-ink" x="128" y="329">A</text>
+      <text data-role="char" class="fill-ink" x="154" y="329">F</text>
+      <text data-role="char" class="fill-ink" x="180" y="329">O</text>
+      <text data-role="char" class="fill-ink" x="206" y="329">R</text>
+      <text data-role="char" class="fill-ink" x="232" y="329">/</text>
+      <text data-role="char" class="fill-ink" x="258" y="329">A</text>
+      <text data-role="char" class="fill-ink" x="284" y="329">D</text>
+      <text data-role="char" class="fill-ink" x="310" y="329">A</text>
+      <text data-role="char" class="fill-slate" x="336" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="362" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="388" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="414" y="329">L</text>
+      <text data-role="char" class="fill-ink" x="440" y="329">I</text>
+      <text data-role="char" class="fill-ink" x="466" y="329">S</text>
+      <text data-role="char" class="fill-slate" x="492" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="518" y="329">O</text>
+      <text data-role="char" class="fill-ink" x="544" y="329">P</text>
+      <text data-role="char" class="fill-ink" x="570" y="329">O</text>
+      <text data-role="char" class="fill-slate" x="596" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="622" y="329">T</text>
+      <text data-role="char" class="fill-ink" x="648" y="329">P</text>
+      <text data-role="char" class="fill-ink" x="674" y="329">1</text>
+      <text data-role="char" class="fill-ink" x="700" y="329">9</text>
+      <text data-role="char" class="fill-ink" x="726" y="329">4</text>
+      <text data-role="char" class="fill-ink" x="752" y="329">6</text>
+      <text data-role="char" class="fill-slate" x="778" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="804" y="329">0</text>
+      <text data-role="char" class="fill-ink" x="830" y="329">1</text>
+      <text data-role="char" class="fill-ink" x="856" y="329">4</text>
+      <text data-role="char" class="fill-ink" x="882" y="329">C</text>
+    </g>
+    <g data-role="record" data-call="2" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5;0.975" values="0;1;0"/>
+      <text data-role="char" class="fill-ink" x="76" y="329">L</text>
+      <text data-role="char" class="fill-ink" x="102" y="329">I</text>
+      <text data-role="char" class="fill-ink" x="128" y="329">/</text>
+      <text data-role="char" class="fill-ink" x="154" y="329">W</text>
+      <text data-role="char" class="fill-ink" x="180" y="329">E</text>
+      <text data-role="char" class="fill-ink" x="206" y="329">I</text>
+      <text data-role="char" class="fill-slate" x="232" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="258" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="284" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="310" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="336" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="362" y="329">·</text>
+      <text data-role="char" class="fill-slate" x="388" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="414" y="329">O</text>
+      <text data-role="char" class="fill-ink" x="440" y="329">P</text>
+      <text data-role="char" class="fill-ink" x="466" y="329">O</text>
+      <text data-role="char" class="fill-slate" x="492" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="518" y="329">F</text>
+      <text data-role="char" class="fill-ink" x="544" y="329">N</text>
+      <text data-role="char" class="fill-ink" x="570" y="329">C</text>
+      <text data-role="char" class="fill-slate" x="596" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="622" y="329">T</text>
+      <text data-role="char" class="fill-ink" x="648" y="329">P</text>
+      <text data-role="char" class="fill-ink" x="674" y="329">1</text>
+      <text data-role="char" class="fill-ink" x="700" y="329">6</text>
+      <text data-role="char" class="fill-ink" x="726" y="329">9</text>
+      <text data-role="char" class="fill-ink" x="752" y="329">3</text>
+      <text data-role="char" class="fill-slate" x="778" y="329">·</text>
+      <text data-role="char" class="fill-ink" x="804" y="329">0</text>
+      <text data-role="char" class="fill-ink" x="830" y="329">2</text>
+      <text data-role="char" class="fill-ink" x="856" y="329">2</text>
+      <text data-role="char" class="fill-ink" x="882" y="329">A</text>
+    </g>
+  </g>
+
+  <g>
+    <rect data-role="cut" data-call="1" data-field="name" class="fill-none stroke-sky stroke-2.5" x="64" y="308" width="310" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.5" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="1" data-field="from" class="fill-none stroke-sky stroke-2.5" x="402" y="308" width="76" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.15;0.5" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="1" data-field="to" class="fill-none stroke-sky stroke-2.5" x="506" y="308" width="76" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.5" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="1" data-field="flight" class="fill-none stroke-sky stroke-2.5" x="610" y="308" width="154" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25;0.5" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="1" data-field="seat" class="fill-none stroke-sky stroke-2.5" x="792" y="308" width="102" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.3;0.5" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="2" data-field="name" class="fill-none stroke-pink stroke-2.5" x="64" y="308" width="310" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.55;0.975" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="2" data-field="from" class="fill-none stroke-pink stroke-2.5" x="402" y="308" width="76" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.575;0.975" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="2" data-field="to" class="fill-none stroke-pink stroke-2.5" x="506" y="308" width="76" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.6;0.975" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="2" data-field="flight" class="fill-none stroke-pink stroke-2.5" x="610" y="308" width="154" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.625;0.975" values="0;1;0"/>
+    </rect>
+    <rect data-role="cut" data-call="2" data-field="seat" class="fill-none stroke-pink stroke-2.5" x="792" y="308" width="102" height="32" rx="4" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.65;0.975" values="0;1;0"/>
+    </rect>
+  </g>
+
+  <g class="la-offset anchor-middle">
+    <text x="76" y="360">0</text>
+    <text x="102" y="360">1</text>
+    <text x="128" y="360">2</text>
+    <text x="154" y="360">3</text>
+    <text x="180" y="360">4</text>
+    <text x="206" y="360">5</text>
+    <text x="232" y="360">6</text>
+    <text x="258" y="360">7</text>
+    <text x="284" y="360">8</text>
+    <text x="310" y="360">9</text>
+    <text x="336" y="360">10</text>
+    <text x="362" y="360">11</text>
+    <text x="388" y="360">12</text>
+    <text x="414" y="360">13</text>
+    <text x="440" y="360">14</text>
+    <text x="466" y="360">15</text>
+    <text x="492" y="360">16</text>
+    <text x="518" y="360">17</text>
+    <text x="544" y="360">18</text>
+    <text x="570" y="360">19</text>
+    <text x="596" y="360">20</text>
+    <text x="622" y="360">21</text>
+    <text x="648" y="360">22</text>
+    <text x="674" y="360">23</text>
+    <text x="700" y="360">24</text>
+    <text x="726" y="360">25</text>
+    <text x="752" y="360">26</text>
+    <text x="778" y="360">27</text>
+    <text x="804" y="360">28</text>
+    <text x="830" y="360">29</text>
+    <text x="856" y="360">30</text>
+    <text x="882" y="360">31</text>
+  </g>
+
+  <g class="anchor-middle">
+    <g data-role="field" data-call="1" data-field="name" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.5" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="64" y="370" width="310" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-sky" x="219" y="389">OKAFOR/ADA</text>
+      <text class="font-mono text-offset fill-ink-muted" x="219" y="412">.strip()</text>
+    </g>
+    <g data-role="field" data-call="1" data-field="from" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.15;0.5" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="402" y="370" width="76" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-sky" x="440" y="389">LIS</text>
+    </g>
+    <g data-role="field" data-call="1" data-field="to" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.5" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="506" y="370" width="76" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-sky" x="544" y="389">OPO</text>
+    </g>
+    <g data-role="field" data-call="1" data-field="flight" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25;0.5" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="610" y="370" width="154" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-sky" x="687" y="389">TP1946</text>
+    </g>
+    <g data-role="field" data-call="1" data-field="seat" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.3;0.5" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="792" y="370" width="102" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-sky" x="843" y="389">014C</text>
+    </g>
+    <g data-role="field" data-call="2" data-field="name" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.55;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="64" y="370" width="310" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-pink" x="219" y="389">LI/WEI</text>
+      <text class="font-mono text-offset fill-ink-muted" x="219" y="412">.strip()</text>
+    </g>
+    <g data-role="field" data-call="2" data-field="from" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.575;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="402" y="370" width="76" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-pink" x="440" y="389">OPO</text>
+    </g>
+    <g data-role="field" data-call="2" data-field="to" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.6;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="506" y="370" width="76" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-pink" x="544" y="389">FNC</text>
+    </g>
+    <g data-role="field" data-call="2" data-field="flight" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.625;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="610" y="370" width="154" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-pink" x="687" y="389">TP1693</text>
+    </g>
+    <g data-role="field" data-call="2" data-field="seat" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.65;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="792" y="370" width="102" height="28" rx="6"/>
+      <text data-role="value" class="font-mono text-label fill-pink" x="843" y="389">022A</text>
+    </g>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="424" width="912" height="38" rx="8"/>
+  <g class="font-sans text-label fill-ink anchor-middle">
+    <text data-role="caption" x="480" y="448">The layout fixes every field: the name always spans columns 0 to 11, the seat 28 to 31.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1" values="1;0"/></text>
+    <text data-role="caption" x="480" y="448" opacity="0">decode() cuts each field at its offset with substring. Only the name needs strip() for its padding.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.325" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="448" opacity="0">Five substring calls give the five fields. decode() builds no Pattern or Matcher and never searches the record for spaces.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.325;0.5" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="448" opacity="0">The next record has a shorter name and more padding, but every field starts at the same offset.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5;0.75" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="448" opacity="0">The same fields as split("\\s+") on both records, and decode() compiled no regex on either call.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.75;0.975" values="0;1;0"/></text>
+  </g>
+
+  <text class="font-sans text-offset fill-ink-muted" x="32" y="494">Sources: the Java SE 25 API for String, and the JDK 25 source of String.split (its fast path and Pattern.compile).</text>
+</svg>
