@@ -1,0 +1,300 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 560" role="img" preserveAspectRatio="xMidYMid meet">
+  <title>The Avro wire format and the schema cache</title>
+  <desc>The serializer writes a magic byte, a four byte schema ID, and the Avro payload. The first
+  record costs a registry call on each side, and the second finds both caches warm and travels
+  without touching the registry at all.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="kf-head-flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+    <marker id="kf-head-schema" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-lime" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+
+    <path id="m-produce" class="fill-none stroke-none" d="M 244 148 L 422 148" />
+    <path id="m-deliver" class="fill-none stroke-none" d="M 538 148 L 716 148" />
+    <path id="m-ask-p" class="fill-none stroke-none" d="M 146 232 L 146 361 L 404 361" />
+    <path id="m-answer-p" class="fill-none stroke-none" d="M 404 361 L 146 361 L 146 232" />
+    <path id="m-ask-c" class="fill-none stroke-none" d="M 814 232 L 814 361 L 556 361" />
+    <path id="m-answer-c" class="fill-none stroke-none" d="M 556 361 L 814 361 L 814 232" />
+
+    <g id="frame-mini">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="-60" y="-12" width="12" height="24" rx="3" />
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="-48" y="-12" width="28" height="24" rx="3" />
+      <rect class="la-cell" x="-20" y="-12" width="80" height="24" rx="3" />
+    </g>
+  </defs>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="544" rx="16" />
+
+  <g data-role="beat-label" data-beat="cold" opacity="0">
+    <text class="la-title" x="40" y="50">First record</text>
+    <text class="la-note" x="40" y="72">Both caches cold, so each side pays one registry call</text>
+    <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.03;0.64;0.67;1" />
+  </g>
+
+  <g data-role="beat-label" data-beat="warm" opacity="0">
+    <text class="la-title" x="40" y="50">Second record</text>
+    <text class="la-note" x="40" y="72">Both caches warm, so the registry is never asked again</text>
+    <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0" keyTimes="0;0.66;0.69;0.97;1" />
+  </g>
+
+  <g data-role="actor" data-actor="producer">
+    <rect class="fill-violet-deep stroke-1.5 stroke-emerald" x="48" y="88" width="196" height="144" rx="14" />
+    <text class="la-label font-semibold" x="146" y="114" text-anchor="middle">Producer</text>
+    <rect class="fill-green stroke-emerald stroke-1.5" x="64" y="126" width="164" height="40" rx="8" />
+    <text class="font-sans text-label font-semibold fill-surface" x="146" y="151" text-anchor="middle">Serializer</text>
+    <g data-role="cache" data-side="producer">
+      <rect class="la-canvas stroke-1.5" x="64" y="176" width="164" height="48" rx="8" />
+      <text class="font-sans text-offset fill-ink-muted" x="146" y="194" text-anchor="middle">schema cache</text>
+      <text class="font-sans text-label font-semibold fill-red" x="146" y="214" text-anchor="middle" data-state="miss" opacity="0">miss
+        <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.03;0.06;0.20;0.23;1" />
+      </text>
+      <text class="font-sans text-label font-semibold fill-emerald" x="146" y="214" text-anchor="middle" data-state="hit" opacity="0">hit
+        <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.68;0.71;0.84;0.87;1" />
+      </text>
+    </g>
+  </g>
+
+  <g data-role="actor" data-actor="broker">
+    <path class="la-card" d="M 422 111 A 58 15 0 0 1 538 111 L 538 185 A 58 15 0 0 1 422 185 Z" />
+    <path class="fill-none stroke-violet stroke-1.5" d="M 422 111 A 58 15 0 0 0 538 111" />
+    <text class="la-label font-semibold" x="480" y="142" text-anchor="middle">Kafka</text>
+    <text class="la-label font-semibold" x="480" y="160" text-anchor="middle">Broker</text>
+  </g>
+
+  <g data-role="actor" data-actor="consumer">
+    <rect class="fill-violet-deep stroke-1.5 stroke-sky-light" x="716" y="88" width="196" height="144" rx="14" />
+    <text class="la-label font-semibold" x="814" y="114" text-anchor="middle">Consumer</text>
+    <rect class="fill-sky stroke-sky-light stroke-1.5" x="732" y="126" width="164" height="40" rx="8" />
+    <text class="font-sans text-label font-semibold fill-surface" x="814" y="151" text-anchor="middle">Deserializer</text>
+    <g data-role="cache" data-side="consumer">
+      <rect class="la-canvas stroke-1.5" x="732" y="176" width="164" height="48" rx="8" />
+      <text class="font-sans text-offset fill-ink-muted" x="814" y="194" text-anchor="middle">schema cache</text>
+      <text class="font-sans text-label font-semibold fill-red" x="814" y="214" text-anchor="middle" data-state="miss" opacity="0">miss
+        <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.44;0.47;0.60;0.63;1" />
+      </text>
+      <text class="font-sans text-label font-semibold fill-emerald" x="814" y="214" text-anchor="middle" data-state="hit" opacity="0">hit
+        <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.86;0.89;0.98;1;1" />
+      </text>
+    </g>
+  </g>
+
+  <g data-role="actor" data-actor="registry">
+    <path class="fill-lime-deep stroke-lime stroke-1.5" d="M 404 334 A 76 18 0 0 1 556 334 L 556 388 A 76 18 0 0 1 404 388 Z" />
+    <path class="fill-none stroke-lime stroke-1.5" d="M 404 334 A 76 18 0 0 0 556 334" />
+    <text class="la-label font-semibold" x="480" y="356" text-anchor="middle">Schema</text>
+    <text class="la-label font-semibold" x="480" y="374" text-anchor="middle">Registry</text>
+  </g>
+
+  <path class="fill-none stroke-lime stroke-1.5" d="M 146 232 L 146 361 L 398 361" />
+  <path class="fill-none stroke-lime stroke-1.5" d="M 814 232 L 814 361 L 562 361" />
+
+  <g data-role="flow" data-flow="registry-call" data-side="producer" data-beat="cold">
+    <g opacity="0">
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="-40" y="-12" width="80" height="24" rx="5" />
+      <text class="font-mono text-offset fill-ink" x="0" y="4" text-anchor="middle">schema v1</text>
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.05;0.13;1">
+        <mpath xlink:href="#m-ask-p" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.03;0.07;0.11;0.15;1" />
+    </g>
+    <g opacity="0">
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="-26" y="-12" width="52" height="24" rx="5" />
+      <text class="font-mono text-offset fill-ink" x="0" y="4" text-anchor="middle">id 1</text>
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.14;0.22;1">
+        <mpath xlink:href="#m-answer-p" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.12;0.16;0.20;0.24;1" />
+    </g>
+  </g>
+
+  <g data-role="flow" data-flow="produce" data-beat="cold">
+    <path class="la-arrow" d="M 244 148 L 418 148" marker-end="url(#kf-head-flow)" />
+    <g opacity="0">
+      <use xlink:href="#frame-mini" />
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.26;0.37;1">
+        <mpath xlink:href="#m-produce" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.24;0.28;0.35;0.39;1" />
+    </g>
+  </g>
+
+  <g data-role="flow" data-flow="deliver" data-beat="cold">
+    <path class="la-arrow" d="M 538 148 L 712 148" marker-end="url(#kf-head-flow)" />
+    <g opacity="0">
+      <use xlink:href="#frame-mini" />
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.38;0.49;1">
+        <mpath xlink:href="#m-deliver" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.36;0.40;0.47;0.51;1" />
+    </g>
+  </g>
+
+  <g data-role="flow" data-flow="registry-call" data-side="consumer" data-beat="cold">
+    <g opacity="0">
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="-26" y="-12" width="52" height="24" rx="5" />
+      <text class="font-mono text-offset fill-ink" x="0" y="4" text-anchor="middle">id 1</text>
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.46;0.54;1">
+        <mpath xlink:href="#m-ask-c" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.44;0.48;0.52;0.56;1" />
+    </g>
+    <g opacity="0">
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="-40" y="-12" width="80" height="24" rx="5" />
+      <text class="font-mono text-offset fill-ink" x="0" y="4" text-anchor="middle">schema v1</text>
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.55;0.63;1">
+        <mpath xlink:href="#m-answer-c" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.53;0.57;0.61;0.65;1" />
+    </g>
+  </g>
+
+  <g data-role="flow" data-flow="produce" data-beat="warm">
+    <g opacity="0">
+      <use xlink:href="#frame-mini" />
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.70;0.80;1">
+        <mpath xlink:href="#m-produce" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.68;0.72;0.78;0.82;1" />
+    </g>
+  </g>
+
+  <g data-role="flow" data-flow="deliver" data-beat="warm">
+    <g opacity="0">
+      <use xlink:href="#frame-mini" />
+      <animateMotion dur="14s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.81;0.91;1">
+        <mpath xlink:href="#m-deliver" />
+      </animateMotion>
+      <animate attributeName="opacity" dur="14s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.79;0.83;0.89;0.93;1" />
+    </g>
+  </g>
+
+  <text class="la-note" x="150" y="434">On the wire</text>
+  <text class="la-note" x="810" y="434" text-anchor="end">Five bytes in front of every record</text>
+
+  <g data-role="frame" data-frame="anatomy">
+    <g data-part="magic">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="150" y="452" width="70" height="52" rx="6" />
+      <text class="font-mono text-offset fill-ink" x="185" y="483" text-anchor="middle">0x00</text>
+      <text class="font-sans text-offset fill-ink-muted" x="185" y="524" text-anchor="middle">1 byte</text>
+    </g>
+    <g data-part="schema-id">
+      <rect class="fill-lime-deep stroke-lime stroke-1.5" x="220" y="452" width="150" height="52" rx="6" />
+      <text class="font-mono text-offset fill-ink" x="295" y="483" text-anchor="middle">00 00 00 01</text>
+      <text class="font-sans text-offset fill-ink-muted" x="295" y="524" text-anchor="middle">4 bytes</text>
+    </g>
+    <g data-part="payload">
+      <rect class="la-cell" x="370" y="452" width="440" height="52" rx="6" />
+      <text class="la-offset" x="590" y="483" text-anchor="middle">Avro-encoded record</text>
+      <text class="font-sans text-offset fill-ink-muted" x="590" y="524" text-anchor="middle">the record itself</text>
+    </g>
+  </g>
+</svg>
