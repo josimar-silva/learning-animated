@@ -1,39 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="logo-title logo-desc">
-  <title id="logo-title">Kafka: The Definitive Guide Animated</title>
-  <desc id="logo-desc">Three partitions drawn as append-only logs on a dark panel, with a producer writing to the amber tail and a consumer reading from the head.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Learning Animated</title>
+  <desc id="logo-desc">A play triangle in front of three rows of cells on a dark panel. Each row stands for one of the first three tracks and ends in an amber tail cell.</desc>
 
   <!-- Panel: reads on both light and dark GitHub themes -->
   <rect x="24" y="24" width="352" height="352" rx="56" fill="#191426" stroke="#302a4d" stroke-width="2"/>
 
-  <!-- Three partitions, each an append-only log. The rightmost cell is the tail
-       where new messages land (amber), mirroring the topic-partitions animation. -->
+  <!-- One row of cells for each of the first three tracks. The last cell in each
+       row is the one being written: the cell-new fill ringed in amber. -->
   <g stroke-width="3">
-    <!-- Partition 0 -->
-    <rect x="74"  y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="136" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="198" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="260" y="93"  width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
-    <!-- Partition 1 -->
-    <rect x="74"  y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="136" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="198" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="260" y="177" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
-    <!-- Partition 2 -->
-    <rect x="74"  y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="136" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="198" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
-    <rect x="260" y="261" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+    <!-- Kafka -->
+    <rect x="153" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="93"  width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+    <!-- Quarkus -->
+    <rect x="153" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="177" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+    <!-- Java -->
+    <rect x="153" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="261" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
   </g>
 
-  <!-- Producer appends to the tail of partition 0 -->
-  <g fill="#10b981" stroke="#10b981">
-    <line x1="283" y1="56" x2="283" y2="82" stroke-width="6" stroke-linecap="round"/>
-    <polygon points="283,92 271,74 295,74" stroke="none"/>
-  </g>
-
-  <!-- Consumer reads from the head of partition 2 -->
-  <g fill="#38bdf8" stroke="#38bdf8">
-    <line x1="70" y1="284" x2="52" y2="284" stroke-width="6" stroke-linecap="round"/>
-    <polygon points="36,284 54,272 54,296" stroke="none"/>
-  </g>
+  <!-- Play triangle: every lesson is animated -->
+  <polygon points="81,180 81,220 115,200" fill="#ece9f7" stroke="#ece9f7" stroke-width="8" stroke-linejoin="round"/>
 </svg>
