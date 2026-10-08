@@ -66,7 +66,7 @@ Write `class="stroke-1.5"` in markup; the block escapes the dot in its selector.
 
 ## Components
 
-Components draw the shapes that recur in nearly every animation. The `la-` prefix keeps them apart from utilities.
+Components draw the shapes that recur in nearly every animation. The `la-` prefix keeps them apart from utilities. The block lists them after the utilities, so a component wins over a utility that sets the same property: never put both on one element for that property.
 
 | Component        | Draws                                                                                   |
 | ---------------- | --------------------------------------------------------------------------------------- |
@@ -100,7 +100,7 @@ A role is a recipe of palette utilities and components, not a token of its own. 
 
 | Threads role            | Recipe                                                                            |
 | ----------------------- | --------------------------------------------------------------------------------- |
-| I/O thread (event loop) | `la-canvas` box with a `stroke-sky stroke-1.5` outline and `fill-sky` title       |
+| I/O thread (event loop) | `fill-surface stroke-sky stroke-1.5` box, `fill-sky` title                        |
 | Worker thread           | `stroke-violet` outline, `fill-violet` title                                      |
 | Blocked thread          | `fill-surface` slot hatched with `stroke-red` lines, `fill-red` label with `halo` |
 | Non-blocking request    | `fill-emerald` dot                                                                |
