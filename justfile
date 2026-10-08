@@ -62,6 +62,10 @@ preview site:
 build-all:
     for d in $(just _site-dirs); do npm run build --workspace "$d"; done
 
+# Scan tracked files (and, with --commits <range>, commit metadata) for forbidden terms
+forbidden-terms *args:
+    node scripts/forbidden-terms.ts {{ args }}
+
 # Remove build output
 clean:
     rm -rf coverage tracks/*/dist tracks/*/.astro home/dist home/.astro
