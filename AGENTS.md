@@ -27,6 +27,19 @@ A track never imports another track, and packages never import tracks.
 - Prose goes through the humanizer skill.
 - No work names: no employer, product, service, topic, class, payload, or partner names. CI scans content and commit metadata against a private list.
 
+## SVG contract
+
+Read `packages/design/signature.md` before drawing. Author with palette utilities (`fill-<color>`, `stroke-<color>`) and `la-*` components only, and run `just style` after editing `packages/design/theme.css`. Geometry that isn't a color (dash arrays, line caps, letter spacing) goes in presentation attributes. Every animation SVG must pass `assertSvgContract` from `packages/svg-kit`:
+
+- a `viewBox`, and `role="img"` with a non-empty `<title>` and `<desc>`;
+- the canonical `LA-STYLE` block, embedded verbatim;
+- no CSS outside that block: no other rules and no `style` attributes;
+- no raw colors (hex, `rgb()`, `hsl()`) in color properties;
+- no `fill-opacity` or `stroke-opacity`;
+- SMIL only: no `@keyframes` and no CSS `animation`;
+- well-formed `keyTimes`;
+- optionally, `data-loop="<seconds>s"` on the root, equal to the story's `dur`, with no animation running longer.
+
 ## Identity and pull requests
 
 - Before the first commit in any clone or worktree, compare `git config user.email` with the email in `~/projects/personal/kafka-the-definitive-guide-animated/.git/config`. If they differ, stop and ask. Never commit with the machine's global identity.
