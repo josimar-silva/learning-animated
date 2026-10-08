@@ -51,3 +51,76 @@ jobs:
           FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}
           RANGE: ${{ github.event_name == 'pull_request' && format('{0}..{1}', github.event.pull_request.base.sha, github.sha) || 'HEAD~1..HEAD' }}
         run: just forbidden-terms --commits "$RANGE"
+
+      - name: ⬆️ Upload the built sites
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sites-${{ github.sha }}
+          path: |
+            home/dist
+            tracks/*/dist
+          retention-days: 3
+
+  test-e2e:
+    name: Test E2E (${{ matrix.project }})
+    needs: verify
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.0-noble@sha256:06a9939e57531807f8d5fd76ce44b53165ffb7d7501d87ab10e285c20b1e971f
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          [chromium, firefox, webkit, mobile-chrome, mobile-safari, microsoft-edge, google-chrome]
+    steps:
+      - name: 🛡️ Harden the runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: 📦 Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: 🇳 Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: ⚒️ Setup just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+
+      - name: ⚙️ Install dependencies
+        run: just ci
+
+      - name: ⚙️ Setup Microsoft Edge
+        if: matrix.project == 'microsoft-edge'
+        run: npx playwright install msedge
+
+      - name: ⚙️ Setup Google Chrome
+        if: matrix.project == 'google-chrome'
+        run: npx playwright install chrome
+
+      - name: ⬇️ Download the built sites
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: sites-${{ github.sha }}
+
+      - name: 🧪 Run the end-to-end suite
+        run: just test-e2e-on ${{ matrix.project }}
+        env:
+          HOME: /root
+
+      - name: ⬆️ Upload the UI coverage report
+        if: matrix.project == 'chromium'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-ui-coverage
+          path: e2e-tests-report/
+
+      - name: ⬆️ Upload traces
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-traces-${{ matrix.project }}
+          path: test-results/

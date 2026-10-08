@@ -68,6 +68,11 @@
       "description": "typescript-eslint and @astrojs/check accept only TypeScript below 6.1.",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "<6.1"
+    },
+    {
+      "description": "The CI container must run the Playwright version the package pins (test/repo/e2e.test.ts).",
+      "groupName": "playwright",
+      "matchPackageNames": ["@playwright/test", "mcr.microsoft.com/playwright"]
     }
   ]
 }
