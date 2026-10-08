@@ -1,0 +1,16 @@
+---
+import { join } from 'node:path';
+
+import { contentDirOf, loadEntries } from '@learning-animated/site-kit/disk';
+import { listedFamily } from '@learning-animated/site-kit/family';
+import FamilyHomePage from '@learning-animated/site-kit/pages/FamilyHomePage.astro';
+
+import track from '../track.ts';
+
+const members = listedFamily().map((member) => ({
+  ...member,
+  count: loadEntries(contentDirOf(join(process.cwd(), '..', 'tracks', member.id))).length,
+}));
+---
+
+<FamilyHomePage track={track} members={members} />
