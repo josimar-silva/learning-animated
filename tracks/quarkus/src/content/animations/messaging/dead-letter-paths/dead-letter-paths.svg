@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 568" role="img" data-loop="25s">
+  <title>Three ways into the dead-letter topic</title>
+  <desc>Offsets 41 to 47 of the ticket-orders partition feed charge(), and three of them fail in different ways. CardGateway answers 400 for offset 41, so charge() nacks it with ticket-orders-dlq as the topic, and it skips the retry topics. Offset 42 is not valid JSON, so charge() receives a null payload and nacks it to the dead-letter topic the same way, original bytes and all. CardGateway answers 503 for offset 43, so it goes through three retry topics, fails again after each delay, and lands on ticket-orders-dlq with delayed-retry-count 3. Each dead letter carries delayed-retry-count and delayed-retry-reason headers. The consumer's position moves past every failed offset, and it charges 44 and 45 while 43 waits.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="568"/>
+  <text class="la-title" x="32" y="40">Three ways into the dead-letter topic</text>
+  <text class="la-note" x="32" y="64">charge() reads ticket-orders with failure-strategy=delayed-retry-topic and dead-letter-queue.topic=ticket-orders-dlq.</text>
+  <g data-role="partition" data-topic="ticket-orders" data-partition="0">
+    <text class="fill-ink text-offset font-mono" x="32" y="108">ticket-orders, partition 0</text>
+    <rect class="la-cell" x="232" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="249" y="107" text-anchor="middle">41</text>
+    <rect class="la-cell" x="272" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="289" y="107" text-anchor="middle">42</text>
+    <rect class="la-cell" x="312" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="329" y="107" text-anchor="middle">43</text>
+    <rect class="la-cell" x="352" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="369" y="107" text-anchor="middle">44</text>
+    <rect class="la-cell" x="392" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="409" y="107" text-anchor="middle">45</text>
+    <rect class="la-cell" x="432" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="449" y="107" text-anchor="middle">46</text>
+    <rect class="la-cell" x="472" y="88" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="489" y="107" text-anchor="middle">47</text>
+    <text class="la-note" x="524" y="108">outline: the offset charge() is on</text>
+  </g>
+  <g data-role="lane" data-path="declined">
+    <rect class="la-canvas" x="32" y="150" width="568" height="114" rx="12"/>
+    <text class="fill-ink text-label font-sans font-semibold" x="48" y="172">Fails for good</text>
+    <rect class="la-cell" x="48" y="197" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="65" y="216" text-anchor="middle">41</text>
+    <path class="la-arrow" d="M 86 212 H 104" marker-end="url(#head)"/>
+    <rect class="fill-sky stroke-sky-light stroke-1.5" x="108" y="193" width="120" height="38" rx="8"/>
+    <text class="fill-surface text-label font-mono font-semibold" x="168" y="217" text-anchor="middle">charge()</text>
+    <path class="la-arrow" d="M 232 212 H 606" marker-end="url(#head)"/>
+    <text class="la-note" x="420" y="196" text-anchor="middle">nack with ticket-orders-dlq as the topic</text>
+  </g>
+  <g data-role="lane" data-path="unreadable">
+    <rect class="la-canvas" x="32" y="276" width="568" height="114" rx="12"/>
+    <text class="fill-ink text-label font-sans font-semibold" x="48" y="298">Cannot be read</text>
+    <text class="fill-ink-muted text-offset font-mono" x="588" y="298" text-anchor="end">fail-on-deserialization-failure=false</text>
+    <rect class="la-cell" x="48" y="323" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="65" y="342" text-anchor="middle">42</text>
+    <path class="la-arrow" d="M 86 338 H 104" marker-end="url(#head)"/>
+    <rect class="fill-sky stroke-sky-light stroke-1.5" x="108" y="319" width="120" height="38" rx="8"/>
+    <text class="fill-surface text-label font-mono font-semibold" x="168" y="343" text-anchor="middle">charge()</text>
+    <path class="la-arrow" d="M 232 338 H 606" marker-end="url(#head)"/>
+    <text class="la-note" x="420" y="322" text-anchor="middle">nack with ticket-orders-dlq as the topic</text>
+  </g>
+  <g data-role="lane" data-path="unavailable">
+    <rect class="la-canvas" x="32" y="402" width="568" height="114" rx="12"/>
+    <text class="fill-ink text-label font-sans font-semibold" x="48" y="424">Might pass later</text>
+    <rect class="la-cell" x="48" y="449" width="34" height="30" rx="5"/>
+    <text class="la-offset" x="65" y="468" text-anchor="middle">43</text>
+    <path class="la-arrow" d="M 86 464 H 104" marker-end="url(#head)"/>
+    <rect class="fill-sky stroke-sky-light stroke-1.5" x="108" y="445" width="120" height="38" rx="8"/>
+    <text class="fill-surface text-label font-mono font-semibold" x="168" y="469" text-anchor="middle">charge()</text>
+    <g data-role="retry-topic" data-topic="ticket-orders_retry_10000">
+      <rect class="la-cell" x="254" y="449" width="84" height="30" rx="5"/>
+      <text class="fill-ink-muted text-offset font-mono" x="296" y="494" text-anchor="middle">ticket-orders</text>
+      <text class="fill-ink-muted text-offset font-mono" x="296" y="508" text-anchor="middle">_retry_10000</text>
+    </g>
+    <g data-role="retry-topic" data-topic="ticket-orders_retry_20000">
+      <rect class="la-cell" x="362" y="449" width="84" height="30" rx="5"/>
+      <text class="fill-ink-muted text-offset font-mono" x="404" y="494" text-anchor="middle">ticket-orders</text>
+      <text class="fill-ink-muted text-offset font-mono" x="404" y="508" text-anchor="middle">_retry_20000</text>
+    </g>
+    <g data-role="retry-topic" data-topic="ticket-orders_retry_50000">
+      <rect class="la-cell" x="470" y="449" width="84" height="30" rx="5"/>
+      <text class="fill-ink-muted text-offset font-mono" x="512" y="494" text-anchor="middle">ticket-orders</text>
+      <text class="fill-ink-muted text-offset font-mono" x="512" y="508" text-anchor="middle">_retry_50000</text>
+    </g>
+    <path class="la-arrow" d="M 232 464 H 248" marker-end="url(#head)"/>
+    <path class="la-arrow" d="M 342 464 H 356" marker-end="url(#head)"/>
+    <path class="la-arrow" d="M 450 464 H 464" marker-end="url(#head)"/>
+    <path class="la-arrow" d="M 558 464 H 606" marker-end="url(#head)"/>
+  </g>
+  <g data-role="dlq" data-topic="ticket-orders-dlq">
+    <rect class="fill-violet-deep stroke-red stroke-1.5" x="612" y="150" width="356" height="366" rx="14"/>
+    <text class="fill-red text-label font-mono font-semibold" x="790" y="176" text-anchor="middle">ticket-orders-dlq</text>
+    <g data-role="dead-letter" data-path="declined" data-offset="0" data-from="41">
+      <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800" values="0;1"/>
+      <rect class="la-cell" x="628" y="197" width="34" height="30" rx="5"/>
+      <rect class="la-cell-new" x="628" y="197" width="34" height="30" rx="5"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800;0.2400" values="0;1;0"/></rect>
+      <text class="la-offset" x="645" y="216" text-anchor="middle">0</text>
+      <g data-role="header" data-header="delayed-retry-count">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="206">delayed-retry-count</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="206">0</text>
+      </g>
+      <g data-role="header" data-header="delayed-retry-reason">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="224">delayed-retry-reason</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="224">CardGateway 400</text>
+      </g>
+    </g>
+    <g data-role="dead-letter" data-path="unreadable" data-offset="1" data-from="42">
+      <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4200" values="0;1"/>
+      <rect class="la-cell" x="628" y="323" width="34" height="30" rx="5"/>
+      <rect class="la-cell-new" x="628" y="323" width="34" height="30" rx="5"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4200;0.4800" values="0;1;0"/></rect>
+      <text class="la-offset" x="645" y="342" text-anchor="middle">1</text>
+      <g data-role="header" data-header="delayed-retry-count">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="332">delayed-retry-count</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="332">0</text>
+      </g>
+      <g data-role="header" data-header="delayed-retry-reason">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="350">delayed-retry-reason</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="350">not valid JSON</text>
+      </g>
+      <text data-role="payload" class="fill-ink-muted text-offset font-sans" x="676" y="368">value: the original bytes</text>
+    </g>
+    <g data-role="dead-letter" data-path="unavailable" data-offset="2" data-from="43">
+      <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9000" values="0;1"/>
+      <rect class="la-cell" x="628" y="449" width="34" height="30" rx="5"/>
+      <rect class="la-cell-new" x="628" y="449" width="34" height="30" rx="5"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9000;0.9600" values="0;1;0"/></rect>
+      <text class="la-offset" x="645" y="468" text-anchor="middle">2</text>
+      <g data-role="header" data-header="delayed-retry-count">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="458">delayed-retry-count</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="458">3</text>
+      </g>
+      <g data-role="header" data-header="delayed-retry-reason">
+        <text class="fill-ink-muted text-offset font-mono" x="676" y="476">delayed-retry-reason</text>
+        <text data-role="value" class="fill-ink text-offset font-mono" x="832" y="476">CardGateway 503</text>
+      </g>
+    </g>
+  </g>
+  <rect data-role="position" data-offset="41" class="la-read-marker" x="228" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800" values="1;0"/></rect>
+  <rect data-role="position" data-offset="42" class="la-read-marker" x="268" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800;0.4200" values="0;1;0"/></rect>
+  <rect data-role="position" data-offset="43" class="la-read-marker" x="308" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4200;0.5800" values="0;1;0"/></rect>
+  <rect data-role="position" data-offset="44" class="la-read-marker" x="348" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5800;0.6200" values="0;1;0"/></rect>
+  <rect data-role="position" data-offset="45" class="la-read-marker" x="388" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200;0.6600" values="0;1;0"/></rect>
+  <rect data-role="position" data-offset="46" class="la-read-marker" x="428" y="84" width="42" height="38" rx="7"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6600" values="0;1"/></rect>
+  <text data-role="status" data-offset="41" data-status="dlq" class="fill-red text-offset font-sans font-semibold" x="249" y="136" text-anchor="middle">DLQ<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800" values="0;1"/></text>
+  <text data-role="status" data-offset="42" data-status="dlq" class="fill-red text-offset font-sans font-semibold" x="289" y="136" text-anchor="middle">DLQ<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4200" values="0;1"/></text>
+  <text data-role="status" data-offset="43" data-status="retry" class="fill-amber text-offset font-sans font-semibold" x="329" y="136" text-anchor="middle">retry<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5800;0.9000" values="0;1;0"/></text>
+  <text data-role="status" data-offset="43" data-status="dlq" class="fill-red text-offset font-sans font-semibold" x="329" y="136" text-anchor="middle">DLQ<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9000" values="0;1"/></text>
+  <text data-role="status" data-offset="44" data-status="paid" class="fill-emerald text-offset font-sans font-semibold" x="369" y="136" text-anchor="middle">paid<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200" values="0;1"/></text>
+  <text data-role="status" data-offset="45" data-status="paid" class="fill-emerald text-offset font-sans font-semibold" x="409" y="136" text-anchor="middle">paid<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6600" values="0;1"/></text>
+  <text data-role="verdict" data-path="declined" class="fill-red text-offset font-sans font-semibold" x="168" y="250" text-anchor="middle">400 Bad Request<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0600" values="0;1"/></text>
+  <text data-role="verdict" data-path="unreadable" class="fill-red text-offset font-sans font-semibold" x="168" y="376" text-anchor="middle">receives null<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/></text>
+  <text data-role="verdict" data-path="unavailable" class="fill-red text-offset font-sans font-semibold" x="168" y="502" text-anchor="middle">503 Service Unavailable<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5400" values="0;1"/></text>
+  <text data-role="retry-failed" data-topic="ticket-orders_retry_10000" class="fill-red text-offset font-sans font-semibold halo" x="296" y="440" text-anchor="middle">503 again<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6400" values="0;1"/></text>
+  <text data-role="retry-failed" data-topic="ticket-orders_retry_20000" class="fill-red text-offset font-sans font-semibold halo" x="404" y="440" text-anchor="middle">503 again<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7400" values="0;1"/></text>
+  <text data-role="retry-failed" data-topic="ticket-orders_retry_50000" class="fill-red text-offset font-sans font-semibold halo" x="512" y="440" text-anchor="middle">503 again<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8600" values="0;1"/></text>
+  <g data-role="record" data-path="declined" data-offset="41">
+    <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0200;0.1800" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="25s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0200;0.0600;0.1200;0.1800;1.0000" values="65,212;65,212;122,212;122,212;645,212;645,212"/>
+    <rect class="la-cell-new" x="-12" y="-10" width="24" height="20" rx="4"/>
+    <text class="la-offset" x="0" y="4" text-anchor="middle">41</text>
+  </g>
+  <g data-role="record" data-path="unreadable" data-offset="42">
+    <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.4200" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="25s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2600;0.3000;0.3600;0.4200;1.0000" values="65,338;65,338;122,338;122,338;645,338;645,338"/>
+    <rect class="la-cell-new" x="-12" y="-10" width="24" height="20" rx="4"/>
+    <text class="la-offset" x="0" y="4" text-anchor="middle">42</text>
+  </g>
+  <g data-role="record" data-path="unavailable" data-offset="43">
+    <animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.9000" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="25s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5000;0.5400;0.5600;0.5800;0.6400;0.6600;0.7400;0.7600;0.8600;0.9000;1.0000" values="65,464;65,464;122,464;122,464;296,464;296,464;404,464;404,464;512,464;512,464;645,464;645,464"/>
+    <rect class="la-cell-new" x="-12" y="-10" width="24" height="20" rx="4"/>
+    <text class="la-offset" x="0" y="4" text-anchor="middle">43</text>
+  </g>
+  <text data-role="caption" class="la-label" x="32" y="548">charge() reads offset 41, and CardGateway answers 400 Bad Request. Retrying that charge would get the same answer.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200" values="1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">So charge() nacks 41 with ticket-orders-dlq as the topic. It skips the retry topics, and the consumer moves on to 42.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200;0.2400" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">Offset 42 is not valid JSON. The deserializer fails, so charge() receives a null payload instead of an order.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2400;0.3600" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">charge() nacks it to ticket-orders-dlq the same way. The dead letter keeps the original bytes.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3600;0.4800" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">CardGateway answers 503 for offset 43. That may not last, so charge() nacks it plainly, and it goes to the first retry topic.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4800;0.6000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">Meanwhile the consumer charges 44 and 45. After each delay, charge() reads 43 again, gets another 503, and nacks it again.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.8600" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="548">After the third retry fails, 43 lands on ticket-orders-dlq too, with delayed-retry-count 3 and the 503 as its reason.<animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8600" values="0;1"/></text>
+</svg>
