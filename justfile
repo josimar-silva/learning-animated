@@ -32,6 +32,7 @@ check:
     npx tsc -p tsconfig.json
     for p in packages/*/; do npx tsc -p "$p"; done
     just style-check
+    for d in $(just _site-dirs); do npm run check --workspace "$d"; done
 
 # Re-embed the canonical LA-STYLE block into every animation SVG
 style:
@@ -40,6 +41,26 @@ style:
 # Fail if any SVG's LA-STYLE block drifted from theme.css
 style-check:
     node packages/design/bin/la-style.ts --check tracks/*/src/content/animations
+
+# The site folders that exist, one per line
+_site-dirs:
+    @for d in home tracks/*; do if [ -f "$d/astro.config.ts" ]; then echo "$d"; fi; done
+
+# Run a site's dev server, for example: just dev quarkus
+dev site:
+    npm run dev --workspace {{ if site == "home" { "home" } else { "tracks/" + site } }}
+
+# Build one site into its dist/
+build site:
+    npm run build --workspace {{ if site == "home" { "home" } else { "tracks/" + site } }}
+
+# Serve a built site with its production headers
+preview site:
+    npm run preview --workspace {{ if site == "home" { "home" } else { "tracks/" + site } }}
+
+# Build every site
+build-all:
+    for d in $(just _site-dirs); do npm run build --workspace "$d"; done
 
 # Remove build output
 clean:

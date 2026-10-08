@@ -35,6 +35,10 @@ export const REQUIRED_RECIPES = [
   'pre-commit',
   'style',
   'style-check',
+  'dev',
+  'build',
+  'preview',
+  'build-all',
 ];
 
 export const META_FILES = [
