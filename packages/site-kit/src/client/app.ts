@@ -11,6 +11,11 @@ const SITE_PATH = /^\/[a-z0-9-]+\/[a-z0-9-]+\/$/;
 // Keys typed into these belong to the control, not to the shortcuts.
 const CONTROLS = new Set(['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON']);
 
+// SVG clocks are 32-bit floats and keyTimes round to 4 decimals, so seeking to a step's exact
+// moment can land just before it. The rounding moves a frame by at most 0.00005 of the loop, so
+// seeking 10 ms past the step covers loops up to 200 s.
+const STEP_SEEK_MARGIN = 0.01;
+
 export type LegacyMap = Readonly<Record<string, string>>;
 export type KeyAction = 'toggle' | 'restart' | 'prev' | 'next';
 export type PlaybackActions = { toggle(): void; restart(): void };
@@ -192,7 +197,9 @@ export function wireTimeline(
   if (!object || (!scrubber && steps.length === 0)) return;
   const ats = steps.map((step) => Number(step.dataset.at));
   steps.forEach((step, i) =>
-    step.querySelector('button')?.addEventListener('click', () => playback.seek(object, ats[i]!)),
+    step
+      .querySelector('button')
+      ?.addEventListener('click', () => playback.seek(object, ats[i]! + STEP_SEEK_MARGIN)),
   );
   scrubber?.addEventListener('input', () => {
     playback.pause(object);

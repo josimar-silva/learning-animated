@@ -17,7 +17,7 @@ import {
   wireTimeline,
   wireViewToggle,
 } from './app.ts';
-import { currentTime, loopOf, seek } from './playback.ts';
+import { currentTime, loopOf, pause, seek } from './playback.ts';
 
 const LEGACY_MAP = {
   'consumer-group': '/ch01-meet-kafka/consumer-group/',
@@ -361,7 +361,8 @@ function stage(extra = '', loop: string | null = '10s') {
     getCurrentTime: () => state.time,
     setCurrentTime: (t: number) => {
       state.seeks.push(t);
-      state.time = t;
+      // Browsers keep SVG times as 32-bit floats.
+      state.time = Math.fround(t);
     },
     pauseAnimations: () => {
       state.paused = true;
@@ -435,11 +436,33 @@ describe('wireTimeline', () => {
       '4.2',
     );
   });
-  test('picking a step seeks to it', () => {
-    const { document, state, fire } = stage(steps);
+  test('picking a step while paused lands just past it', () => {
+    const { document, object, fire } = stage(steps);
+    pause(object);
     wireTimeline(document, { schedule: () => {} });
     fire(document.querySelectorAll('[data-role="step"] button')[2]!, 'click');
-    expect(state.seeks).toEqual([6]);
+    expect(currentTime(object)).toBeGreaterThan(6);
+    expect(currentTime(object)).toBeCloseTo(6, 1);
+  });
+  test('picking a step marks it current on a 32-bit clock', () => {
+    const { document, fire } = stage(
+      `<ol><li data-role="step" data-at="0"><button>0:00</button></li>
+      <li data-role="step" data-at="13.4"><button>0:13</button></li></ol>`,
+      '16s',
+    );
+    const ticks: Array<() => void> = [];
+    wireTimeline(document, {
+      schedule: (tick) => {
+        ticks.push(tick);
+      },
+    });
+    // Math.fround(13.4) is 13.3999996, just before the step.
+    fire(document.querySelectorAll('[data-role="step"] button')[1]!, 'click');
+    ticks.shift()!();
+    const marked = [...document.querySelectorAll('[data-role="step"]')].map((s) =>
+      s.getAttribute('aria-current'),
+    );
+    expect(marked).toEqual([null, 'step']);
   });
   test('dragging the scrubber pauses and seeks', () => {
     const { document, state, fire } = stage(steps);
