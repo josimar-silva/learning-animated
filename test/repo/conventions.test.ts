@@ -45,6 +45,8 @@ export const REQUIRED_RECIPES = [
   'start-container',
   'pre-release',
   'gen',
+  'test-e2e',
+  'test-e2e-on',
 ];
 
 export const META_FILES = [

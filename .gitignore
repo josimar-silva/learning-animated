@@ -6,3 +6,6 @@ coverage/
 .forbidden-terms
 nginx.generated.conf
 .DS_Store
+test-results/
+playwright-report/
+e2e-tests-report/
