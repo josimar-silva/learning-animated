@@ -1,0 +1,394 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" data-loop="20s">
+  <title>Jagged vs flat memory layout</title>
+  <desc>Two panels draw the heap in address order and store the same three rows of eight doubles, v1 to v3, in two ways. On the left, a double[][] named stored holds three references, and dashed pointers lead from them to the three rows, which sit apart among other objects. A ring reads the rows in order: it loads a reference while its pointer lights up, jumps to that row, reads its eight doubles, and jumps back for the next reference, which makes 3 reference loads and 5 jumps. On the right, a flat double[] of 24 slots fills with v1, v2, and v3 back to back, starting at indexes 0, 8, and 16. A ring then reads it in one sweep from index 0 to 23, with no jumps.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="540"/>
+  <text class="la-title" x="28" y="40">Jagged vs flat memory layout</text>
+  <text class="la-note" x="28" y="64">A double[][] keeps every row as a separate object on the heap. A flat double[] keeps all the rows in one contiguous array.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="528" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="108">double[][]: a reference per row, each row its own object</text>
+  <text class="font-mono text-label fill-ink" x="40" y="132">double[][] stored = { <tspan class="fill-pink">v1</tspan>, <tspan class="fill-pink">v2</tspan>, <tspan class="fill-pink">v3</tspan> };</text>
+  <g data-role="heap" data-layout="jagged">
+    <rect class="fill-stage stroke-grid" x="57" y="146" width="462" height="172" rx="8"/>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="511" y="166">heap, in address order</text>
+    <rect data-role="other" data-address="0" data-size="4" class="fill-grid" x="65" y="172" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="4" data-size="5" class="fill-grid" x="121" y="172" width="68" height="22" rx="3"/>
+    <rect data-role="other" data-address="9" data-size="3" class="fill-grid" x="191" y="172" width="40" height="22" rx="3"/>
+    <rect data-role="other" data-address="15" data-size="7" class="fill-grid" x="275" y="172" width="96" height="22" rx="3"/>
+    <rect data-role="other" data-address="22" data-size="6" class="fill-grid" x="373" y="172" width="82" height="22" rx="3"/>
+    <rect data-role="other" data-address="28" data-size="4" class="fill-grid" x="457" y="172" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="32" data-size="5" class="fill-grid" x="65" y="228" width="68" height="22" rx="3"/>
+    <rect data-role="other" data-address="37" data-size="6" class="fill-grid" x="135" y="228" width="82" height="22" rx="3"/>
+    <rect data-role="other" data-address="43" data-size="4" class="fill-grid" x="219" y="228" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="47" data-size="7" class="fill-grid" x="275" y="228" width="96" height="22" rx="3"/>
+    <rect data-role="other" data-address="62" data-size="2" class="fill-grid" x="485" y="228" width="26" height="22" rx="3"/>
+    <rect data-role="other" data-address="64" data-size="1" class="fill-grid" x="65" y="284" width="12" height="22" rx="3"/>
+    <rect data-role="other" data-address="73" data-size="5" class="fill-grid" x="191" y="284" width="68" height="22" rx="3"/>
+    <rect data-role="other" data-address="86" data-size="6" class="fill-grid" x="373" y="284" width="82" height="22" rx="3"/>
+    <rect data-role="other" data-address="92" data-size="4" class="fill-grid" x="457" y="284" width="54" height="22" rx="3"/>
+    <g data-role="refs" data-address="12" data-size="3">
+      <rect data-role="ref" data-index="0" data-address="12" class="la-cell" x="233" y="172" width="12" height="22" rx="3"/>
+      <circle class="fill-ink" cx="239" cy="183" r="2.5"/>
+      <rect data-role="ref" data-index="1" data-address="13" class="la-cell" x="247" y="172" width="12" height="22" rx="3"/>
+      <circle class="fill-ink" cx="253" cy="183" r="2.5"/>
+      <rect data-role="ref" data-index="2" data-address="14" class="la-cell" x="261" y="172" width="12" height="22" rx="3"/>
+      <circle class="fill-ink" cx="267" cy="183" r="2.5"/>
+    </g>
+    <text class="font-mono text-offset fill-ink anchor-middle" x="253" y="166">stored</text>
+    <g data-role="row" data-vector="v3" data-address="54" data-size="8">
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="0" data-address="54" class="fill-cell stroke-pink stroke-1.5" x="373" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="1" data-address="55" class="fill-cell stroke-pink stroke-1.5" x="387" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="2" data-address="56" class="fill-cell stroke-pink stroke-1.5" x="401" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="3" data-address="57" class="fill-cell stroke-pink stroke-1.5" x="415" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="4" data-address="58" class="fill-cell stroke-pink stroke-1.5" x="429" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="5" data-address="59" class="fill-cell stroke-pink stroke-1.5" x="443" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="6" data-address="60" class="fill-cell stroke-pink stroke-1.5" x="457" y="228" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v3" data-index="7" data-address="61" class="fill-cell stroke-pink stroke-1.5" x="471" y="228" width="12" height="22" rx="3"/>
+    </g>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="428" y="222">v3</text>
+    <g data-role="row" data-vector="v1" data-address="65" data-size="8">
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="0" data-address="65" class="fill-cell stroke-pink stroke-1.5" x="79" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="1" data-address="66" class="fill-cell stroke-pink stroke-1.5" x="93" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="2" data-address="67" class="fill-cell stroke-pink stroke-1.5" x="107" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="3" data-address="68" class="fill-cell stroke-pink stroke-1.5" x="121" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="4" data-address="69" class="fill-cell stroke-pink stroke-1.5" x="135" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="5" data-address="70" class="fill-cell stroke-pink stroke-1.5" x="149" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="6" data-address="71" class="fill-cell stroke-pink stroke-1.5" x="163" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v1" data-index="7" data-address="72" class="fill-cell stroke-pink stroke-1.5" x="177" y="284" width="12" height="22" rx="3"/>
+    </g>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="134" y="278">v1</text>
+    <g data-role="row" data-vector="v2" data-address="78" data-size="8">
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="0" data-address="78" class="fill-cell stroke-pink stroke-1.5" x="261" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="1" data-address="79" class="fill-cell stroke-pink stroke-1.5" x="275" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="2" data-address="80" class="fill-cell stroke-pink stroke-1.5" x="289" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="3" data-address="81" class="fill-cell stroke-pink stroke-1.5" x="303" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="4" data-address="82" class="fill-cell stroke-pink stroke-1.5" x="317" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="5" data-address="83" class="fill-cell stroke-pink stroke-1.5" x="331" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="6" data-address="84" class="fill-cell stroke-pink stroke-1.5" x="345" y="284" width="12" height="22" rx="3"/>
+      <rect data-role="element" data-layout="jagged" data-vector="v2" data-index="7" data-address="85" class="fill-cell stroke-pink stroke-1.5" x="359" y="284" width="12" height="22" rx="3"/>
+    </g>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="316" y="278">v2</text>
+    <g data-role="pointer" data-index="0" data-vector="v1">
+      <path class="la-arrow" d="M 239 183 C 239 239.4 85 220.6 85 277" stroke-dasharray="4 3"/>
+      <polygon class="fill-flow" points="85,284 81,277 89,277"/>
+    </g>
+    <g data-role="pointer" data-index="1" data-vector="v2">
+      <path class="la-arrow" d="M 253 183 C 253 239.4 267 220.6 267 277" stroke-dasharray="4 3"/>
+      <polygon class="fill-flow" points="267,284 263,277 271,277"/>
+    </g>
+    <g data-role="pointer" data-index="2" data-vector="v3">
+      <path class="la-arrow" d="M 267 183 C 267 205.8 379 198.2 379 221" stroke-dasharray="4 3"/>
+      <polygon class="fill-flow" points="379,228 375,221 383,221"/>
+    </g>
+    <g data-role="hop" data-index="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.1700" values="0;1;0"/>
+      <path class="fill-none stroke-amber stroke-2.5" d="M 239 183 C 239 239.4 85 220.6 85 277" stroke-linecap="round"/>
+      <polygon class="fill-amber" points="85,284 81,277 89,277"/>
+    </g>
+    <g data-role="hop" data-index="1">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2700" values="0;1;0"/>
+      <path class="fill-none stroke-amber stroke-2.5" d="M 253 183 C 253 239.4 267 220.6 267 277" stroke-linecap="round"/>
+      <polygon class="fill-amber" points="267,284 263,277 271,277"/>
+    </g>
+    <g data-role="hop" data-index="2">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3700" values="0;1;0"/>
+      <path class="fill-none stroke-amber stroke-2.5" d="M 267 183 C 267 205.8 379 198.2 379 221" stroke-linecap="round"/>
+      <polygon class="fill-amber" points="379,228 375,221 383,221"/>
+    </g>
+    <rect data-role="cursor" data-layout="jagged" class="fill-none stroke-amber stroke-2.5" x="230" y="169" width="18" height="28" rx="4">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.4500" values="0;1;0"/>
+      <animate attributeName="x" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.1700;0.1800;0.1900;0.2000;0.2100;0.2200;0.2300;0.2400;0.2500;0.2700;0.2800;0.2900;0.3000;0.3100;0.3200;0.3300;0.3400;0.3500;0.3700;0.3800;0.3900;0.4000;0.4100;0.4200;0.4300;0.4400" values="230;230;76;90;104;118;132;146;160;174;244;258;272;286;300;314;328;342;356;258;370;384;398;412;426;440;454;468"/>
+      <animate attributeName="y" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.1700;0.1800;0.1900;0.2000;0.2100;0.2200;0.2300;0.2400;0.2500;0.2700;0.2800;0.2900;0.3000;0.3100;0.3200;0.3300;0.3400;0.3500;0.3700;0.3800;0.3900;0.4000;0.4100;0.4200;0.4300;0.4400" values="169;169;281;281;281;281;281;281;281;281;169;281;281;281;281;281;281;281;281;169;225;225;225;225;225;225;225;225"/>
+    </rect>
+  </g>
+  <text class="font-mono text-label fill-ink" x="40" y="352">double value = stored[j][k];</text>
+  <text class="la-note" x="40" y="374">Two loads: the reference stored[j], then element k of its row.</text>
+  <text data-role="summary" data-layout="jagged" class="font-mono text-offset font-semibold fill-ink" x="40" y="410">3 reference loads, 24 double loads, 5 jumps<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/></text>
+  <rect class="la-canvas stroke-1.5" x="568" y="84" width="368" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="584" y="108">double[]: all the rows in one array</text>
+  <text class="font-mono text-label fill-ink" x="584" y="132">double[] flat = new double[3 * 8];</text>
+  <g data-role="heap" data-layout="flat">
+    <rect class="fill-stage stroke-grid" x="577" y="146" width="350" height="172" rx="8"/>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="919" y="166">heap, in address order</text>
+    <rect data-role="other" data-address="0" data-size="4" class="fill-grid" x="585" y="172" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="4" data-size="6" class="fill-grid" x="641" y="172" width="82" height="22" rx="3"/>
+    <rect data-role="other" data-address="10" data-size="3" class="fill-grid" x="725" y="172" width="40" height="22" rx="3"/>
+    <rect data-role="other" data-address="13" data-size="7" class="fill-grid" x="767" y="172" width="96" height="22" rx="3"/>
+    <rect data-role="other" data-address="20" data-size="4" class="fill-grid" x="865" y="172" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="48" data-size="5" class="fill-grid" x="585" y="284" width="68" height="22" rx="3"/>
+    <rect data-role="other" data-address="53" data-size="8" class="fill-grid" x="655" y="284" width="110" height="22" rx="3"/>
+    <rect data-role="other" data-address="61" data-size="4" class="fill-grid" x="767" y="284" width="54" height="22" rx="3"/>
+    <rect data-role="other" data-address="65" data-size="7" class="fill-grid" x="823" y="284" width="96" height="22" rx="3"/>
+    <g data-role="flat" data-address="24" data-size="24">
+      <rect class="la-cell-tail" x="585" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="599" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="613" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="627" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="641" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="655" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="669" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="683" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="697" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="711" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="725" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="739" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="753" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="767" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="781" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="795" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="809" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="823" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="837" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="851" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="865" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="879" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="893" y="228" width="12" height="22" rx="3"/>
+      <rect class="la-cell-tail" x="907" y="228" width="12" height="22" rx="3"/>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="0" data-address="24">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="585" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="585" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="1" data-address="25">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="599" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="599" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="2" data-address="26">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="613" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="613" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="3" data-address="27">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="627" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="627" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="4" data-address="28">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="641" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="641" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="5" data-address="29">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="655" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="655" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="6" data-address="30">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="669" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="669" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v1" data-index="7" data-address="31">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="683" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="683" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="8" data-address="32">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="697" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="697" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="9" data-address="33">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="711" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="711" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="10" data-address="34">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="725" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="725" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="11" data-address="35">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="739" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="739" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="12" data-address="36">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="753" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="753" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="13" data-address="37">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="767" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="767" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="14" data-address="38">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="781" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="781" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v2" data-index="15" data-address="39">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="795" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="795" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="16" data-address="40">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="809" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="809" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="17" data-address="41">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="823" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="823" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="18" data-address="42">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="837" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="837" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="19" data-address="43">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="851" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="851" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="20" data-address="44">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="865" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="865" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="21" data-address="45">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="879" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="879" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="22" data-address="46">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="893" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="893" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+      <g data-role="element" data-layout="flat" data-vector="v3" data-index="23" data-address="47">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+        <rect class="fill-cell stroke-pink stroke-1.5" x="907" y="228" width="12" height="22" rx="3"/>
+        <rect class="la-cell-new" x="907" y="228" width="12" height="22" rx="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+      </g>
+    </g>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="640" y="222">v1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+    <text data-role="row-start" data-vector="v1" class="la-offset anchor-middle" x="591" y="264">0<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="752" y="222">v2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/></text>
+    <text data-role="row-start" data-vector="v2" class="la-offset anchor-middle" x="703" y="264">8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/></text>
+    <text class="font-mono text-offset font-bold fill-pink anchor-middle" x="864" y="222">v3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/></text>
+    <text data-role="row-start" data-vector="v3" class="la-offset anchor-middle" x="815" y="264">16<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/></text>
+    <rect data-role="cursor" data-layout="flat" class="fill-none stroke-amber stroke-2.5" x="582" y="225" width="18" height="28" rx="4">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.8900" values="0;1;0"/>
+      <animate attributeName="x" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6600;0.6700;0.6800;0.6900;0.7000;0.7100;0.7200;0.7300;0.7400;0.7500;0.7600;0.7700;0.7800;0.7900;0.8000;0.8100;0.8200;0.8300;0.8400;0.8500;0.8600;0.8700;0.8800" values="582;582;596;610;624;638;652;666;680;694;708;722;736;750;764;778;792;806;820;834;848;862;876;890;904"/>
+    </rect>
+  </g>
+  <text class="font-mono text-label fill-ink" x="584" y="352">double value = flat[j * 8 + k];</text>
+  <text class="la-note" x="584" y="374">One load, at index j × 8 + k.</text>
+  <text data-role="summary" data-layout="flat" class="font-mono text-offset font-semibold fill-ink" x="584" y="410">0 reference loads, 24 double loads, 0 jumps<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9000" values="0;1"/></text>
+  <rect class="la-canvas" x="24" y="470" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">A double[][] is an array of references. Each row, v1 to v3, is its own array of 8 doubles, somewhere on the heap.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Reading the rows chases pointers: load stored[j], jump to its row, read 8 doubles, then jump back for the next one.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.5000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">A flat double[] keeps v1, v2, and v3 back to back in one array, so row j starts at index j × 8.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Reading it is one sweep from index 0 to 23: every read is at the next address, so the CPU can fetch ahead.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="526">Sources: openjdk.org/jeps/537 (JEP 537: Vector API) and netflixtechblog.com (Optimizing recommendation systems with JDK's Vector API).</text>
+</svg>
