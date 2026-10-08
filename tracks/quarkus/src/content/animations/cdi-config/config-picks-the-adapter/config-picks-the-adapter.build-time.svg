@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 490" role="img" data-loop="20s">
+  <title>Configuration picks the adapter: build time</title>
+  <desc>Checkout charges through a PaymentGateway, and two classes implement it: CardGateway and SandboxGateway, each marked with @IfBuildProperty on payment.gateway. The first build reads card, so only CardGateway becomes a bean, and the plain @Inject in checkout gets it. Restarting with payment.gateway set to sandbox changes nothing. A second build reads sandbox and makes SandboxGateway the only bean, so after a restart checkout gets SandboxGateway.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="474" rx="16"/>
+  <text class="la-title" x="32" y="46">Build time: @IfBuildProperty</text>
+  <text class="la-note" x="32" y="70">The build reads payment.gateway and keeps only the adapter it names as a bean.</text>
+
+  <rect class="la-card" x="24" y="92" width="252" height="288" rx="10"/>
+  <text class="font-sans text-label font-semibold fill-ink" x="40" y="116">source code</text>
+  <text class="font-sans text-offset fill-ink-muted" x="40" y="134">two classes implement PaymentGateway</text>
+  <g class="font-mono text-offset">
+    <g data-role="class" data-adapter="card">
+      <rect class="fill-stage stroke-grid stroke-1.5" x="36" y="150" width="228" height="102" rx="8"/>
+      <text class="fill-ink-muted" x="46" y="170">@ApplicationScoped</text>
+      <text class="fill-ink" x="46" y="186">@IfBuildProperty(</text>
+      <text class="fill-ink" x="60" y="202">name = "payment.gateway",</text>
+      <text class="fill-ink" x="60" y="218">stringValue = "card")</text>
+      <text class="fill-ink" x="46" y="238">class <tspan class="font-semibold fill-sky">CardGateway</tspan></text>
+    </g>
+    <g data-role="class" data-adapter="sandbox">
+      <rect class="fill-stage stroke-grid stroke-1.5" x="36" y="264" width="228" height="102" rx="8"/>
+      <text class="fill-ink-muted" x="46" y="284">@ApplicationScoped</text>
+      <text class="fill-ink" x="46" y="300">@IfBuildProperty(</text>
+      <text class="fill-ink" x="60" y="316">name = "payment.gateway",</text>
+      <text class="fill-ink" x="60" y="332">stringValue = "sandbox")</text>
+      <text class="fill-ink" x="46" y="352">class <tspan class="font-semibold fill-pink">SandboxGateway</tspan></text>
+    </g>
+  </g>
+  <g data-role="check" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.05;0.15;0.65;0.75" values="0;1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-1.5" x="54" y="205" width="188" height="18" rx="4"/>
+    <rect class="fill-none stroke-amber stroke-1.5" x="54" y="319" width="188" height="18" rx="4"/>
+  </g>
+
+  <line class="la-arrow" x1="276" y1="154" x2="300" y2="154"/>
+  <polygon class="fill-flow" points="308,154 300,150 300,158"/>
+  <line class="la-arrow" x1="528" y1="154" x2="552" y2="154"/>
+  <polygon class="fill-flow" points="560,154 552,150 552,158"/>
+  <line class="la-arrow" x1="528" y1="318" x2="552" y2="318"/>
+  <polygon class="fill-flow" points="560,318 552,314 552,322"/>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="308" y="92" width="220" height="124" rx="10"/>
+  <g data-role="build-run">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.15;0.6;0.75" values="1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="308" y="92" width="220" height="124" rx="10"/>
+  </g>
+  <text class="font-sans text-label font-semibold fill-ink" x="324" y="116">build</text>
+  <g class="font-mono text-offset">
+    <text class="fill-ink-muted" x="324" y="136">./mvnw package</text>
+    <text class="fill-ink-muted" x="324" y="166">payment.gateway</text>
+    <rect class="la-cell-tail" x="324" y="176" width="96" height="24" rx="4"/>
+    <g data-role="build-value" data-value="card">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.6" values="1;0"/>
+      <rect class="la-cell" x="324" y="176" width="96" height="24" rx="4"/>
+      <text class="fill-sky anchor-middle" x="372" y="192">card</text>
+    </g>
+    <g data-role="build-value" data-value="sandbox" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.6;0.975" values="0;1;0"/>
+      <rect class="la-cell" x="324" y="176" width="96" height="24" rx="4"/>
+      <text class="fill-pink anchor-middle" x="372" y="192">sandbox</text>
+    </g>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="308" y="256" width="220" height="124" rx="10"/>
+  <g data-role="start-run" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.25;0.4;0.45;0.8;0.85" values="0;1;0;1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="308" y="256" width="220" height="124" rx="10"/>
+  </g>
+  <text class="font-sans text-label font-semibold fill-ink" x="324" y="280">start</text>
+  <g class="font-mono text-offset">
+    <text class="fill-ink-muted" x="324" y="300">java -jar quarkus-run.jar</text>
+    <text class="fill-ink-muted" x="324" y="330">payment.gateway</text>
+    <rect class="la-cell-tail" x="324" y="340" width="96" height="24" rx="4"/>
+    <g data-role="start-value" data-value="card" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.4" values="0;1;0"/>
+      <rect class="la-cell" x="324" y="340" width="96" height="24" rx="4"/>
+      <text class="fill-sky anchor-middle" x="372" y="356">card</text>
+    </g>
+    <g data-role="start-value" data-value="sandbox" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4;0.975" values="0;1;0"/>
+      <rect class="la-cell" x="324" y="340" width="96" height="24" rx="4"/>
+      <text class="fill-pink anchor-middle" x="372" y="356">sandbox</text>
+    </g>
+  </g>
+  <g data-role="ignored" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.45;0.975" values="0;1;0"/>
+    <text class="font-sans text-offset font-semibold fill-amber" x="432" y="356">ignored</text>
+  </g>
+
+  <rect class="la-card" x="560" y="92" width="376" height="288" rx="10"/>
+  <text class="font-sans text-label font-semibold fill-ink" x="576" y="116">application</text>
+  <text class="font-sans text-offset fill-ink-muted" x="576" y="134">beans in the CDI container</text>
+  <g class="anchor-middle">
+    <g data-role="bean" data-adapter="card" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.6" values="0;1;0"/>
+      <rect class="fill-surface stroke-sky stroke-1.5" x="576" y="148" width="164" height="60" rx="8"/>
+      <text class="font-mono text-label font-semibold fill-sky" x="658" y="174">CardGateway</text>
+      <text class="font-sans text-offset fill-ink-muted" x="658" y="194">charges the card</text>
+    </g>
+    <g data-role="no-bean" data-adapter="card" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.7;0.975" values="0;1;0"/>
+      <rect class="fill-none stroke-slate stroke-1.5" x="576" y="148" width="164" height="60" rx="8" stroke-dasharray="5 4"/>
+      <text class="font-mono text-label fill-ink-muted" x="658" y="174">CardGateway</text>
+      <text class="font-sans text-offset fill-ink-muted" x="658" y="194">no bean</text>
+    </g>
+    <g data-role="bean" data-adapter="sandbox" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.7;0.975" values="0;1;0"/>
+      <rect class="fill-surface stroke-pink stroke-1.5" x="756" y="148" width="164" height="60" rx="8"/>
+      <text class="font-mono text-label font-semibold fill-pink" x="838" y="174">SandboxGateway</text>
+      <text class="font-sans text-offset fill-ink-muted" x="838" y="194">fakes the charge</text>
+    </g>
+    <g data-role="no-bean" data-adapter="sandbox" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1;0.6" values="0;1;0"/>
+      <rect class="fill-none stroke-slate stroke-1.5" x="756" y="148" width="164" height="60" rx="8" stroke-dasharray="5 4"/>
+      <text class="font-mono text-label fill-ink-muted" x="838" y="174">SandboxGateway</text>
+      <text class="font-sans text-offset fill-ink-muted" x="838" y="194">no bean</text>
+    </g>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="576" y="248" width="344" height="116" rx="8"/>
+  <g class="font-mono">
+    <text class="text-label font-semibold fill-ink" x="592" y="272">CheckoutService</text>
+    <text data-role="injection" class="text-offset fill-ink" x="592" y="296">@Inject PaymentGateway gateway;</text>
+    <text class="text-offset fill-ink-muted" x="592" y="316">gateway.charge(order);</text>
+  </g>
+  <g data-role="resolved" data-adapter="card" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25;0.6" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="572" y="144" width="172" height="68" rx="10"/>
+    <line class="fill-none stroke-amber stroke-2.5" x1="658" y1="246" x2="658" y2="223"/>
+    <polygon class="fill-amber" points="658,214 653,223 663,223"/>
+    <text class="font-sans text-offset font-semibold fill-sky" x="592" y="346">gets CardGateway</text>
+  </g>
+  <g data-role="resolved" data-adapter="sandbox" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.85;0.975" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="752" y="144" width="172" height="68" rx="10"/>
+    <line class="fill-none stroke-amber stroke-2.5" x1="838" y1="246" x2="838" y2="223"/>
+    <polygon class="fill-amber" points="838,214 833,223 843,223"/>
+    <text class="font-sans text-offset font-semibold fill-pink" x="592" y="346">gets SandboxGateway</text>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="394" width="912" height="40" rx="8"/>
+  <g class="font-sans text-label fill-ink anchor-middle">
+    <text data-role="caption" x="480" y="419">Build 1 reads payment.gateway=card, so only CardGateway matches its @IfBuildProperty and becomes a bean.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2" values="1;0"/></text>
+    <text data-role="caption" x="480" y="419" opacity="0">The application starts. There is one PaymentGateway bean, so a plain @Inject gets CardGateway.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.2;0.4" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="419" opacity="0">Restarting with payment.gateway=sandbox changes nothing, because the build already chose the bean.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4;0.6" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="419" opacity="0">Build 2 reads sandbox, so this time only SandboxGateway becomes a bean.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.6;0.8" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="419" opacity="0">After a restart, the same @Inject gets SandboxGateway. Switching took a new build.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.8;0.975" values="0;1;0"/></text>
+  </g>
+
+  <text class="font-sans text-offset fill-ink-muted" x="32" y="460">Source: quarkus.io/guides/cdi-reference (enabling beans for Quarkus build properties).</text>
+</svg>
