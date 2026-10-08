@@ -1,0 +1,557 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" data-loop="20s">
+  <title>The M × N dot-product hotspot</title>
+  <desc>On the left, a nested loop scores every query against every stored vector by calling dot(), whose inner loop does one multiply-add per double. On the right, a table has a row for each of four queries, q1 to q4, and a column for each of six stored vectors, v1 to v6. First, one dot product runs slowly: the inner loop steps eight times, and the cell for q1 and v1 fills with 0.80. Then the loop takes every other pair in turn, row by row, and each cell fills with its score while the counters climb to 24 dot products and 192 multiply-adds. Last, the inner loop is marked as the hotspot: M times N times D, or 4 times 6 times 8, gives 192 multiply-adds.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="540"/>
+  <text class="la-title" x="28" y="40">The M × N dot-product hotspot</text>
+  <text class="la-note" x="28" y="64">Scoring M queries against N stored vectors takes M × N dot products, and their multiply-adds take most of the time.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="528" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="108">the scoring loop, one dot() call per pair</text>
+  <rect data-role="hotspot" class="la-cell-new" x="50" y="255" width="230" height="47" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></rect>
+  <rect data-role="running" class="fill-none stroke-amber stroke-1.5" x="50" y="255" width="230" height="47" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.7750" values="0;1;0"/></rect>
+  <text data-role="code" class="font-mono text-label fill-ink" x="40" y="140"><tspan class="fill-violet">for</tspan> (<tspan class="fill-violet">int</tspan> i = 0; i &lt; M; i++)</text>
+  <text class="font-mono text-label fill-ink-muted" x="330" y="140">// M queries</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="58" y="162"><tspan class="fill-violet">for</tspan> (<tspan class="fill-violet">int</tspan> j = 0; j &lt; N; j++)</text>
+  <text class="font-mono text-label fill-ink-muted" x="330" y="162">// N stored vectors</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="76" y="184">score[i][j] = dot(<tspan class="fill-sky">q</tspan>[i], <tspan class="fill-pink">v</tspan>[j]);</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="40" y="228"><tspan class="fill-violet">static</tspan> <tspan class="fill-violet">double</tspan> dot(<tspan class="fill-violet">double</tspan>[] a, <tspan class="fill-violet">double</tspan>[] b) {</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="58" y="250"><tspan class="fill-violet">double</tspan> sum = 0;</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="58" y="272"><tspan class="fill-violet">for</tspan> (<tspan class="fill-violet">int</tspan> k = 0; k &lt; D; k++)</text>
+  <text class="font-mono text-label fill-ink-muted" x="330" y="272">// D doubles</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="76" y="294">sum += a[k] * b[k];</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="58" y="316"><tspan class="fill-violet">return</tspan> sum;</text>
+  <text data-role="code" class="font-mono text-label fill-ink" x="40" y="338">}</text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 0<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1125" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1125;0.1250" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250;0.1375" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1375;0.1500" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 4<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.1625" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1625;0.1750" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.1875" values="0;1;0"/></text>
+  <text data-role="k" class="font-mono text-label fill-amber" x="292" y="294">k = 7<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1875;0.2000" values="0;1;0"/></text>
+  <text data-role="hotspot-label" class="font-sans text-label font-semibold fill-amber" x="292" y="294">hotspot<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  <text class="la-note" x="40" y="386">dot products</text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">0<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">4<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">7<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">9<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">10<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">11<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.4750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">12<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5000" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">13<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">14<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">15<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">16<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">17<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">18<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.6500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">19<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">20<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750;0.7000" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">21<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7250" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">22<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.7500" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label fill-amber anchor-end" x="232" y="386">23<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7750" values="0;1;0"/></text>
+  <text data-role="count" data-of="dot-products" class="font-mono text-label font-semibold fill-ink anchor-end" x="232" y="386">24<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/></text>
+  <text data-role="formula" data-of="dot-products" class="font-mono text-label fill-ink" x="244" y="386">= M × N = 4 × 6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  <text class="la-note" x="40" y="412">multiply-adds</text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">0<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1125" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1125;0.1250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250;0.1375" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">4<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1375;0.1500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.1625" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1625;0.1750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">7<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.1875" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1875;0.2250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">16<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">24<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">32<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">40<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">48<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">56<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">64<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">72<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">80<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">88<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.4750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">96<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5000" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">104<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">112<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">120<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">128<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">136<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">144<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.6500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">152<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">160<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750;0.7000" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">168<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7250" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">176<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.7500" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label fill-amber anchor-end" x="232" y="412">184<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7750" values="0;1;0"/></text>
+  <text data-role="count" data-of="multiply-adds" class="font-mono text-label font-semibold fill-ink anchor-end" x="232" y="412">192<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/></text>
+  <text data-role="formula" data-of="multiply-adds" class="font-mono text-label fill-ink" x="244" y="412">= M × N × D = 4 × 6 × 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  <rect class="la-canvas stroke-1.5" x="568" y="84" width="368" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="584" y="108">the score table, one dot product per cell</text>
+  <text data-role="column" data-vector="v1" class="font-mono text-label font-bold fill-pink anchor-middle" x="639" y="138">v1</text>
+  <text data-role="column" data-vector="v2" class="font-mono text-label font-bold fill-pink anchor-middle" x="689" y="138">v2</text>
+  <text data-role="column" data-vector="v3" class="font-mono text-label font-bold fill-pink anchor-middle" x="739" y="138">v3</text>
+  <text data-role="column" data-vector="v4" class="font-mono text-label font-bold fill-pink anchor-middle" x="789" y="138">v4</text>
+  <text data-role="column" data-vector="v5" class="font-mono text-label font-bold fill-pink anchor-middle" x="839" y="138">v5</text>
+  <text data-role="column" data-vector="v6" class="font-mono text-label font-bold fill-pink anchor-middle" x="889" y="138">v6</text>
+  <text data-role="row" data-vector="q1" class="font-mono text-label font-bold fill-sky" x="584" y="171">q1</text>
+  <text data-role="row" data-vector="q2" class="font-mono text-label font-bold fill-sky" x="584" y="213">q2</text>
+  <text data-role="row" data-vector="q3" class="font-mono text-label font-bold fill-sky" x="584" y="255">q3</text>
+  <text data-role="row" data-vector="q4" class="font-mono text-label font-bold fill-sky" x="584" y="297">q4</text>
+  <g data-role="score" data-query="q1" data-vector="v1">
+    <rect data-role="slot" class="la-cell-tail" x="616" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="616" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="0;1"/>
+      <rect class="la-cell" x="616" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="639" y="171">0.80</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q1" data-vector="v2">
+    <rect data-role="slot" class="la-cell-tail" x="666" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="666" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/>
+      <rect class="la-cell" x="666" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="689" y="171">0.94</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q1" data-vector="v3">
+    <rect data-role="slot" class="la-cell-tail" x="716" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="716" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="0;1"/>
+      <rect class="la-cell" x="716" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="739" y="171">0.34</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q1" data-vector="v4">
+    <rect data-role="slot" class="la-cell-tail" x="766" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="766" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750" values="0;1"/>
+      <rect class="la-cell" x="766" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="789" y="171">-0.76</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q1" data-vector="v5">
+    <rect data-role="slot" class="la-cell-tail" x="816" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="816" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+      <rect class="la-cell" x="816" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="839" y="171">0.36</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q1" data-vector="v6">
+    <rect data-role="slot" class="la-cell-tail" x="866" y="150" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="866" y="150" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/>
+      <rect class="la-cell" x="866" y="150" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="889" y="171">0.15</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v1">
+    <rect data-role="slot" class="la-cell-tail" x="616" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="616" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500" values="0;1"/>
+      <rect class="la-cell" x="616" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="639" y="213">-0.48</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v2">
+    <rect data-role="slot" class="la-cell-tail" x="666" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="666" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/>
+      <rect class="la-cell" x="666" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="689" y="213">-0.77</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v3">
+    <rect data-role="slot" class="la-cell-tail" x="716" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="716" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000" values="0;1"/>
+      <rect class="la-cell" x="716" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="739" y="213">-0.21</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v4">
+    <rect data-role="slot" class="la-cell-tail" x="766" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="766" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250" values="0;1"/>
+      <rect class="la-cell" x="766" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="789" y="213">0.91</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v5">
+    <rect data-role="slot" class="la-cell-tail" x="816" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="816" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/>
+      <rect class="la-cell" x="816" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="839" y="213">-0.17</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q2" data-vector="v6">
+    <rect data-role="slot" class="la-cell-tail" x="866" y="192" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="866" y="192" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.4750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750" values="0;1"/>
+      <rect class="la-cell" x="866" y="192" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="889" y="213">0.27</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v1">
+    <rect data-role="slot" class="la-cell-tail" x="616" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="616" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+      <rect class="la-cell" x="616" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="639" y="255">0.40</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v2">
+    <rect data-role="slot" class="la-cell-tail" x="666" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="666" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/>
+      <rect class="la-cell" x="666" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="689" y="255">0.28</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v3">
+    <rect data-role="slot" class="la-cell-tail" x="716" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="716" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+      <rect class="la-cell" x="716" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="739" y="255">0.30</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v4">
+    <rect data-role="slot" class="la-cell-tail" x="766" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="766" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750" values="0;1"/>
+      <rect class="la-cell" x="766" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="789" y="255">-0.26</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v5">
+    <rect data-role="slot" class="la-cell-tail" x="816" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="816" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750;0.6000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/>
+      <rect class="la-cell" x="816" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="839" y="255">0.87</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q3" data-vector="v6">
+    <rect data-role="slot" class="la-cell-tail" x="866" y="234" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="866" y="234" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/>
+      <rect class="la-cell" x="866" y="234" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="889" y="255">-0.18</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v1">
+    <rect data-role="slot" class="la-cell-tail" x="616" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="616" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.6500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/>
+      <rect class="la-cell" x="616" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="639" y="297">0.09</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v2">
+    <rect data-role="slot" class="la-cell-tail" x="666" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="666" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750" values="0;1"/>
+      <rect class="la-cell" x="666" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="689" y="297">-0.20</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v3">
+    <rect data-role="slot" class="la-cell-tail" x="716" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="716" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750;0.7000" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/>
+      <rect class="la-cell" x="716" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="739" y="297">-0.44</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v4">
+    <rect data-role="slot" class="la-cell-tail" x="766" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="766" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7250" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250" values="0;1"/>
+      <rect class="la-cell" x="766" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="789" y="297">0.32</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v5">
+    <rect data-role="slot" class="la-cell-tail" x="816" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="816" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.7500" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="0;1"/>
+      <rect class="la-cell" x="816" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="839" y="297">-0.36</text>
+    </g>
+  </g>
+  <g data-role="score" data-query="q4" data-vector="v6">
+    <rect data-role="slot" class="la-cell-tail" x="866" y="276" width="46" height="32" rx="6"/>
+    <rect data-role="writing" class="la-cell-new" x="866" y="276" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7750" values="0;1;0"/></rect>
+    <g data-role="done">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/>
+      <rect class="la-cell" x="866" y="276" width="46" height="32" rx="6"/>
+      <text data-role="score-value" class="font-mono text-label fill-cell-ink anchor-middle" x="889" y="297">0.89</text>
+    </g>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="623" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="673" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="723" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="773" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="823" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q1" data-vector="v6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="154" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="873" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="623" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="673" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="723" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="773" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="823" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q2" data-vector="v6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.4750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="196" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="873" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="623" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="673" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250;0.5500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="723" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="773" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750;0.6000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="823" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q3" data-vector="v6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="238" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="873" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.6500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="623" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="673" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750;0.7000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="723" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="773" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.7500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="823" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <g data-role="pair" data-query="q4" data-vector="v6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="577" y="280" width="32" height="24" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="873" y="120" width="32" height="24" rx="8"/>
+  </g>
+  <text class="font-sans text-label fill-ink-muted" x="584" y="346"><tspan class="font-mono font-bold fill-sky">q1</tspan> to <tspan class="font-mono font-bold fill-sky">q4</tspan>: M = 4 queries, one row each</text>
+  <text class="font-sans text-label fill-ink-muted" x="584" y="370"><tspan class="font-mono font-bold fill-pink">v1</tspan> to <tspan class="font-mono font-bold fill-pink">v6</tspan>: N = 6 stored vectors, one column each</text>
+  <text class="font-sans text-label fill-ink-muted" x="584" y="394">each vector: D = 8 doubles, length 1</text>
+  <rect class="la-canvas" x="24" y="470" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Score M = 4 queries against N = 6 stored vectors of D = 8 doubles. All have length 1, so a dot product is their cosine.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">One pair is one dot product: the k loop does D = 8 multiply-adds, and q1 · v1 comes out at 0.80.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">The nested loop repeats that for every pair, one at a time and row by row, until all 4 × 6 = 24 cells hold a score.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.8000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">The 24 dot products cost 24 × 8 = 192 multiply-adds, M × N × D. They take most of the time, so the k loop is the hotspot.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="526">Sources: openjdk.org/jeps/537 (JEP 537: Vector API) and netflixtechblog.com (Optimizing recommendation systems with JDK's Vector API).</text>
+</svg>
