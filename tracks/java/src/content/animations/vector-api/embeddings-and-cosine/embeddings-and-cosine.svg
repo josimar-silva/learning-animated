@@ -1,0 +1,372 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" data-loop="20s">
+  <title>Embeddings and cosine similarity</title>
+  <desc>Two embeddings, q and v1, sit in rows of eight cells, one double per cell. Beside them, q and v1 are drawn as arrows from one origin, with the angle theta between them. Then the two doubles at each index multiply, one pair at a time, into a third row, and a running sum adds the eight products into the dot product, 1.44. Next the lengths of q and v1 appear, 1.5 and 1.2, and the dot product divided by both lengths gives 0.80, the cosine of theta, so theta is about 37 degrees. Last, two more stored vectors appear: v2, 20 degrees from q, scores 0.94, and v3, 70 degrees away, scores 0.34. The smallest angle gets the highest score.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="540"/>
+  <text class="la-title" x="28" y="40">Embeddings and cosine similarity</text>
+  <text class="la-note" x="28" y="64">Cosine similarity scores two embeddings by the angle between them: their dot product over the product of their lengths.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="528" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="108">two embeddings, D = 8 doubles each</text>
+  <text class="font-mono text-offset fill-ink-muted" x="40" y="132">i</text>
+  <text class="la-offset anchor-middle" x="163" y="132">0</text>
+  <text class="la-offset anchor-middle" x="213" y="132">1</text>
+  <text class="la-offset anchor-middle" x="263" y="132">2</text>
+  <text class="la-offset anchor-middle" x="313" y="132">3</text>
+  <text class="la-offset anchor-middle" x="363" y="132">4</text>
+  <text class="la-offset anchor-middle" x="413" y="132">5</text>
+  <text class="la-offset anchor-middle" x="463" y="132">6</text>
+  <text class="la-offset anchor-middle" x="513" y="132">7</text>
+  <text class="font-mono text-label font-bold fill-sky" x="40" y="163">q</text>
+  <text class="font-mono text-label font-bold fill-pink" x="40" y="205">v1</text>
+  <text class="font-mono text-offset fill-amber" x="40" y="247">q[i] × v1[i]</text>
+  <g data-role="element" data-vector="q" data-index="0">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="140" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="163">-0.6</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="1">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="190" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="213" y="163">0.3</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="2">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="240" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="263" y="163">0.7</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="3">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="290" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="313" y="163">0.9</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="4">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="340" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="363" y="163">-0.2</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="5">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="390" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="413" y="163">0.6</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="6">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="440" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="463" y="163">0.3</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="7">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="490" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="513" y="163">-0.1</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="0">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="140" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="205">-0.3</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="1">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="190" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="213" y="205">-0.2</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="2">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="240" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="263" y="205">0.6</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="3">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="290" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="313" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="4">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="340" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="363" y="205">0.2</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="5">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="390" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="413" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="6">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="440" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="463" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="7">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="490" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="513" y="205">-0.4</text>
+  </g>
+  <rect class="la-cell-tail" x="140" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/>
+    <rect class="la-cell" x="140" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="140" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.18</text>
+  </g>
+  <rect class="la-cell-tail" x="190" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="0;1"/>
+    <rect class="la-cell" x="190" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="190" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="213" y="247">-0.06</text>
+  </g>
+  <rect class="la-cell-tail" x="240" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750" values="0;1"/>
+    <rect class="la-cell" x="240" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="240" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="263" y="247">0.42</text>
+  </g>
+  <rect class="la-cell-tail" x="290" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <rect class="la-cell" x="290" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="290" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="313" y="247">0.45</text>
+  </g>
+  <rect class="la-cell-tail" x="340" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/>
+    <rect class="la-cell" x="340" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="340" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="363" y="247">-0.04</text>
+  </g>
+  <rect class="la-cell-tail" x="390" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500" values="0;1"/>
+    <rect class="la-cell" x="390" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="390" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="413" y="247">0.30</text>
+  </g>
+  <rect class="la-cell-tail" x="440" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/>
+    <rect class="la-cell" x="440" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="440" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="463" y="247">0.15</text>
+  </g>
+  <rect class="la-cell-tail" x="490" y="226" width="46" height="32" rx="6"/>
+  <g data-role="product" data-index="7">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000" values="0;1"/>
+    <rect class="la-cell" x="490" y="226" width="46" height="32" rx="6"/>
+    <rect class="la-cell-new" x="490" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/></rect>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="513" y="247">0.04</text>
+  </g>
+  <g data-role="pair" data-index="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="137" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="137" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="187" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="187" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="237" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="237" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="287" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="287" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="337" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="337" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="387" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="387" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="437" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="437" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="7">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="487" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="487" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 0.18<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 0.12<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2750" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 0.54<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3000" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 0.99<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 0.95<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 1.25<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label fill-amber" x="40" y="296">sum = 1.40<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4000" values="0;1;0"/></text>
+  <text data-role="sum" class="font-mono text-label font-semibold fill-ink" x="40" y="296"><tspan class="fill-sky">q</tspan> · <tspan class="fill-pink">v1</tspan> = 1.44<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000" values="0;1"/></text>
+  <text data-role="length" data-vector="q" class="font-mono text-label fill-sky" x="40" y="328">|q| = √(q · q) = 1.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/></text>
+  <text data-role="length" data-vector="v1" class="font-mono text-label fill-pink" x="40" y="354">|v1| = √(v1 · v1) = 1.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/></text>
+  <text data-role="formula" class="font-mono fill-ink" x="40" y="398" font-size="15">cos θ = (<tspan class="fill-sky">q</tspan> · <tspan class="fill-pink">v1</tspan>) / (|<tspan class="fill-sky">q</tspan>| × |<tspan class="fill-pink">v1</tspan>|)<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/></text>
+  <text data-role="cosine" class="font-mono fill-ink" x="40" y="428" font-size="15">cos θ = 1.44 / (1.5 × 1.2) = <tspan class="font-bold fill-amber">0.80</tspan><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+  <rect class="la-canvas stroke-1.5" x="568" y="84" width="368" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="584" y="108">the angle from q to each stored vector</text>
+  <g data-role="angle" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500" values="0;1"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 709.13 316.02 A 52 52 0 0 0 686.52 292.14"/>
+    <text data-role="angle-label" data-vector="v1" class="font-mono text-offset fill-amber anchor-middle halo" x="709.2" y="297.31">θ<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="1;0"/></text>
+    <text data-role="angle-label" data-vector="v1" class="font-mono text-offset fill-amber anchor-middle halo" x="709.2" y="297.31">37°<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+  </g>
+  <g data-role="angle" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250" values="0;1"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 757.63 329.63 A 96 96 0 0 0 749.01 297.43"/>
+    <text data-role="angle-label" data-vector="v2" class="font-mono text-offset fill-amber anchor-middle halo" x="767.29" y="313.79">20°</text>
+  </g>
+  <g data-role="angle" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 732.69 305.04 A 78 78 0 0 0 655.2 260.3"/>
+    <text data-role="angle-label" data-vector="v3" class="font-mono text-offset fill-amber anchor-middle halo" x="680.24" y="252.85">70°</text>
+  </g>
+  <g data-role="arrow" data-vector="v1">
+    <line class="stroke-pink stroke-2.5" x1="662" y1="338" x2="735.83" y2="199.9" stroke-linecap="round"/>
+    <polygon class="fill-pink" points="740.08,191.96 739.77,203.14 730.95,198.42"/>
+    <text class="font-mono text-label font-bold fill-pink anchor-middle halo" x="746.68" y="183.61">v1</text>
+  </g>
+  <g data-role="arrow" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250" values="0;1"/>
+    <line class="stroke-pink stroke-2.5" x1="662" y1="338" x2="776.76" y2="327.96" stroke-linecap="round"/>
+    <polygon class="fill-pink" points="785.73,327.18 776.2,333.03 775.33,323.07"/>
+    <text class="font-mono text-label font-bold fill-pink anchor-middle halo" x="799.67" y="329.96">v2</text>
+  </g>
+  <g data-role="arrow" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/>
+    <line class="stroke-pink stroke-2.5" x1="662" y1="338" x2="645.95" y2="154.5" stroke-linecap="round"/>
+    <polygon class="fill-pink" points="645.16,145.54 651.01,155.06 641.05,155.93"/>
+    <text class="font-mono text-label font-bold fill-pink anchor-middle halo" x="643.94" y="135.59">v3</text>
+  </g>
+  <g data-role="arrow" data-vector="q">
+    <line class="stroke-sky stroke-2.5" x1="662" y1="338" x2="841.45" y2="254.32" stroke-linecap="round"/>
+    <polygon class="fill-sky" points="849.61,250.52 842.66,259.28 838.43,250.21"/>
+    <text class="font-mono text-label font-bold fill-sky anchor-middle halo" x="862.29" y="248.6">q</text>
+  </g>
+  <circle class="fill-ink-muted" cx="662" cy="338" r="3"/>
+  <g data-role="score" data-vector="v2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250" values="0;1"/>
+    <text class="font-mono text-label font-bold fill-pink" x="584" y="374">v2</text>
+    <text data-role="score-angle" class="font-mono text-offset fill-amber anchor-end" x="650" y="374">20°</text>
+    <rect data-role="track" class="fill-grid" x="662" y="365" width="180" height="10" rx="5"/>
+    <rect data-role="bar" class="fill-pink" x="662" y="365" width="0" height="10" rx="5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.7250;0.7500;1.0000" values="0;0;169.14;169.14"/></rect>
+    <text data-role="score-value" class="font-mono text-label fill-ink" x="852" y="374">0.94</text>
+  </g>
+  <g data-role="score" data-vector="v1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+    <text class="font-mono text-label font-bold fill-pink" x="584" y="402">v1</text>
+    <text data-role="score-angle" class="font-mono text-offset fill-amber anchor-end" x="650" y="402">37°</text>
+    <rect data-role="track" class="fill-grid" x="662" y="393" width="180" height="10" rx="5"/>
+    <rect data-role="bar" class="fill-pink" x="662" y="393" width="0" height="10" rx="5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.5000;0.5250;1.0000" values="0;0;144;144"/></rect>
+    <text data-role="score-value" class="font-mono text-label fill-ink" x="852" y="402">0.80</text>
+  </g>
+  <g data-role="score" data-vector="v3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750" values="0;1"/>
+    <text class="font-mono text-label font-bold fill-pink" x="584" y="430">v3</text>
+    <text data-role="score-angle" class="font-mono text-offset fill-amber anchor-end" x="650" y="430">70°</text>
+    <rect data-role="track" class="fill-grid" x="662" y="421" width="180" height="10" rx="5"/>
+    <rect data-role="bar" class="fill-pink" x="662" y="421" width="0" height="10" rx="5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.7750;0.8000;1.0000" values="0;0;61.56;61.56"/></rect>
+    <text data-role="score-value" class="font-mono text-label fill-ink" x="852" y="430">0.34</text>
+  </g>
+  <rect data-role="closest" data-vector="v2" class="fill-none stroke-emerald stroke-1.5" x="576" y="355" width="352" height="27" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500" values="0;1"/></rect>
+  <rect class="la-canvas" x="24" y="470" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">An embedding is an array of D doubles, here D = 8. Drawn as arrows from one origin, q and v1 meet at an angle θ.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">The dot product q · v1 multiplies the two arrays element by element, then adds up the 8 products: 1.44.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.4500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Divide the dot product by both lengths: 1.44 / (1.5 × 1.2) = 0.80, the cosine of θ, so θ is about 37°.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.7000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">A smaller angle gives a higher score: v2 at 20° scores 0.94, v1 at 37° scores 0.80, and v3 at 70° scores 0.34.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="526">Sources: openjdk.org/jeps/537 (JEP 537: Vector API) and netflixtechblog.com (Optimizing recommendation systems with JDK's Vector API).</text>
+</svg>
