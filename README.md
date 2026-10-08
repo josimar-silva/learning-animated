@@ -111,6 +111,7 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just check`: Runs ESLint, the Prettier check, the TypeScript type-check for the root and each package, `just style-check`, and `astro check` for each site.
 - `just style`: Re-embeds the canonical `LA-STYLE` block into every animation SVG under `tracks/*/src/content/animations`.
 - `just style-check`: Fails if the `LA-STYLE` block in any of those SVGs has drifted from `theme.css`.
+- `just gen <file>`: Runs an `<id>.gen.ts` generator and writes the SVG it describes beside it.
 - `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, or `java`.
 - `just build <site>`: Builds one site into its `dist/` folder.
 - `just preview <site>`: Serves a built site with its production headers.
@@ -173,6 +174,13 @@ Each track's `test/content.test.ts` checks its content: the sections and animati
 
 `just forbidden-terms` scans every tracked file, and with `--commits <range>` each commit's author, committer, and message, for terms from a private list: the `FORBIDDEN_TERMS` secret in CI, or a git-ignored `.forbidden-terms` file locally. CI logs of a public repository are public, so a finding names only the file and line, or the commit, and the term's number in the list, never the term itself. Without a list, the scan skips, and CI shows a warning.
 
+To add a lesson, follow the [animate-lesson skill](.github/skills/animate-lesson/SKILL.md). In short:
+
+1. Create `tracks/<track>/src/content/animations/<section>/<id>/` and its `index.md`, with the frontmatter and the concept text.
+2. Write `<id>.test.ts` first, with the story beats as timed facts from the timeline helpers, and watch `just test` fail.
+3. Draw `<id>.svg` and run `just style`, or write `<id>.gen.ts` and run `just gen`, until the lesson test and the contract pass.
+4. Watch the lesson play with `just dev <track>`, then commit the test and the SVG together.
+
 ## 🗂️ Project Layout
 
 ```
@@ -191,10 +199,11 @@ packages/site-kit/src/pages/    the pages every site renders, built from src/com
 packages/site-kit/src/client/   browser modules: playback, views, scrubber, steps, theme, and menu
 tracks/<id>/                    one Astro site per track: track.ts, content, pages, and tests
 home/                           the family home page for learning-animated.com
-scripts/                        check-dist, forbidden-terms, and affected-sites CLIs, logic in lib/
+scripts/                        check-dist, forbidden-terms, affected-sites, and gen CLIs, logic in lib/
 test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
                                 affected-sites, and palette contrast tests
 .github/workflows/              CI, CodeQL, Scorecard, Deploy, Docker, and CD
+.github/skills/animate-lesson/  the checklist for adding a lesson
 ```
 
 ## 🎨 Design
