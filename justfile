@@ -56,6 +56,11 @@ style-check:
 gen file:
     node scripts/gen.ts {{file}}
 
+# Port one chapter from the old Kafka repository (KAFKA=<its path> just port-kafka <chapter slug>)
+port-kafka chapter:
+    node scripts/port-kafka.ts {{chapter}}
+    npx prettier --write --log-level warn tracks/kafka/src/content/animations/{{chapter}}
+
 # The site folders that exist, one per line
 _site-dirs:
     @for d in home tracks/*; do if [ -f "$d/astro.config.ts" ]; then echo "$d"; fi; done

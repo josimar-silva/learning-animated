@@ -116,6 +116,7 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just style`: Re-embeds the canonical `LA-STYLE` block into every animation SVG under `tracks/*/src/content/animations`.
 - `just style-check`: Fails if the `LA-STYLE` block in any of those SVGs has drifted from `theme.css`.
 - `just gen <file>`: Runs an `<id>.gen.ts` generator and writes the SVG it describes beside it.
+- `just port-kafka <chapter>`: Ports one chapter from the original Kafka repository (its path in `KAFKA`) into `tracks/kafka`, restyling each SVG onto `LA-STYLE` and writing its `index.md`. Removed after the Kafka cutover.
 - `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, or `java`.
 - `just build <site>`: Builds one site into its `dist/` folder.
 - `just preview <site>`: Serves a built site with its production headers.
