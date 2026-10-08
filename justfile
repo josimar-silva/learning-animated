@@ -70,6 +70,14 @@ check-dist:
 forbidden-terms *args:
     node scripts/forbidden-terms.ts {{ args }}
 
+# Build the nginx image for one site: just build-image kafka
+build-image site:
+    docker build --build-arg SITE={{ site }} -t learning-animated-{{ site }}:dev .
+
+# Run a site's image on http://localhost:3000
+start-container site:
+    docker run --rm -p 3000:3000 learning-animated-{{ site }}:dev
+
 # Remove build output
 clean:
     rm -rf coverage tracks/*/dist tracks/*/.astro home/dist home/.astro

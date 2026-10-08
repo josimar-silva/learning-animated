@@ -41,6 +41,8 @@ export const REQUIRED_RECIPES = [
   'build-all',
   'forbidden-terms',
   'check-dist',
+  'build-image',
+  'start-container',
 ];
 
 export const META_FILES = [
