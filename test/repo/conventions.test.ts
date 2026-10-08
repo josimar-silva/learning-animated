@@ -35,6 +35,17 @@ export const REQUIRED_RECIPES = [
   'pre-commit',
 ];
 
+export const META_FILES = [
+  'LICENSE',
+  'README.md',
+  'AGENTS.md',
+  'CODE_OF_CONDUCT.md',
+  'CONTRIBUTING.md',
+  '.editorconfig',
+  '.prettierrc',
+  '.nvmrc',
+];
+
 const EXACT = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const TEXT =
   /\.(md|ts|mjs|js|json|astro|css|svg|ya?ml|toml|txt|html)$|(^|\/)(justfile|Dockerfile|LICENSE)$/;
@@ -64,5 +75,10 @@ describe('repository conventions', () => {
       .filter((f) => TEXT.test(f) && f !== 'package-lock.json')
       .filter((f) => /[\u2013\u2014]/.test(read(f)));
     expect(offenders).toEqual([]);
+  });
+
+  test('the shared meta and config files exist', () => {
+    const present = new Set(files());
+    expect(META_FILES.filter((f) => !present.has(f))).toEqual([]);
   });
 });
