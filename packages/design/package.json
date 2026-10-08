@@ -9,6 +9,7 @@
     "./style-block": "./src/style-block.ts",
     "./canonical": "./src/canonical.ts",
     "./sync": "./src/sync.ts",
-    "./fonts/*": "./fonts/*"
+    "./fonts/*": "./fonts/*",
+    "./logo.svg": "./logo.svg"
   }
 }
