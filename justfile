@@ -62,6 +62,10 @@ preview site:
 build-all:
     for d in $(just _site-dirs); do npm run build --workspace "$d"; done
 
+# Audit every built site: links resolve, and the theme boot is the only inline script
+check-dist:
+    node scripts/check-dist.ts $(for d in $(just _site-dirs); do echo "$d/dist"; done)
+
 # Scan tracked files (and, with --commits <range>, commit metadata) for forbidden terms
 forbidden-terms *args:
     node scripts/forbidden-terms.ts {{ args }}

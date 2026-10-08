@@ -40,6 +40,7 @@ export const REQUIRED_RECIPES = [
   'preview',
   'build-all',
   'forbidden-terms',
+  'check-dist',
 ];
 
 export const META_FILES = [
