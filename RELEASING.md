@@ -8,7 +8,8 @@ Conventional Commit scopes show which track a change touched.
 These are the general steps to release a new version:
 
 1. Run `just pre-release`. It verifies a clean tree, runs the checks and tests,
-   builds every site, strips `-SNAPSHOT` from the version, and commits the bump;
+   builds every site, runs the end-to-end suite in Google Chrome, strips
+   `-SNAPSHOT` from the version, and commits the bump;
 2. Open a pull request with the version bump;
 3. Once the pull request is merged, the CI workflow runs and, on success, triggers
    the Continuous Delivery workflow. Because the version is no longer a SNAPSHOT,
