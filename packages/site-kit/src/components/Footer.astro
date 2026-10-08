@@ -1,0 +1,109 @@
+---
+import { AUTHOR, HOME_URL, KAIZEN_URL, listedFamily } from '../family.ts';
+import { pathForAbout, pathForHome } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+import { siteVersion } from '../version.ts';
+
+interface Props {
+  track: Track;
+  sections: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const COPYRIGHT_YEAR = 2026;
+const { track, sections } = Astro.props;
+const family = listedFamily().filter((member) => member.id !== track.id);
+const title = 'text-sm font-semibold text-foreground';
+const list = 'mt-3 space-y-2 text-sm';
+---
+
+<footer class="mt-16 border-t border-border">
+  <div class="mx-auto grid w-full max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-5">
+    <div>
+      <a href={pathForHome()} class="flex items-center gap-2 font-semibold text-foreground">
+        <span
+          class="inline-flex size-8 flex-none items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
+          aria-hidden="true"
+        >
+          JS
+        </span>
+        <span>{track.site.shortName}</span>
+      </a>
+      <p class="mt-3 text-sm text-muted-foreground">{track.site.tagline}</p>
+    </div>
+    <div>
+      <h2 class={title}>Navigation</h2>
+      <ul class={list}>
+        <li>
+          <a href={pathForHome()}>Contents</a>
+        </li>
+        {track.kind !== 'home' && (
+          <li>
+            <a href={pathForAbout()}>About</a>
+          </li>
+        )}
+      </ul>
+    </div>
+    {sections.length > 0 && (
+      <div>
+        <h2 class={title}>{track.kind === 'book' ? 'Chapters' : 'Topics'}</h2>
+        <ul class={list}>
+          {sections.map((section) => (
+            <li>
+              <a href={section.path}>{section.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+    <div>
+      <h2 class={title}>More</h2>
+      <ul class={list}>
+        {track.source && (
+          <li>
+            <a href={track.source.url} target="_blank" rel="noopener">
+              The book
+            </a>
+          </li>
+        )}
+        <li>
+          <a href={AUTHOR.url} target="_blank" rel="noopener">
+            Blog
+          </a>
+        </li>
+        <li>
+          <a href={KAIZEN_URL} target="_blank" rel="noopener">
+            Kaizen
+          </a>
+        </li>
+        <li>
+          <a href={track.site.repoUrl} target="_blank" rel="noopener">
+            Source on GitHub
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 class={title}>Learning Animated</h2>
+      <ul class={list}>
+        <li>
+          <a href={HOME_URL}>All tracks</a>
+        </li>
+        {family.map((member) => (
+          <li>
+            <a href={member.url}>{member.name}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-border">
+    <div class="mx-auto w-full max-w-5xl space-y-2 px-4 py-6 text-xs text-muted-foreground">
+      <p>
+        &copy; {COPYRIGHT_YEAR} {AUTHOR.name}. All rights reserved. v{siteVersion()}
+      </p>
+      {track.source &&
+        // prettier-ignore
+        <p data-role="footer-disclaimer">An unofficial companion to <a href={track.source.url} target="_blank" rel="noopener">{track.source.title}</a>, not affiliated with or endorsed by its authors or publisher.</p>}
+    </div>
+  </div>
+</footer>

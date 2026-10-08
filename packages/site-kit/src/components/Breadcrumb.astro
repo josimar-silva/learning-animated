@@ -1,0 +1,24 @@
+---
+interface Props {
+  trail: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const { trail } = Astro.props;
+const last = trail.length - 1;
+---
+
+<nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
+  <ol class="flex flex-wrap items-center gap-2">
+    {trail.map((item, i) =>
+      i === last ? (
+        <li aria-current="page" class="font-medium text-foreground">
+          {item.name}
+        </li>
+      ) : (
+        <li class="after:ml-2 after:content-['/']">
+          <a href={item.path}>{item.name}</a>
+        </li>
+      ),
+    )}
+  </ol>
+</nav>

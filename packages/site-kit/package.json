@@ -13,10 +13,17 @@
     "./seo": "./src/seo.ts",
     "./sitemap": "./src/sitemap.ts",
     "./nginx": "./src/nginx.ts",
-    "./family": "./src/family.ts"
+    "./family": "./src/family.ts",
+    "./version": "./src/version.ts",
+    "./components/*": "./src/components/*",
+    "./pages/*": "./src/pages/*",
+    "./styles/site.css": "./src/styles/site.css"
   },
   "dependencies": {
+    "@learning-animated/design": "*",
+    "@tailwindcss/vite": "4.3.3",
     "astro": "7.3.7",
+    "tailwindcss": "4.3.3",
     "yaml": "2.9.1"
   },
   "devDependencies": {
