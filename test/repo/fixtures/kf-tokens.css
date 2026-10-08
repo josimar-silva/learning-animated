@@ -1,0 +1,56 @@
+/* KF-TOKENS:START */
+:root {
+  /* Surfaces and ink */
+  --kf-bg: #0e0b16;
+  --kf-surface: #191426;
+  --kf-ink: #ece9f7;
+  --kf-muted: #a9a3ca;
+  --kf-grid: #302a4d;
+
+  /* Message cells (the log) */
+  --kf-cell: #2a2246;
+  --kf-cell-stroke: #7c6ac4;
+  --kf-cell-ink: #e2ddf5;
+  --kf-cell-new: #4a3410;
+  --kf-cell-new-stroke: #f6a723;
+  --kf-cell-read: #34d399;
+
+  /* Actors */
+  --kf-producer: #10b981;
+  --kf-producer-stroke: #34d39a;
+  --kf-consumer: #38bdf8;
+  --kf-consumer-stroke: #7dd3fc;
+  --kf-broker: #221b3e;
+  --kf-broker-stroke: #9075e8;
+  --kf-registry: #1e2610;
+  --kf-registry-stroke: #65a30d;
+  --kf-leader: #f6a723;
+  --kf-follower: #8992aa;
+
+  /* Flow */
+  --kf-flow: #a8a1cf;
+  --kf-flow-strong: #f1edff;
+  --kf-replicate: #f472b6;
+  --kf-fail: #f87171;
+
+  /* Typography */
+  --kf-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --kf-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --kf-fs-title: 20px;
+  --kf-fs-label: 13px;
+  --kf-fs-offset: 12px;
+
+  /* Geometry (unitless values are SVG user units) */
+  --kf-radius: 14px;
+  --kf-radius-sm: 5px;
+  --kf-stroke: 1.5;
+  --kf-stroke-strong: 2.5;
+  --kf-cell-w: 34;
+  --kf-cell-h: 30;
+  --kf-cell-gap: 6;
+
+  /* Timing */
+  --kf-dur: 1200ms;
+  --kf-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* KF-TOKENS:END */

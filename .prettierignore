@@ -7,3 +7,4 @@ package-lock.json
 test-results/
 playwright-report/
 e2e-tests-report/
+test/repo/fixtures/
