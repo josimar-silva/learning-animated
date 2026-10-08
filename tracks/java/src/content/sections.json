@@ -1,0 +1,26 @@
+[
+  {
+    "id": "memory",
+    "number": 1,
+    "title": "Memory",
+    "description": "What a byte holds, and why memory sizes climb in steps of 1024."
+  },
+  {
+    "id": "strings",
+    "number": 2,
+    "title": "Strings",
+    "description": "What String.split does with a regex, and a cheaper way to cut fixed-width fields."
+  },
+  {
+    "id": "language",
+    "number": 3,
+    "title": "Language",
+    "description": "Modelling a closed set of types with a sealed hierarchy."
+  },
+  {
+    "id": "vector-api",
+    "number": 4,
+    "title": "Vector API",
+    "description": "From embeddings to SIMD lanes: how the JDK Vector API speeds up similarity search."
+  }
+]
