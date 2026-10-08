@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/images/logo.svg" height="400" width="400" alt="Learning Animated logo"></p>
+<p align="center"><img src="packages/design/logo.svg" height="400" width="400" alt="Learning Animated logo"></p>
 
 <h1 align="center">Learning Animated</h1>
 <div align="center">
@@ -197,9 +197,9 @@ justfile                        task runner (just ci, check, test, dev, build-al
 Dockerfile                      one image per site: node builds the site, nginx serves it
 vitest.config.ts                the Vitest projects: every package, every track, and test/repo
 playwright.config.ts            the end-to-end browser projects, reporters, and preview servers
-docs/images/logo.svg            the project mark, drawn from the stage palette
 packages/design/theme.css       every color, font, and size (single source of truth)
 packages/design/signature.md    the aesthetic signature, in prose
+packages/design/logo.svg        the project mark, drawn from the stage palette
 packages/design/fonts/          Inter, self-hosted, with its license
 packages/design/src/            theme parser, LA-STYLE generator, and sync
 packages/design/bin/la-style.ts the sync CLI behind just style and just style-check

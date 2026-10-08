@@ -8,14 +8,14 @@ Guidance for AI coding agents working in this repository.
 
 ## Layout
 
-| Path                   | Holds                                                                        |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| `packages/design`      | `theme.css`, the `LA-STYLE` generator and sync CLI, fonts, `signature.md`    |
-| `packages/svg-kit`     | SVG contract, timeline, contrast, and author helpers                         |
-| `packages/site-kit`    | Astro components, content schemas, the integration, headers, browser modules |
-| `tracks/<id>`          | One site per track: config, content, thin pages, tests                       |
-| `home`                 | The family home page                                                         |
-| `test/repo`, `scripts` | Repository-wide checks and CLIs                                              |
+| Path                   | Holds                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `packages/design`      | `theme.css`, the `LA-STYLE` generator and sync CLI, fonts, the logo, `signature.md` |
+| `packages/svg-kit`     | SVG contract, timeline, contrast, and author helpers                                |
+| `packages/site-kit`    | Astro components, content schemas, the integration, headers, browser modules        |
+| `tracks/<id>`          | One site per track: config, content, thin pages, tests                              |
+| `home`                 | The family home page                                                                |
+| `test/repo`, `scripts` | Repository-wide checks and CLIs                                                     |
 
 A track never imports another track, and packages never import tracks.
 
