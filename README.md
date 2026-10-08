@@ -22,9 +22,21 @@
   <a href="https://github.com/josimar-silva/learning-animated/actions/workflows/codeql.yaml">
     <img src="https://github.com/josimar-silva/learning-animated/actions/workflows/codeql.yaml/badge.svg" alt="CodeQL" />
   </a>
+  <!-- Docker Builds -->
+  <a href="https://github.com/josimar-silva/learning-animated/actions/workflows/docker.yaml">
+    <img src="https://github.com/josimar-silva/learning-animated/actions/workflows/docker.yaml/badge.svg" alt="Docker" />
+  </a>
   <!-- CI -->
   <a href="https://github.com/josimar-silva/learning-animated/actions/workflows/ci.yaml">
     <img src="https://github.com/josimar-silva/learning-animated/actions/workflows/ci.yaml/badge.svg" alt="CI" />
+  </a>
+  <!-- CD -->
+  <a href="https://github.com/josimar-silva/learning-animated/actions/workflows/cd.yaml">
+    <img src="https://github.com/josimar-silva/learning-animated/actions/workflows/cd.yaml/badge.svg" alt="CD" />
+  </a>
+  <!-- Deploy -->
+  <a href="https://github.com/josimar-silva/learning-animated/actions/workflows/deploy.yaml">
+    <img src="https://github.com/josimar-silva/learning-animated/actions/workflows/deploy.yaml/badge.svg" alt="Deploy" />
   </a>
 </div>
 <div align="center">
@@ -47,9 +59,11 @@
 - [🏁 Getting Started](#-getting-started)
 - [🛠️ Available Recipes](#️-available-recipes)
 - [🧠 How It Works](#-how-it-works)
+- [🐳 Docker](#-docker)
 - [🧪 Testing](#-testing)
 - [🗂️ Project Layout](#️-project-layout)
 - [🎨 Design](#-design)
+- [🚢 Releasing](#-releasing)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
@@ -103,8 +117,11 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just build-all`: Builds every site.
 - `just check-dist`: Audits every built site: links resolve, the theme boot is the only inline script, and `robots.txt` agrees with `_headers` about indexing.
 - `just forbidden-terms [--commits <range>]`: Scans tracked files, and with `--commits` the metadata of each commit in the range, for the private list of forbidden terms.
+- `just build-image <site>`: Builds the nginx image for one site as `learning-animated-<site>:dev`.
+- `just start-container <site>`: Serves that image at [http://localhost:3000](http://localhost:3000).
 - `just clean`: Removes coverage reports and build output.
 - `just pre-commit`: Runs `just check` and `just test`, to use before committing.
+- `just pre-release`: Runs the checks, the tests, and every build, then strips `-SNAPSHOT` from the version and commits the bump. See [🚢 Releasing](#-releasing).
 
 ## 🧠 How It Works
 
@@ -116,6 +133,17 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - **Contrast math.** `contrast.ts` computes WCAG relative luminance and contrast ratios, which the palette contrast test uses.
 - **The site kit.** [`packages/site-kit`](packages/site-kit) holds what every site shares: the Zod schemas for tracks, sections, and animations, the page and chrome components, the browser modules for playback and the theme toggle, and an Astro integration. The integration validates a site's content as Astro starts. After a build, it writes `_headers`, `robots.txt`, `sitemap.xml`, the `/embed/` SVGs, and an nginx config that sends the same headers.
 - **One site per track.** Each track in `tracks/<id>` is a thin Astro project: a `track.ts` that names the site, its content (`sections.json`, `about.md`, and one folder per animation under `src/content/animations`), and five pages that render the kit's components. The home page in `home/` lists the tracks that are live and counts each one's animations from its folder. A site stays out of search engines, with a `noindex` header and a `robots.txt` that disallows everything, until its `track.ts` sets `launched: true`.
+
+## 🐳 Docker
+
+Every site also ships as a container image that serves its built pages from an unprivileged nginx. Build and run one locally with:
+
+```bash
+just build-image kafka      # docker build --build-arg SITE=kafka -t learning-animated-kafka:dev .
+just start-container kafka  # serve it on http://localhost:3000
+```
+
+One multi-stage [Dockerfile](Dockerfile) builds any site: the `SITE` build argument picks it, a node stage builds it, and the nginx stage serves its `dist/` on port 3000. The nginx config is the `nginx.generated.conf` the build writes beside the site, so the container serves each page from its own directory, answers unknown paths with the custom `404.html`, and sends the same security headers as Cloudflare Pages. On every push to `main` that changes a site, a package, or the lockfile, and on every release tag, the [Docker workflow](.github/workflows/docker.yaml) builds one image per site, scans it with Trivy, and publishes it to `ghcr.io/josimar-silva/learning-animated/<site>`, tagged with the package version (and `latest` only on a non-SNAPSHOT release).
 
 ## 🧪 Testing
 
@@ -137,7 +165,7 @@ Each track's `test/content.test.ts` checks its content: the sections and animati
 
 [`test/repo/palette-contrast.test.ts`](test/repo/palette-contrast.test.ts) holds the palette in `theme.css` to WCAG AA. Text pairs, such as offsets on cells and labels on actor fills, reach 4.5:1, and graphical marks, such as cell outlines, arrows, and markers, reach 3:1. The test measures each pair at full strength, which is why the contract bans `fill-opacity` and `stroke-opacity`.
 
-[`test/repo/conventions.test.ts`](test/repo/conventions.test.ts) checks the repository itself: the justfile defines the standard recipes, every external dependency is pinned to an exact version, `@types/node` follows the Node major in `.nvmrc`, no text file contains an em dash or an en dash, and the shared meta and config files exist. [`test/repo/workflows.test.ts`](test/repo/workflows.test.ts) checks that the CI, CodeQL, and Scorecard workflows exist, that every action is pinned to a full commit SHA with a version comment, that every job hardens the runner first, and that every workflow declares its permissions at the top level.
+[`test/repo/conventions.test.ts`](test/repo/conventions.test.ts) checks the repository itself: the justfile defines the standard recipes, every external dependency is pinned to an exact version, `@types/node` follows the Node major in `.nvmrc`, no text file contains an em dash or an en dash, and the shared meta and config files exist. [`test/repo/workflows.test.ts`](test/repo/workflows.test.ts) checks that the CI, CodeQL, Scorecard, Deploy, Docker, and CD workflows exist, that every action is pinned to a full commit SHA with a version comment, that every job hardens the runner first, and that every workflow declares its permissions at the top level. [`test/repo/docker.test.ts`](test/repo/docker.test.ts) checks that every base image in the Dockerfile is pinned by digest and that one Dockerfile builds any site with its generated nginx config.
 
 [`test/repo/boundaries.test.ts`](test/repo/boundaries.test.ts) keeps the workspaces apart. It fails when an import leaves its workspace or names a package that the workspace's `package.json` does not declare, and when one track depends on another.
 
@@ -149,6 +177,7 @@ Each track's `test/content.test.ts` checks its content: the sections and animati
 
 ```
 justfile                        task runner (just ci, check, test, dev, build-all, style)
+Dockerfile                      one image per site: node builds the site, nginx serves it
 vitest.config.ts                the Vitest projects: every package, every track, and test/repo
 docs/images/logo.svg            the project mark, drawn from the stage palette
 packages/design/theme.css       every color, font, and size (single source of truth)
@@ -165,12 +194,18 @@ home/                           the family home page for learning-animated.com
 scripts/                        check-dist, forbidden-terms, and affected-sites CLIs, logic in lib/
 test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
                                 affected-sites, and palette contrast tests
-.github/workflows/              CI, CodeQL, and Scorecard
+.github/workflows/              CI, CodeQL, Scorecard, Deploy, Docker, and CD
 ```
 
 ## 🎨 Design
 
 We keep the code and the diagrams simple and honest: small pieces that do one thing, tests that describe behavior first, and no accidental complexity. The signature gives every animation the same look: a near-black plum stage, purple for whatever is stored, one amber accent for what is new, and one red for failure. The full aesthetic signature (principles, palette, utilities, components, role recipes, and accessibility) lives in [`packages/design/signature.md`](packages/design/signature.md).
+
+## 🚢 Releasing
+
+Every site shares one version, the one in the root `package.json`, and `main` always carries a `-SNAPSHOT` version. When a release version is merged, the [Continuous Delivery workflow](.github/workflows/cd.yaml) builds every site into one archive, tags the release, publishes change notes, and opens the next snapshot. See [RELEASING.md](RELEASING.md) for the full process.
+
+Deploys don't wait for a release. On every push to `main`, the [Deploy workflow](.github/workflows/deploy.yaml) builds the sites the change affects and deploys each one to its own Cloudflare Pages project, and pull requests from this repository get preview deploys the same way. A change to a shared package rebuilds every site, and a change to a track also rebuilds the home page, which counts its animations. Until the Cloudflare secrets are set, the workflow builds the sites and skips the deploy with a warning.
 
 ## 🤝 Contributing
 
