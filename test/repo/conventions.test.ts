@@ -43,6 +43,7 @@ export const REQUIRED_RECIPES = [
   'check-dist',
   'build-image',
   'start-container',
+  'pre-release',
 ];
 
 export const META_FILES = [
