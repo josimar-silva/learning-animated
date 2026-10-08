@@ -27,4 +27,4 @@ A lesson is one folder, `tracks/<track>/src/content/animations/<section>/<id>/`,
 
 ## Hand-off
 
-Push with an explicit refspec, `git push -u origin HEAD:<track>/<id>`, so the remote branch has the lesson's name whatever the local branch is called. Then post the compare URL (`https://github.com/josimar-silva/learning-animated/compare/main...<branch>?expand=1`), the PR title (the commit subject), and a description of at most 10 lines: the idea the lesson teaches, and what a reviewer should watch for in the preview.
+Push with an explicit refspec, `git push -u origin HEAD:<track>/<id>`, so the remote branch has the lesson's name whatever the local branch is called. Then post the compare URL (`https://github.com/josimar-silva/learning-animated/compare/main...<branch>?expand=1`), the PR title (the commit subject), and a description of at most 10 lines: the idea the lesson teaches, and what a reviewer should watch for when the lesson plays in `just dev <track>`.
