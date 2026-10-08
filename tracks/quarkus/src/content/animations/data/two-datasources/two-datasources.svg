@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 570" role="img" aria-labelledby="title desc" data-loop="25s">
+<title id="title">One endpoint, two datasources</title>
+<desc id="desc">One checkout request reads the held seats from the inventory database and the buyer from the accounts database. Each query goes through the datasource injected with @DataSource and borrows a connection from that datasource's own pool. Then confirm() writes to both in one transaction. With the default settings, the accounts connection fails to enlist and the transaction rolls back the seat update. With jdbc.transactions=xa on both datasources, both connections join, and the transaction commits both in two phases.</desc>
+<style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+<rect x="0" y="0" width="960" height="570" rx="0" class="fill-stage"/>
+<text x="28" y="40" class="la-title">One endpoint, two datasources</text>
+<text x="28" y="62" class="la-note">Each named datasource has its own pool. One transaction can write to both only with XA.</text>
+<rect x="24" y="84" width="912" height="80" rx="10" class="la-canvas"/>
+<g data-role="request" data-request="A"><circle cx="48" cy="110" r="11" class="fill-sky stroke-stage stroke-1.5"/><text x="48" y="114" class="font-sans text-offset font-bold fill-surface anchor-middle">A</text></g>
+<text x="68" y="115" class="font-mono text-label font-semibold fill-ink">POST /checkout</text>
+<text x="196" y="115" class="font-sans text-offset fill-ink-muted">checkout() reads the seats and the buyer, then confirm() writes to both</text>
+<g opacity="0" data-role="field" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200;0.1600;0.4200;0.4600;0.7000;0.7400" values="1;0;1;0;1;0;1"/><text x="246" y="148" class="font-mono text-offset fill-ink anchor-middle">@Inject @DataSource(&quot;inventory&quot;) AgroalDataSource inventory</text></g>
+<g opacity="0" data-role="field-active" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200;0.1600;0.4200;0.4600;0.7000;0.7400" values="0;1;0;1;0;1;0"/><text x="246" y="148" class="font-mono text-offset fill-amber anchor-middle">@Inject @DataSource(&quot;inventory&quot;) AgroalDataSource inventory</text></g>
+<g opacity="0" data-role="field" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.3000;0.5400;0.5800;0.7600;0.8000" values="1;0;1;0;1;0;1"/><text x="714" y="148" class="font-mono text-offset fill-ink anchor-middle">@Inject @DataSource(&quot;accounts&quot;) AgroalDataSource accounts</text></g>
+<g opacity="0" data-role="field-active" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.3000;0.5400;0.5800;0.7600;0.8000" values="0;1;0;1;0;1;0"/><text x="714" y="148" class="font-mono text-offset fill-amber anchor-middle">@Inject @DataSource(&quot;accounts&quot;) AgroalDataSource accounts</text></g>
+<line x1="246" y1="164" x2="246" y2="228" class="la-arrow"/><polygon points="246,236 242,228 250,228" class="fill-flow"/>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1400;0.2200;0.4400;0.6200;0.7200;0.9200" values="0;1;0;1;0;1;0"/><line x1="246" y1="164" x2="246" y2="228" class="fill-none stroke-amber stroke-2.5"/><polygon points="246,236 242,228 250,228" class="fill-amber"/></g>
+<line x1="246" y1="352" x2="246" y2="368" class="la-arrow"/><polygon points="246,376 242,368 250,368" class="fill-flow"/>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1600;0.2200;0.4600;0.5000;0.7400;0.7800" values="0;1;0;1;0;1;0"/><line x1="246" y1="352" x2="246" y2="368" class="fill-none stroke-amber stroke-2.5"/><polygon points="246,376 242,368 250,368" class="fill-amber"/></g>
+<g data-role="pool" data-datasource="inventory"><rect x="24" y="236" width="444" height="116" rx="10" class="la-canvas"/>
+<text x="40" y="263" class="font-sans text-label font-semibold fill-ink">inventory pool</text>
+<rect x="169" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="201" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="233" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="265" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="297" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<g opacity="0" data-role="borrowed" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1400;0.2200;0.4400;0.6200;0.7200;0.9200" values="0;1;0;1;0;1;0"/><rect x="233" y="247" width="26" height="22" rx="4" class="la-cell-new"/></g>
+<text x="246" y="292" class="font-mono text-offset fill-ink-muted anchor-middle">quarkus.datasource.inventory.db-kind=postgresql</text>
+<text x="246" y="312" class="font-mono text-offset fill-ink-muted anchor-middle">quarkus.datasource.inventory.jdbc.max-size=5</text>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800" values="1;0"/><text x="246" y="332" class="font-mono text-offset fill-ink-muted anchor-middle"># jdbc.transactions defaults to enabled</text></g>
+<g opacity="0" data-role="xa-config" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800" values="0;1"/><text x="246" y="332" class="font-mono text-offset fill-amber anchor-middle">quarkus.datasource.inventory.jdbc.transactions=xa</text></g></g>
+<rect x="24" y="376" width="444" height="100" rx="10" class="fill-surface stroke-violet stroke-1.5"/>
+<path d="M 40 387 L 40 401 A 8 3 0 0 0 56 401 L 56 387 Z" class="fill-violet-deep stroke-violet stroke-1.5"/><ellipse cx="48" cy="387" rx="8" ry="3" class="fill-violet-deep stroke-violet stroke-1.5"/>
+<text x="64" y="400" class="font-sans text-label font-semibold fill-ink">inventory database</text>
+<g opacity="0" data-role="statement" data-datasource="inventory" data-attempt="read"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1600;0.2200" values="0;1;0"/><text x="452" y="400" class="font-mono text-offset fill-amber anchor-end">SELECT * FROM seats</text></g>
+<g opacity="0" data-role="statement" data-datasource="inventory" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4600;0.5000" values="0;1;0"/><text x="452" y="400" class="font-mono text-offset fill-amber anchor-end">UPDATE seats SET state = 'sold'</text></g>
+<g opacity="0" data-role="statement" data-datasource="inventory" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7400;0.7800" values="0;1;0"/><text x="452" y="400" class="font-mono text-offset fill-amber anchor-end">UPDATE seats SET state = 'sold'</text></g>
+<g opacity="0" data-role="rolled-back" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200;0.6800" values="0;1;0"/><text x="452" y="400" class="font-sans text-offset font-semibold fill-red anchor-end">rolled back</text></g>
+<g opacity="0" data-role="prepared" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8600;0.9200" values="0;1;0"/><text x="452" y="400" class="font-sans text-offset font-semibold fill-amber anchor-end">prepared</text></g>
+<g opacity="0" data-role="committed" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9200" values="0;1"/><text x="452" y="400" class="font-sans text-offset font-semibold fill-emerald anchor-end">committed</text></g>
+<g data-role="table" data-datasource="inventory"><text x="40" y="429" class="font-mono text-offset fill-ink-muted">seats</text><rect x="156" y="414" width="180" height="22" rx="4" class="la-cell"/><text x="168" y="429" class="la-offset">A12</text><text x="324" y="429" class="la-offset anchor-end">held</text><rect x="156" y="444" width="180" height="22" rx="4" class="la-cell"/><text x="168" y="459" class="la-offset">A13</text><text x="324" y="459" class="la-offset anchor-end">held</text></g>
+<g opacity="0" data-role="read-marker" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1600;0.2200" values="0;1;0"/><rect x="153" y="411" width="186" height="28" rx="6" class="la-read-marker"/><rect x="153" y="441" width="186" height="28" rx="6" class="la-read-marker"/></g>
+<g opacity="0" data-role="pending" data-datasource="inventory" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4600;0.6200" values="0;1;0"/><rect x="156" y="414" width="180" height="22" rx="4" class="la-cell-new"/><text x="168" y="429" class="la-offset">A12</text><text x="324" y="429" class="la-offset anchor-end">sold</text><rect x="156" y="444" width="180" height="22" rx="4" class="la-cell-new"/><text x="168" y="459" class="la-offset">A13</text><text x="324" y="459" class="la-offset anchor-end">sold</text></g>
+<g opacity="0" data-role="pending" data-datasource="inventory" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7400;0.9200" values="0;1;0"/><rect x="156" y="414" width="180" height="22" rx="4" class="la-cell-new"/><text x="168" y="429" class="la-offset">A12</text><text x="324" y="429" class="la-offset anchor-end">sold</text><rect x="156" y="444" width="180" height="22" rx="4" class="la-cell-new"/><text x="168" y="459" class="la-offset">A13</text><text x="324" y="459" class="la-offset anchor-end">sold</text></g>
+<g opacity="0" data-role="saved" data-datasource="inventory"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9200" values="0;1"/><rect x="156" y="414" width="180" height="22" rx="4" class="la-cell"/><text x="168" y="429" class="la-offset">A12</text><text x="324" y="429" class="la-offset anchor-end">sold</text><rect x="156" y="444" width="180" height="22" rx="4" class="la-cell"/><text x="168" y="459" class="la-offset">A13</text><text x="324" y="459" class="la-offset anchor-end">sold</text></g>
+<line x1="714" y1="164" x2="714" y2="228" class="la-arrow"/><polygon points="714,236 710,228 718,228" class="fill-flow"/>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2800;0.3600;0.5600;0.6000;0.7800;0.9200" values="0;1;0;1;0;1;0"/><line x1="714" y1="164" x2="714" y2="228" class="fill-none stroke-amber stroke-2.5"/><polygon points="714,236 710,228 718,228" class="fill-amber"/></g>
+<line x1="714" y1="352" x2="714" y2="368" class="la-arrow"/><polygon points="714,376 710,368 718,368" class="fill-flow"/>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3600;0.8000;0.8400" values="0;1;0;1;0"/><line x1="714" y1="352" x2="714" y2="368" class="fill-none stroke-amber stroke-2.5"/><polygon points="714,376 710,368 718,368" class="fill-amber"/></g>
+<g data-role="pool" data-datasource="accounts"><rect x="492" y="236" width="444" height="116" rx="10" class="la-canvas"/>
+<text x="508" y="263" class="font-sans text-label font-semibold fill-ink">accounts pool</text>
+<rect x="669" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="701" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<rect x="733" y="247" width="26" height="22" rx="4" class="la-cell" data-role="connection"/>
+<g opacity="0" data-role="borrowed" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2800;0.3600;0.5600;0.6000;0.7800;0.9200" values="0;1;0;1;0;1;0"/><rect x="701" y="247" width="26" height="22" rx="4" class="la-cell-new"/></g>
+<text x="714" y="292" class="font-mono text-offset fill-ink-muted anchor-middle">quarkus.datasource.accounts.db-kind=postgresql</text>
+<text x="714" y="312" class="font-mono text-offset fill-ink-muted anchor-middle">quarkus.datasource.accounts.jdbc.max-size=3</text>
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800" values="1;0"/><text x="714" y="332" class="font-mono text-offset fill-ink-muted anchor-middle"># jdbc.transactions defaults to enabled</text></g>
+<g opacity="0" data-role="xa-config" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800" values="0;1"/><text x="714" y="332" class="font-mono text-offset fill-amber anchor-middle">quarkus.datasource.accounts.jdbc.transactions=xa</text></g></g>
+<rect x="492" y="376" width="444" height="100" rx="10" class="fill-surface stroke-violet stroke-1.5"/>
+<path d="M 508 387 L 508 401 A 8 3 0 0 0 524 401 L 524 387 Z" class="fill-violet-deep stroke-violet stroke-1.5"/><ellipse cx="516" cy="387" rx="8" ry="3" class="fill-violet-deep stroke-violet stroke-1.5"/>
+<text x="532" y="400" class="font-sans text-label font-semibold fill-ink">accounts database</text>
+<g opacity="0" data-role="statement" data-datasource="accounts" data-attempt="read"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3600" values="0;1;0"/><text x="920" y="400" class="font-mono text-offset fill-amber anchor-end">SELECT * FROM buyers</text></g>
+<g opacity="0" data-role="statement" data-datasource="accounts" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8400" values="0;1;0"/><text x="920" y="400" class="font-mono text-offset fill-amber anchor-end">INSERT INTO purchases</text></g>
+
+<g opacity="0" data-role="prepared" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8600;0.9200" values="0;1;0"/><text x="920" y="400" class="font-sans text-offset font-semibold fill-amber anchor-end">prepared</text></g>
+<g opacity="0" data-role="committed" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9200" values="0;1"/><text x="920" y="400" class="font-sans text-offset font-semibold fill-emerald anchor-end">committed</text></g>
+<g data-role="table" data-datasource="accounts"><text x="508" y="429" class="font-mono text-offset fill-ink-muted">buyers</text><rect x="624" y="414" width="180" height="22" rx="4" class="la-cell"/><text x="636" y="429" class="la-offset">4012</text><text x="792" y="429" class="la-offset anchor-end">fan@example.com</text><text x="508" y="459" class="font-mono text-offset fill-ink-muted">purchases</text><rect x="624" y="444" width="180" height="22" rx="4" class="la-cell-tail"/></g>
+<g opacity="0" data-role="read-marker" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3600" values="0;1;0"/><rect x="621" y="411" width="186" height="28" rx="6" class="la-read-marker"/></g>
+<g opacity="0" data-role="pending" data-datasource="accounts" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.9200" values="0;1;0"/><rect x="624" y="444" width="180" height="22" rx="4" class="la-cell-new"/><text x="636" y="459" class="la-offset">4012</text><text x="792" y="459" class="la-offset anchor-end">A12, A13</text></g>
+<g opacity="0" data-role="saved" data-datasource="accounts"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9200" values="0;1"/><rect x="624" y="444" width="180" height="22" rx="4" class="la-cell"/><text x="636" y="459" class="la-offset">4012</text><text x="792" y="459" class="la-offset anchor-end">A12, A13</text></g>
+<g opacity="0" data-role="transaction" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.6800" values="0;1;0"/><rect x="24" y="176" width="912" height="44" rx="8" class="fill-surface stroke-amber stroke-1.5" stroke-dasharray="6 4"/>
+<text x="36" y="202" class="font-sans text-offset font-semibold fill-amber">one transaction</text>
+<text x="480" y="202" class="font-mono text-offset fill-ink anchor-middle">@Transactional confirm()</text>
+<rect x="176" y="186" width="140" height="24" rx="6" class="la-cell-tail"/>
+<text x="246" y="202" class="font-sans text-offset fill-ink-muted anchor-middle">inventory</text>
+<g opacity="0" data-role="enlisted" data-datasource="inventory" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4400;0.6800" values="0;1;0"/><rect x="176" y="186" width="140" height="24" rx="6" class="la-cell-new"/><text x="246" y="202" class="font-sans text-offset fill-ink anchor-middle">inventory joined</text></g>
+
+<rect x="644" y="186" width="140" height="24" rx="6" class="la-cell-tail"/>
+<text x="714" y="202" class="font-sans text-offset fill-ink-muted anchor-middle">accounts</text>
+
+<g opacity="0" data-role="enlist-failed" data-datasource="accounts" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5800;0.6800" values="0;1;0"/><rect x="644" y="186" width="140" height="24" rx="6" class="fill-surface stroke-red stroke-1.5"/><text x="714" y="202" class="font-sans text-offset font-semibold fill-red anchor-middle">Failed to enlist</text></g>
+
+<g opacity="0" data-role="outcome" data-attempt="default"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200;0.6800" values="0;1;0"/><text x="924" y="202" class="font-sans text-offset font-semibold fill-red anchor-end">rolled back</text></g></g>
+<g opacity="0" data-role="transaction" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800" values="0;1"/><rect x="24" y="176" width="912" height="44" rx="8" class="fill-surface stroke-amber stroke-1.5" stroke-dasharray="6 4"/>
+<text x="36" y="202" class="font-sans text-offset font-semibold fill-amber">one XA transaction</text>
+<text x="480" y="202" class="font-mono text-offset fill-ink anchor-middle">@Transactional confirm()</text>
+<rect x="176" y="186" width="140" height="24" rx="6" class="la-cell-tail"/>
+<text x="246" y="202" class="font-sans text-offset fill-ink-muted anchor-middle">inventory</text>
+<g opacity="0" data-role="enlisted" data-datasource="inventory" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7200" values="0;1"/><rect x="176" y="186" width="140" height="24" rx="6" class="la-cell-new"/><text x="246" y="202" class="font-sans text-offset fill-ink anchor-middle">inventory joined</text></g>
+
+<rect x="644" y="186" width="140" height="24" rx="6" class="la-cell-tail"/>
+<text x="714" y="202" class="font-sans text-offset fill-ink-muted anchor-middle">accounts</text>
+<g opacity="0" data-role="enlisted" data-datasource="accounts" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7800" values="0;1"/><rect x="644" y="186" width="140" height="24" rx="6" class="la-cell-new"/><text x="714" y="202" class="font-sans text-offset fill-ink anchor-middle">accounts joined</text></g>
+
+<g opacity="0"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8600;0.9200" values="0;1;0"/><text x="924" y="202" class="font-sans text-offset font-semibold fill-amber anchor-end">prepare</text></g>
+<g opacity="0" data-role="outcome" data-attempt="xa"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9200" values="0;1"/><text x="924" y="202" class="font-sans text-offset font-semibold fill-emerald anchor-end">committed</text></g></g>
+<rect x="24" y="492" width="912" height="38" rx="8" class="la-canvas"/>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200" values="1;0"/>checkout() injects two named datasources, inventory and accounts. Quarkus starts a separate pool for each one.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200;0.2600" values="0;1;0"/>It reads the held seats through @DataSource(&quot;inventory&quot;), on a connection from the inventory pool.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.4000" values="0;1;0"/>It reads the buyer through @DataSource(&quot;accounts&quot;), on a connection from the accounts pool. No transaction is open.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5400" values="0;1;0"/>confirm() is @Transactional and writes to both. The inventory connection joins and marks A12 and A13 sold.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5400;0.6800" values="0;1;0"/>The accounts connection fails to enlist: without XA, a transaction holds one datasource. The seat update rolls back.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800;0.8400" values="0;1;0"/>With jdbc.transactions=xa on both datasources, both connections join the same transaction.</text>
+<text x="480" y="516" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="25s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8400" values="0;1"/>The commit has two phases: both databases prepare, then both commit, so the seats and the purchase are saved together.</text>
+<text x="28" y="552" class="font-sans text-offset fill-ink-muted">Sources: quarkus.io/guides/datasource (configure multiple datasources, named datasource injection, multiple datasources in a single transaction).</text>
+</svg>
