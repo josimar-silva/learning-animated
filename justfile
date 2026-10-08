@@ -16,6 +16,16 @@ ci:
 test:
     npx vitest run
 
+# Build every site, then run the end-to-end suite in every browser project
+test-e2e: build-all
+    rm -rf test-results
+    npm run test-e2e
+
+# Run the end-to-end suite in one browser project, against sites already built
+test-e2e-on project:
+    rm -rf test-results
+    npm run test-e2e -- --project "{{project}}"
+
 # Lint the code
 lint:
     npx eslint .

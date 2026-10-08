@@ -15,15 +15,18 @@
   ],
   "scripts": {
     "test": "vitest run",
+    "test-e2e": "playwright test",
     "lint": "eslint .",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@estruyf/github-actions-reporter": "1.13.0",
     "@learning-animated/design": "*",
     "@learning-animated/site-kit": "*",
     "@learning-animated/svg-kit": "*",
+    "@playwright/test": "1.64.0",
     "@types/node": "24.19.1",
     "eslint": "10.12.0",
     "eslint-config-prettier": "10.1.8",
@@ -31,6 +34,7 @@
     "eslint-plugin-simple-import-sort": "14.0.0",
     "globals": "17.13.0",
     "linkedom": "0.18.13",
+    "monocart-reporter": "2.14.1",
     "prettier": "3.9.9",
     "prettier-plugin-astro": "1.1.0",
     "typescript": "6.0.3",
