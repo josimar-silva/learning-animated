@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
 
+env:
+  ASTRO_TELEMETRY_DISABLED: 1
+
 jobs:
   verify:
     runs-on: ubuntu-24.04
