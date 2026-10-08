@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 556" role="img" aria-labelledby="title desc" data-loop="20s">
+<title id="title">@Retry on @Incoming holds the channel</title>
+<desc id="desc">Animation. charge() reads the ticket-orders topic with @Incoming, runs on a worker thread because of @Blocking, and carries @Retry(maxRetries = 3, delay = 1000). Record 3 from partition 0 gets 503 from the payment provider, through CardGateway, four times in a row, and the worker thread sleeps through a delay between calls. Through every attempt, records 4 and 5 and all of partition 1 wait, new orders pile up, and neither committed offset moves. After the fourth 503, record 3 is nacked and written to ticket-orders-dlq. Only then does record 4 get its turn and succeed, followed by record 11 from partition 1.</desc>
+<style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+<rect x="0" y="0" width="960" height="556" rx="0" class="fill-stage"/>
+<text x="28" y="40" class="la-title">@Retry on @Incoming holds the channel</text>
+<text x="28" y="64" class="la-note">charge() retries record 3 in place, and no other record in the channel moves until its last attempt fails.</text>
+<rect x="24" y="88" width="320" height="262" rx="14" class="la-card"/>
+<text x="40" y="114" class="la-label">topic</text>
+<text x="80" y="114" class="font-mono text-label font-semibold fill-ink">ticket-orders</text>
+<text x="36" y="185" class="font-sans text-offset fill-ink">partition 0</text>
+<g data-role="cell" data-partition="0" data-offset="3"><rect x="108" y="166" width="34" height="30" rx="5" class="la-cell"/><text x="125" y="185" class="la-offset anchor-middle">3</text></g>
+<g data-role="cell" data-partition="0" data-offset="4"><rect x="148" y="166" width="34" height="30" rx="5" class="la-cell"/><text x="165" y="185" class="la-offset anchor-middle">4</text></g>
+<g data-role="cell" data-partition="0" data-offset="5"><rect x="188" y="166" width="34" height="30" rx="5" class="la-cell"/><text x="205" y="185" class="la-offset anchor-middle">5</text></g>
+<rect x="228" y="166" width="34" height="30" rx="5" class="la-cell-tail"/>
+<g opacity="0" data-role="appended" data-partition="0" data-offset="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750" values="0;1"/><rect x="228" y="166" width="34" height="30" rx="5" class="la-cell"/><g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.3500" values="0;1;0"/><rect x="228" y="166" width="34" height="30" rx="5" class="la-cell-new"/></g><text x="245" y="185" class="la-offset anchor-middle">6</text></g>
+<g opacity="0" data-role="committed" data-partition="0" data-offset="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="1;0"/><rect x="105" y="163" width="40" height="36" rx="7" class="la-read-marker"/></g>
+<g opacity="0" data-role="committed" data-partition="0" data-offset="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.7000" values="0;1;0"/><rect x="145" y="163" width="40" height="36" rx="7" class="la-read-marker"/></g>
+<g opacity="0" data-role="committed" data-partition="0" data-offset="5"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/><rect x="185" y="163" width="40" height="36" rx="7" class="la-read-marker"/></g>
+<g opacity="0" data-role="waiting" data-partition="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.5500" values="0;1;0"/><rect x="272" y="169" width="64" height="24" rx="12" class="fill-surface stroke-red stroke-1.5"/><text x="304" y="185" class="font-sans text-offset font-semibold fill-red anchor-middle">waiting</text></g>
+<text x="36" y="279" class="font-sans text-offset fill-ink">partition 1</text>
+<g data-role="cell" data-partition="1" data-offset="11"><rect x="108" y="260" width="34" height="30" rx="5" class="la-cell"/><text x="125" y="279" class="la-offset anchor-middle">11</text></g>
+<g data-role="cell" data-partition="1" data-offset="12"><rect x="148" y="260" width="34" height="30" rx="5" class="la-cell"/><text x="165" y="279" class="la-offset anchor-middle">12</text></g>
+<rect x="188" y="260" width="34" height="30" rx="5" class="la-cell-tail"/>
+<g opacity="0" data-role="appended" data-partition="1" data-offset="13"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000" values="0;1"/><rect x="188" y="260" width="34" height="30" rx="5" class="la-cell"/><g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/><rect x="188" y="260" width="34" height="30" rx="5" class="la-cell-new"/></g><text x="205" y="279" class="la-offset anchor-middle">13</text></g>
+<g opacity="0" data-role="committed" data-partition="1" data-offset="11"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8250" values="1;0"/><rect x="105" y="257" width="40" height="36" rx="7" class="la-read-marker"/></g>
+<g opacity="0" data-role="committed" data-partition="1" data-offset="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8250" values="0;1"/><rect x="145" y="257" width="40" height="36" rx="7" class="la-read-marker"/></g>
+<g opacity="0" data-role="waiting" data-partition="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.5500" values="0;1;0"/><rect x="272" y="263" width="64" height="24" rx="12" class="fill-surface stroke-red stroke-1.5"/><text x="304" y="279" class="font-sans text-offset font-semibold fill-red anchor-middle">waiting</text></g>
+<rect x="36" y="318" width="20" height="16" rx="4" class="la-read-marker"/>
+<text x="66" y="330" class="font-sans text-offset fill-ink">committed offset</text>
+<path d="M 344 140 L 368 140 L 368 228 L 344 228" class="la-arrow"/>
+<path d="M 368 180 L 384 180" class="la-arrow"/>
+<polygon points="392,180 384,176 384,184" class="fill-flow"/>
+<g data-role="code"><text x="392" y="104" class="font-mono text-offset fill-ink-muted">@Incoming(&quot;ticket-orders&quot;)</text><text x="392" y="122" class="font-mono text-offset fill-ink-muted">@Blocking</text><text x="392" y="140" class="font-mono text-offset font-semibold fill-ink">@Retry(maxRetries = 3, delay = 1000)</text></g>
+<g data-role="consumer"><rect x="392" y="152" width="248" height="56" rx="10" class="fill-sky stroke-sky-light stroke-1.5"/><text x="540" y="185" class="font-mono text-label font-semibold fill-surface anchor-middle">charge(order)</text></g>
+<g data-role="payment-provider"><rect x="724" y="152" width="212" height="56" rx="10" class="fill-surface stroke-cell-stroke stroke-1.5"/><text x="830" y="176" class="font-sans text-label font-semibold fill-ink anchor-middle">payment provider</text><text x="830" y="194" class="font-mono text-offset fill-ink-muted anchor-middle">via CardGateway</text></g>
+<path d="M 640 168 L 716 168" class="la-arrow"/>
+<polygon points="724,168 716,164 716,172" class="fill-flow"/>
+<path d="M 724 192 L 648 192" class="la-arrow"/>
+<polygon points="640,192 648,188 648,196" class="fill-flow"/>
+<g data-role="dlq"><rect x="724" y="268" width="212" height="80" rx="12" class="la-card"/><text x="740" y="290" class="font-mono text-label font-semibold fill-ink">ticket-orders-dlq</text><rect x="740" y="302" width="34" height="30" rx="5" class="la-cell-tail"/><text x="786" y="322" class="font-sans text-offset fill-ink">dead letters</text></g>
+<path d="M 423 208 L 423 317 L 732 317" class="la-arrow"/>
+<polygon points="740,317 732,313 732,321" class="fill-flow"/>
+<g data-role="failure-strategy"><text x="580" y="344" class="font-mono text-offset fill-ink-muted anchor-middle">failure-strategy=dead-letter-queue</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5500" values="0;1;0"/><path d="M 423 208 L 423 317 L 732 317" class="fill-none stroke-red stroke-2.5"/><polygon points="740,317 732,313 732,321" class="fill-red"/></g>
+<g opacity="0" data-role="dead-letter" data-offset="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/><rect x="740" y="302" width="34" height="30" rx="5" class="fill-cell stroke-red stroke-1.5"/><text x="757" y="321" class="la-offset anchor-middle">3</text></g>
+<rect x="24" y="364" width="912" height="100" rx="12" class="fill-surface stroke-violet stroke-1.5"/>
+<text x="40" y="386" class="font-sans text-label font-semibold fill-violet">worker thread</text>
+<text x="920" y="386" class="la-note anchor-end">@Blocking keeps the order: one record at a time for the whole channel</text>
+<rect x="40" y="396" width="880" height="32" rx="6" class="fill-stage stroke-grid"/>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.1250" values="0;1;0"/><rect x="61" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.0750;0.1250;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="3" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250" values="0;1"/><rect x="61" y="398" width="54" height="28" rx="4" class="fill-surface stroke-red stroke-1.5"/><text x="88" y="416" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g>
+<g opacity="0" data-role="delay" data-offset="3" data-after="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250" values="0;1"/><rect x="117" y="398" width="0" height="28" rx="4" class="fill-surface stroke-slate stroke-1.5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.1250;0.2000;1.0000" values="0;0;82;82"/></rect><g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="0;1"/><text x="158" y="416" class="font-sans text-offset fill-ink-muted anchor-middle">delay</text></g></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2500" values="0;1;0"/><rect x="201" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.2000;0.2500;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="3" data-attempt="2"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="0;1"/><rect x="201" y="398" width="54" height="28" rx="4" class="fill-surface stroke-red stroke-1.5"/><text x="228" y="416" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g>
+<g opacity="0" data-role="delay" data-offset="3" data-after="2"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="0;1"/><rect x="257" y="398" width="0" height="28" rx="4" class="fill-surface stroke-slate stroke-1.5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.2500;0.3250;1.0000" values="0;0;82;82"/></rect><g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/><text x="298" y="416" class="font-sans text-offset fill-ink-muted anchor-middle">delay</text></g></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3750" values="0;1;0"/><rect x="341" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.3250;0.3750;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="3" data-attempt="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/><rect x="341" y="398" width="54" height="28" rx="4" class="fill-surface stroke-red stroke-1.5"/><text x="368" y="416" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g>
+<g opacity="0" data-role="delay" data-offset="3" data-after="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/><rect x="397" y="398" width="0" height="28" rx="4" class="fill-surface stroke-slate stroke-1.5"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.3750;0.4500;1.0000" values="0;0;82;82"/></rect><g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/><text x="438" y="416" class="font-sans text-offset fill-ink-muted anchor-middle">delay</text></g></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.5000" values="0;1;0"/><rect x="481" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.4500;0.5000;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="3" data-attempt="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/><rect x="481" y="398" width="54" height="28" rx="4" class="fill-surface stroke-red stroke-1.5"/><text x="508" y="416" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/><text x="298" y="448" class="font-sans text-offset fill-ink-muted anchor-middle">record 3: 4 calls, 3 delays</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/><line x1="536" y1="392" x2="536" y2="432" class="stroke-red stroke-2.5"/><text x="536" y="448" class="font-sans text-offset font-semibold fill-red anchor-middle">nacked</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.7000" values="0;1;0"/><rect x="705" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.6500;0.7000;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="4" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/><rect x="705" y="398" width="54" height="28" rx="4" class="fill-surface stroke-emerald stroke-1.5"/><text x="732" y="416" class="font-mono text-offset font-semibold fill-emerald anchor-middle">200</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/><text x="732" y="448" class="font-sans text-offset fill-ink-muted anchor-middle">record 4</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.8250" values="0;1;0"/><rect x="845" y="398" width="0" height="28" rx="4" class="la-cell-new"><animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.7750;0.8250;1.0000" values="0;0;54;54"/></rect></g>
+<g opacity="0" data-role="call" data-offset="11" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8250" values="0;1"/><rect x="845" y="398" width="54" height="28" rx="4" class="fill-surface stroke-emerald stroke-1.5"/><text x="872" y="416" class="font-mono text-offset font-semibold fill-emerald anchor-middle">200</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8250" values="0;1"/><text x="872" y="448" class="font-sans text-offset fill-ink-muted anchor-middle">record 11</text></g>
+<g opacity="0" data-role="attempt" data-offset="3" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.2000" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 1 of 4</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250;0.2000" values="0;1;0"/><rect x="560" y="218" width="80" height="22" rx="11" class="fill-surface stroke-slate stroke-1.5"/><text x="600" y="233" class="font-sans text-offset fill-ink-muted anchor-middle">delay ≈ 1 s</text></g>
+<g opacity="0" data-role="attempt" data-offset="3" data-attempt="2"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.3250" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 2 of 4</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/><rect x="560" y="218" width="80" height="22" rx="11" class="fill-surface stroke-slate stroke-1.5"/><text x="600" y="233" class="font-sans text-offset fill-ink-muted anchor-middle">delay ≈ 1 s</text></g>
+<g opacity="0" data-role="attempt" data-offset="3" data-attempt="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4500" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 3 of 4</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4500" values="0;1;0"/><rect x="560" y="218" width="80" height="22" rx="11" class="fill-surface stroke-slate stroke-1.5"/><text x="600" y="233" class="font-sans text-offset fill-ink-muted anchor-middle">delay ≈ 1 s</text></g>
+<g opacity="0" data-role="attempt" data-offset="3" data-attempt="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.5000" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 4 of 4</text></g>
+<g opacity="0" data-role="verdict" data-offset="3" data-verdict="nacked"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6000" values="0;1;0"/><rect x="448" y="218" width="128" height="22" rx="11" class="fill-surface stroke-red stroke-1.5"/><text x="512" y="233" class="font-sans text-offset font-semibold fill-red anchor-middle">record 3 nacked</text></g>
+<g opacity="0" data-role="request" data-offset="3" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.1000" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0750;0.1000;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="3" data-attempt="1" data-status="503"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1000;0.1250;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-red"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g></g>
+<g opacity="0" data-role="request" data-offset="3" data-attempt="2"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2250" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2000;0.2250;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="3" data-attempt="2" data-status="503"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.2500" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2250;0.2500;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-red"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g></g>
+<g opacity="0" data-role="request" data-offset="3" data-attempt="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3500" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3250;0.3500;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="3" data-attempt="3" data-status="503"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.3750" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3500;0.3750;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-red"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g></g>
+<g opacity="0" data-role="request" data-offset="3" data-attempt="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500;0.4750" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.4500;0.4750;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="3" data-attempt="4" data-status="503"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5000" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.4750;0.5000;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-red"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-red anchor-middle">503</text></g></g>
+<g opacity="0" data-role="attempt" data-offset="4" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.7000" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 1 of 4</text></g>
+<g opacity="0" data-role="verdict" data-offset="4" data-verdict="acked"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7750" values="0;1;0"/><rect x="448" y="218" width="128" height="22" rx="11" class="fill-surface stroke-emerald stroke-1.5"/><text x="512" y="233" class="font-sans text-offset font-semibold fill-emerald anchor-middle">record 4 acked</text></g>
+<g opacity="0" data-role="request" data-offset="4" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6750" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6500;0.6750;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="4" data-attempt="1" data-status="200"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750;0.7000" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6750;0.7000;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-emerald"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-emerald anchor-middle">200</text></g></g>
+<g opacity="0" data-role="attempt" data-offset="11" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.8250" values="0;1;0"/><rect x="448" y="218" width="104" height="22" rx="11" class="la-cell-new"/><text x="500" y="233" class="font-sans text-offset font-semibold fill-cell-ink anchor-middle">attempt 1 of 4</text></g>
+<g opacity="0" data-role="verdict" data-offset="11" data-verdict="acked"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8250" values="0;1"/><rect x="448" y="218" width="128" height="22" rx="11" class="fill-surface stroke-emerald stroke-1.5"/><text x="512" y="233" class="font-sans text-offset font-semibold fill-emerald anchor-middle">record 11 acked</text></g>
+<g opacity="0" data-role="request" data-offset="11" data-attempt="1"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.8000" values="0;1;0"/><g transform="translate(648,168)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7750;0.8000;1.0000" values="648,168;648,168;712,168;712,168"/><circle r="5" class="la-flow-dot"/></g></g>
+<g opacity="0" data-role="response" data-offset="11" data-attempt="1" data-status="200"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8250" values="0;1;0"/><g transform="translate(712,192)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8000;0.8250;1.0000" values="712,192;712,192;652,192;652,192"/><circle r="5" class="fill-emerald"/><text x="0" y="18" class="font-mono text-offset font-semibold fill-emerald anchor-middle">200</text></g></g>
+<g opacity="0" data-role="token" data-offset="3"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.5500" values="0;1;0"/><g transform="translate(125,181)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0250;0.0305;0.0625;0.0675;0.0750;0.5000;0.5145;0.5500;1.0000" values="125,181;125,181;125,140;368,140;368,180;423,180;423,180;423,317;757,317;757,317"/><rect x="-17" y="-15" width="34" height="30" rx="5" class="la-cell-new"/><text x="0" y="4" class="la-offset anchor-middle">3</text></g></g>
+<g opacity="0" data-role="token" data-offset="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7250" values="0;1;0"/><g transform="translate(165,181)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6000;0.6060;0.6360;0.6420;0.6500;1.0000" values="165,181;165,181;165,140;368,140;368,180;423,180;423,180"/><rect x="-17" y="-15" width="34" height="30" rx="5" class="la-cell-new"/><text x="0" y="4" class="la-offset anchor-middle">4</text></g></g>
+<g opacity="0" data-role="token" data-offset="11"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.8500" values="0;1;0"/><g transform="translate(125,275)"><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7250;0.7310;0.7620;0.7680;0.7750;1.0000" values="125,275;125,275;125,228;368,228;368,180;423,180;423,180"/><rect x="-17" y="-15" width="34" height="30" rx="5" class="la-cell-new"/><text x="0" y="4" class="la-offset anchor-middle">11</text></g></g>
+<rect x="24" y="476" width="912" height="36" rx="8" class="la-canvas"/>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/>Record 3 from partition 0 reaches charge(). @Blocking runs the method on a worker thread.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2750" values="0;1;0"/>The payment provider is down and answers 503, so the call throws. @Retry catches it and sleeps through the delay.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750;0.5000" values="0;1;0"/>@Retry calls again with the same record 3. Records 4 and 5 wait, partition 1 waits too, and new orders pile up.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6000" values="0;1;0"/>The fourth 503 uses up maxRetries = 3. Record 3 is nacked, and the failure strategy writes it to ticket-orders-dlq.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7250" values="0;1;0"/>Only now does the channel move. The payment provider is back, and record 4 is acked after one call.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250;0.8500" values="0;1;0"/>Partition 1 had no failing record, yet record 11 waited through every attempt on record 3.</text>
+<text x="480" y="499" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500" values="0;1"/>While one record retries in place, no other record in the channel moves, on any partition.</text>
+<text x="28" y="538" class="font-sans text-offset fill-ink-muted">Sources: quarkus.io/guides/kafka (retrying processing, error handling strategies) and quarkus.io/guides/smallrye-fault-tolerance.</text>
+</svg>
