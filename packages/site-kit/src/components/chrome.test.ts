@@ -1,3 +1,4 @@
+import LOGO_URL from '@learning-animated/design/logo.svg?url';
 import { describe, expect, test } from 'vitest';
 
 import { dom } from '../../test/dom.ts';
@@ -64,6 +65,17 @@ describe('Layout', () => {
 });
 
 describe('Header and Footer', () => {
+  test.each([
+    ['header', () => render(Header, { track: LAUNCHED, path: '/' })],
+    ['footer', () => render(Footer, { track: LAUNCHED, sections: [] })],
+  ])('the %s links home with the logo beside the short name', async (_, html) => {
+    const doc = dom(await html());
+    const logo = doc.querySelector('a[href="/"] img');
+    expect(logo?.getAttribute('src')).toBe(LOGO_URL);
+    expect(logo?.getAttribute('alt')).toBe('');
+    expect(logo?.closest('a')?.textContent?.trim()).toBe('Quarkus Animated');
+    expect(doc.body.textContent).not.toMatch(/\bJS\b/);
+  });
   test('the header has the theme and menu controls and a link to the blog', async () => {
     const doc = dom(await render(Header, { track: LAUNCHED, path: '/' }));
     expect(attr(doc, '[data-action="theme"]', 'aria-pressed')).toBe('false');

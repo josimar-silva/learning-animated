@@ -24,6 +24,14 @@ for (const site of SITES) {
         page.locator('footer a[href="https://josimar-silva.com"]').first(),
       ).toBeVisible();
     });
+
+    test('the header logo loads under the real headers', async ({ page, problems }) => {
+      await page.goto(`${origin(site)}/`);
+      const logo = page.locator('header a[href="/"] img');
+      await expect(logo).toHaveJSProperty('complete', true);
+      expect(await logo.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+      expect(problems).toEqual([]);
+    });
   });
 }
 

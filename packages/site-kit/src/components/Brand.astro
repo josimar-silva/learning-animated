@@ -1,0 +1,16 @@
+---
+import logoUrl from '@learning-animated/design/logo.svg?url';
+
+import { pathForHome } from '../routes.ts';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<a href={pathForHome()} class="flex items-center gap-2 font-semibold text-foreground">
+  <img src={logoUrl} alt="" width="32" height="32" class="size-8 flex-none" />
+  <span>{name}</span>
+</a>
