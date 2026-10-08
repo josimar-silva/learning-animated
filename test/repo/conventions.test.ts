@@ -70,6 +70,12 @@ describe('repository conventions', () => {
     expect(loose).toEqual([]);
   });
 
+  test('the Node types follow the Node major in .nvmrc', () => {
+    const pkg = JSON.parse(read('package.json')) as { devDependencies: Record<string, string> };
+    const major = pkg.devDependencies['@types/node']?.split('.')[0];
+    expect(major).toBe(read('.nvmrc').trim());
+  });
+
   test('no text file contains an em dash or an en dash', () => {
     const offenders = files()
       .filter((f) => TEXT.test(f) && f !== 'package-lock.json')
