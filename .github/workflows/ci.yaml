@@ -43,6 +43,9 @@ jobs:
       - name: 🏗️ Build every site
         run: just build-all
 
+      - name: 🔗 Audit the built sites
+        run: just check-dist
+
       - name: 🚫 Scan for forbidden terms
         env:
           FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}

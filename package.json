@@ -22,6 +22,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@learning-animated/design": "*",
+    "@learning-animated/site-kit": "*",
     "@learning-animated/svg-kit": "*",
     "@types/node": "24.19.1",
     "eslint": "10.12.0",
@@ -29,6 +30,7 @@
     "eslint-plugin-astro": "3.2.1",
     "eslint-plugin-simple-import-sort": "14.0.0",
     "globals": "17.13.0",
+    "linkedom": "0.18.13",
     "prettier": "3.9.9",
     "prettier-plugin-astro": "1.1.0",
     "typescript": "6.0.3",
