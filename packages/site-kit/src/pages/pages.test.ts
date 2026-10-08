@@ -169,6 +169,14 @@ describe('AnimationPage', () => {
     expect(doc.querySelector('[data-role="scrubber"]')?.getAttribute('max')).toBe('13.5');
     expect((await page(base)).querySelector('[data-role="scrubber"]')).toBeNull();
   });
+  test('a step between whole seconds shows its tenth', async () => {
+    const doc = await page({
+      ...base,
+      loop: 13.5,
+      animation: { ...LESSON, steps: [{ at: 3.5, text: 'B blocks' }] },
+    });
+    expect(doc.querySelector('[data-role="step"] button')?.textContent?.trim()).toBe('0:03.5');
+  });
   test('links the previous and next lessons', async () => {
     const doc = await page({
       ...base,
