@@ -42,3 +42,9 @@ jobs:
 
       - name: 🏗️ Build every site
         run: just build-all
+
+      - name: 🚫 Scan for forbidden terms
+        env:
+          FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}
+          RANGE: ${{ github.event_name == 'pull_request' && format('{0}..{1}', github.event.pull_request.base.sha, github.sha) || 'HEAD~1..HEAD' }}
+        run: just forbidden-terms --commits "$RANGE"
