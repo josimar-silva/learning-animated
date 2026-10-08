@@ -1,11 +1,11 @@
 ---
 import type { Step } from '../schemas.ts';
+import { clock } from './clock.ts';
 
 interface Props {
   steps: readonly Step[];
 }
 const { steps } = Astro.props;
-const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 ---
 
 {steps.length > 0 && (
