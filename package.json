@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Animated learning sites, one per track, built from one design system.",
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0 AND CC-BY-NC-4.0",
   "engines": {
     "node": ">=24"
   },

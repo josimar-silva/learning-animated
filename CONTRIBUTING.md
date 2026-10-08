@@ -4,7 +4,7 @@ Hey there!!! We are happy that you would like to contribute to make this project
 
 The section below has everything you need to start contributing.
 
-All contributions to this project are released under [The MIT License](https://opensource.org/license/mit).
+All contributions to this project are released under its licenses: lessons and artwork under [CC BY-NC 4.0](LICENSE-CC-BY-NC), and everything else under the [PolyForm Noncommercial License 1.0.0](LICENSE).
 
 This project is released with a Contributor [Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 

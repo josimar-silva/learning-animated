@@ -2,9 +2,13 @@
 
 <h1 align="center">Learning Animated</h1>
 <div align="center">
-  <!-- MIT License -->
+  <!-- PolyForm Noncommercial License -->
   <a href="./LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="mit license" />
+    <img src="https://img.shields.io/badge/Source_Code-PolyForm_Noncommercial_1.0.0-blue.svg" alt="polyform noncommercial license" />
+  </a>
+  <!-- CC License -->
+  <a href="./LICENSE-CC-BY-NC">
+    <img src="https://img.shields.io/badge/Content-CC%20BY--NC%204.0-lightgrey.svg" alt="CC license" />
   </a>
   <!-- Version -->
   <a href="https://github.com/josimar-silva/learning-animated/releases">
@@ -149,4 +153,9 @@ Contributions are welcome. Please read the [Contributing Guidelines](CONTRIBUTIN
 
 Copyright (C) 2026 Josimar Silva
 
-This project's own code and artwork are licensed under the [MIT License](LICENSE).
+Unless otherwise specified:
+
+- **Content:** The lessons, with their animations and text, and the artwork, such as the logo, are licensed under the [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License](LICENSE-CC-BY-NC).
+- **Source code:** Everything else is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+Neither license allows commercial use. Third-party files keep their own licenses, such as the Inter font under the SIL Open Font License 1.1.
