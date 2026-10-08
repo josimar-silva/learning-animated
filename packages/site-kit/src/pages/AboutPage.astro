@@ -1,0 +1,38 @@
+---
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Layout from '../components/Layout.astro';
+import { pathForAbout, pathForHome } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+
+interface Props {
+  track: Track;
+  sections: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const { track, sections } = Astro.props;
+const book = track.kind === 'book';
+const description = book
+  ? `What ${track.site.name} is, how to follow along with the book, and how the companion is built.`
+  : `What ${track.site.name} is and how it is built.`;
+const trail = [
+  { name: 'Contents', path: pathForHome() },
+  { name: 'About', path: pathForAbout() },
+];
+---
+
+<Layout
+  track={track}
+  kind="about"
+  path={pathForAbout()}
+  title={`About | ${track.site.name}`}
+  description={description}
+  sections={sections}
+>
+  <Breadcrumb trail={trail} />
+  <h1 class="mt-4 text-3xl font-bold">
+    {book ? 'About this companion' : `About ${track.site.name}`}
+  </h1>
+  <div class="prose mt-6">
+    <slot />
+  </div>
+</Layout>

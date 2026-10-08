@@ -1,0 +1,26 @@
+---
+import type { Step } from '../schemas.ts';
+
+interface Props {
+  steps: readonly Step[];
+}
+const { steps } = Astro.props;
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+---
+
+{steps.length > 0 && (
+  <ol class="mt-4 space-y-1" aria-label="Steps">
+    {steps.map((step) => (
+      <li
+        data-role="step"
+        data-at={step.at}
+        class="flex items-baseline gap-2 rounded-md px-2 py-1 aria-[current=step]:bg-accent"
+      >
+        <button type="button" class="font-mono text-xs text-muted-foreground">
+          {clock(step.at)}
+        </button>
+        <span>{step.text}</span>
+      </li>
+    ))}
+  </ol>
+)}

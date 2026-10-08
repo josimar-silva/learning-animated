@@ -1,0 +1,42 @@
+---
+import Layout from '../components/Layout.astro';
+import { AUTHOR } from '../family.ts';
+import { countLabel } from '../model.ts';
+import { pathForHome } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+import { websiteJsonLd } from '../seo.ts';
+
+interface Props {
+  track: Track;
+  members: ReadonlyArray<{ name: string; tagline: string; url: string; count: number }>;
+}
+
+const { track, members } = Astro.props;
+---
+
+<Layout
+  track={track}
+  kind="home"
+  path={pathForHome()}
+  title={track.site.name}
+  description={track.site.tagline}
+  jsonLd={[websiteJsonLd(track)]}
+>
+  <section class="py-6">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{track.site.name}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-muted-foreground">{track.site.tagline}</p>
+    {/* prettier-ignore */}
+    <p class="mt-2 text-sm text-muted-foreground">Find more of {AUTHOR.name}'s work on the <a href={AUTHOR.url} target="_blank" rel="noopener">blog</a>.</p>
+  </section>
+  <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {members.map((member) => (
+      <li class="flex flex-col gap-2 rounded-xl border border-border bg-card p-5 text-card-foreground">
+        <h2 class="text-lg font-semibold">
+          <a href={member.url}>{member.name}</a>
+        </h2>
+        <p class="text-sm text-muted-foreground">{member.tagline}</p>
+        <p class="text-xs font-medium text-muted-foreground">{countLabel(member.count)}</p>
+      </li>
+    ))}
+  </ul>
+</Layout>

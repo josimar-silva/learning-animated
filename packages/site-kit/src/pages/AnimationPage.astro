@@ -1,0 +1,127 @@
+---
+import Breadcrumb from '../components/Breadcrumb.astro';
+import EmbedBox from '../components/EmbedBox.astro';
+import Layout from '../components/Layout.astro';
+import Player from '../components/Player.astro';
+import Stage from '../components/Stage.astro';
+import Steps from '../components/Steps.astro';
+import ViewToggle from '../components/ViewToggle.astro';
+import { figureLabel, sectionName } from '../model.ts';
+import { pathForAnimation, pathForHome, pathForSection } from '../routes.ts';
+import type { Animation, Section, Track } from '../schemas.ts';
+import { breadcrumbJsonLd, learningResourceJsonLd } from '../seo.ts';
+
+export type ViewProps = {
+  id: string | null;
+  label: string | null;
+  src: string;
+  width: number;
+  height: number;
+};
+
+interface Props {
+  track: Track;
+  section: Section;
+  animation: Animation;
+  views: readonly ViewProps[];
+  loop: number | null;
+  prev: Animation | null;
+  next: Animation | null;
+  sections: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const { track, section, animation, views, loop, prev, next, sections } = Astro.props;
+const first = views[0]!;
+const chapter = sectionName(track, section);
+const figure = figureLabel(track, animation);
+// Kafka's trail ends at the figure when there is one, and its JSON-LD lists the trail first.
+const trail = [
+  { name: 'Contents', path: pathForHome() },
+  { name: chapter, path: pathForSection(section) },
+  {
+    name: animation.figure && figure ? figure : animation.title,
+    path: pathForAnimation(animation),
+  },
+];
+const where = track.kind === 'book' ? `Chapter ${section.number}` : section.title;
+const caption =
+  track.source &&
+  (animation.figure
+    ? `${figure} from ${track.source.title}, reimagined as an animation.`
+    : 'Companion extra, not a figure from the book.');
+const pager = 'flex flex-col gap-1 rounded-xl border border-border p-4 hover:border-primary';
+---
+
+<Layout
+  track={track}
+  kind="animation"
+  path={pathForAnimation(animation)}
+  title={`${animation.title} | ${where} | ${track.site.name}`}
+  description={animation.description}
+  jsonLd={[breadcrumbJsonLd(track, trail), learningResourceJsonLd(track, section, animation)]}
+  sections={sections}
+>
+  <Breadcrumb trail={trail} />
+  <header class="mt-4">
+    {figure && (
+      <p data-role="figure" class="text-sm font-semibold text-primary">
+        {figure}
+      </p>
+    )}
+    <h1 class="text-3xl font-bold">{animation.title}</h1>
+    <p class="mt-2 text-lg text-muted-foreground">{animation.description}</p>
+    {/* prettier-ignore */}
+    <p class="mt-1 text-sm text-muted-foreground"><a data-role="chapter-ref" href={pathForSection(section)}>{chapter}</a>{track.source && <> in <a href={track.source.url} target="_blank" rel="noopener">{track.source.title}</a></>}</p>
+  </header>
+  <div class="mt-6">
+    <Stage src={first.src} width={first.width} height={first.height} title={animation.title} />
+    {caption && (
+      <p data-role="caption" class="mt-2 text-sm text-muted-foreground">
+        {caption}
+      </p>
+    )}
+    <ViewToggle views={views} />
+    <Player loop={loop} />
+    <Steps steps={animation.steps ?? []} />
+  </div>
+  <section class="mt-8 rounded-xl border border-border bg-muted p-5">
+    <h2 class="text-lg font-semibold">What to notice</h2>
+    <p data-role="objective" class="mt-1">
+      {animation.objective}
+    </p>
+  </section>
+  <div class="prose mt-6">
+    <slot />
+  </div>
+  {animation.references.length > 0 && (
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold">Go deeper</h2>
+      <ul class="mt-2 list-disc pl-5">
+        {animation.references.map((r) => (
+          <li data-role="reference">
+            <a href={r.url} target="_blank" rel="noopener">
+              {r.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+  <EmbedBox siteUrl={track.site.url} title={animation.title} views={views} />
+  <nav class="mt-10 grid gap-4 sm:grid-cols-2" aria-label="Animations">
+    {prev ? (
+      <a data-role="prev" rel="prev" href={pathForAnimation(prev)} class={pager}>
+        <span class="text-xs text-muted-foreground">Previous</span>
+        <span>{prev.title}</span>
+      </a>
+    ) : (
+      <span />
+    )}
+    {next && (
+      <a data-role="next" rel="next" href={pathForAnimation(next)} class={`${pager} sm:text-right`}>
+        <span class="text-xs text-muted-foreground">Next</span>
+        <span>{next.title}</span>
+      </a>
+    )}
+  </nav>
+</Layout>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  src: string;
+  width: number;
+  height: number;
+  title: string;
+}
+const { src, width, height, title } = Astro.props;
+---
+
+<div
+  data-role="stage"
+  class="overflow-hidden rounded-xl border border-border bg-stage"
+  style={`aspect-ratio: ${width} / ${height}`}
+>
+  <object data={src} type="image/svg+xml" class="block h-full w-full" aria-label={title}>
+    <a href={src}>{title}</a>
+  </object>
+</div>

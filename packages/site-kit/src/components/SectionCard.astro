@@ -1,0 +1,56 @@
+---
+import { countLabel, figureLabel } from '../model.ts';
+import { pathForAnimation, pathForSection } from '../routes.ts';
+import type { Animation, Section, Track } from '../schemas.ts';
+
+interface Props {
+  track: Track;
+  section: Section;
+  animations: readonly Animation[];
+}
+const { track, section, animations } = Astro.props;
+const planned = animations.length === 0;
+const label = `${track.kind === 'book' ? 'Chapter' : 'Topic'} ${section.number}`;
+const badge =
+  'inline-flex w-fit items-center rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground';
+---
+
+<li
+  class="card flex flex-col gap-2 rounded-xl border border-border bg-card p-5 text-card-foreground"
+  data-chapter={section.number}
+  data-planned={String(planned)}
+>
+  <p class="text-xs font-semibold tracking-wide text-primary uppercase">{label}</p>
+  {planned ? (
+    <>
+      <h3 class="text-lg font-semibold">{section.title}</h3>
+      <span class={badge}>Planned</span>
+    </>
+  ) : (
+    <>
+      <h3 class="text-lg font-semibold">
+        <a data-role="chapter-link" href={pathForSection(section)}>
+          {section.title}
+        </a>
+      </h3>
+      <span class={badge}>{countLabel(animations.length)}</span>
+      <ul class="mt-2 space-y-1 text-sm">
+        {animations.map((animation) => {
+          const figure = figureLabel(track, animation);
+          return (
+            <li>
+              <a
+                data-role="anim-link"
+                href={pathForAnimation(animation)}
+                class="flex flex-wrap gap-x-2"
+              >
+                {figure && <span class="font-medium text-muted-foreground">{figure}</span>}
+                <span>{animation.title}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  )}
+</li>

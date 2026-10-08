@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import {
   contentIssues,
   contents,
+  countLabel,
   type Entry,
   figureLabel,
   loopOf,
@@ -89,6 +90,10 @@ describe('labels and files', () => {
     expect(() => viewBoxOf('<svg/>')).toThrow(/viewBox/);
     expect(loopOf(svg('data-loop="13.5s"'))).toBe(13.5);
     expect(loopOf(svg())).toBeNull();
+  });
+  test('countLabel counts animations in plain English', () => {
+    expect(countLabel(1)).toBe('1 animation');
+    expect(countLabel(17)).toBe('17 animations');
   });
 });
 
