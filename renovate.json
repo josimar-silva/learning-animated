@@ -58,6 +58,11 @@
       "matchDepTypes": ["devDependencies"],
       "labels": ["dev-dependencies"],
       "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "The Node types follow the Node major in .nvmrc.",
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<25"
     }
   ]
 }
