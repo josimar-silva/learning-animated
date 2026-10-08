@@ -1,0 +1,13 @@
+{
+  "name": "@learning-animated/design",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./theme": "./src/theme.ts",
+    "./style-block": "./src/style-block.ts",
+    "./canonical": "./src/canonical.ts",
+    "./sync": "./src/sync.ts"
+  }
+}
