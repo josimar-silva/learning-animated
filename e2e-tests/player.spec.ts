@@ -11,16 +11,21 @@ const viewed = firstPage('data-action="view"');
 
 const stage = (page: Page) => page.locator('[data-role="stage"] object');
 
-async function open(page: Page, built: BuiltPage): Promise<void> {
-  await page.goto(`${origin(built.site)}${built.path}`);
-  // The SVG document inside the <object> loads after the page, and the player can only drive it then.
-  await expect
+// The SVG document inside the <object> loads after the page, and again after a view switch. The
+// player can only drive it once the document the object names has loaded.
+const shown = (page: Page) =>
+  expect
     .poll(() =>
-      stage(page).evaluate((object: HTMLObjectElement) =>
-        Boolean(object.contentDocument?.querySelector('svg')),
-      ),
+      stage(page).evaluate((object: HTMLObjectElement) => {
+        const doc = object.contentDocument;
+        return Boolean(doc?.URL.endsWith(object.getAttribute('data')!) && doc.querySelector('svg'));
+      }),
     )
     .toBe(true);
+
+async function open(page: Page, built: BuiltPage): Promise<void> {
+  await page.goto(`${origin(built.site)}${built.path}`);
+  await shown(page);
 }
 
 const clock = (page: Page) =>
@@ -83,4 +88,23 @@ test('the view toggle swaps the SVG on the stage', async ({ page }) => {
   await expect(second).toHaveAttribute('aria-pressed', 'true');
   await expect(buttons.first()).toHaveAttribute('aria-pressed', 'false');
   await expect(stage(page)).toHaveAttribute('data', (await second.getAttribute('data-src'))!);
+});
+
+test('a view switch keeps the instant and the pause', async ({ page }) => {
+  test.skip(!viewed, 'no lesson with views yet');
+  await open(page, viewed!);
+  // Pause well past the start, so a view that restarts from 0 cannot pass for one that kept the moment.
+  await expect
+    .poll(async () => (await clock(page)).time, { intervals: [100] })
+    .toBeGreaterThan(1.5);
+  const toggle = page.locator('[data-action="toggle"]');
+  await toggle.click();
+  const before = await clock(page);
+  await page.locator('[data-action="view"]').nth(1).click();
+  await shown(page);
+  await expect
+    .poll(() => clock(page))
+    .toEqual({ time: expect.closeTo(before.time, 1), paused: true });
+  await toggle.click();
+  expect((await clock(page)).paused).toBe(false);
 });
