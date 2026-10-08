@@ -1,0 +1,38 @@
+[
+  {
+    "id": "threading",
+    "number": 1,
+    "title": "Threading model",
+    "description": "How Quarkus splits work between event-loop threads and worker threads, and what blocking costs each of them."
+  },
+  {
+    "id": "rest",
+    "number": 2,
+    "title": "REST endpoints",
+    "description": "What an endpoint's return type decides, and how an exception becomes an HTTP response."
+  },
+  {
+    "id": "request-context",
+    "number": 3,
+    "title": "Request context",
+    "description": "Carrying headers from an inbound request to outbound calls and back to the response."
+  },
+  {
+    "id": "messaging",
+    "number": 4,
+    "title": "Messaging",
+    "description": "Consuming Kafka records with SmallRye Reactive Messaging: retries, retry topics, dead letters, and interceptors."
+  },
+  {
+    "id": "data",
+    "number": 5,
+    "title": "Data and transactions",
+    "description": "Where a transaction should start and end when a request also calls a remote service, and how to read from two datasources."
+  },
+  {
+    "id": "cdi-config",
+    "number": 6,
+    "title": "CDI and configuration",
+    "description": "Letting configuration choose which implementation an injection point receives."
+  }
+]

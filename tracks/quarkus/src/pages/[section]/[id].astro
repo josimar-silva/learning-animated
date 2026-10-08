@@ -1,0 +1,15 @@
+---
+import { animationPaths } from '@learning-animated/site-kit/content';
+import AnimationPage from '@learning-animated/site-kit/pages/AnimationPage.astro';
+import { getCollection, render } from 'astro:content';
+
+import track from '../../track.ts';
+
+export const getStaticPaths = () => animationPaths(track, getCollection);
+const { entry, ...props } = Astro.props;
+const { Content } = await render(entry as Parameters<typeof render>[0]);
+---
+
+<AnimationPage track={track} {...props}>
+  <Content />
+</AnimationPage>
