@@ -7,7 +7,13 @@
     "./schemas": "./src/schemas.ts",
     "./model": "./src/model.ts",
     "./routes": "./src/routes.ts",
-    "./disk": "./src/disk.ts"
+    "./disk": "./src/disk.ts",
+    "./theme-boot": "./src/theme-boot.ts",
+    "./headers": "./src/headers.ts",
+    "./seo": "./src/seo.ts",
+    "./sitemap": "./src/sitemap.ts",
+    "./nginx": "./src/nginx.ts",
+    "./family": "./src/family.ts"
   },
   "dependencies": {
     "astro": "7.3.7",
