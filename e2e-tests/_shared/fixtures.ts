@@ -18,7 +18,9 @@ export const test = base.extend<{ autoTestFixture: string; problems: string[] }>
           page.coverage.stopJSCoverage(),
           page.coverage.stopCSSCoverage(),
         ]);
-        await addCoverageReport([...jsCoverage, ...cssCoverage], testInfo);
+        const coverage = [...jsCoverage, ...cssCoverage];
+        // A test that skips before opening a page has none, and the report logs an error for that.
+        if (coverage.length > 0) await addCoverageReport(coverage, testInfo);
       }
     },
     { scope: 'test', auto: true },
