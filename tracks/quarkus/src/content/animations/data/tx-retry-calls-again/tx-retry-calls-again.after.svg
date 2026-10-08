@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 592" role="img" data-loop="20s">
+<title>A retry calls the provider again: after</title>
+<desc>Checkout A runs in one transaction and sends the order's id as an Idempotency-Key header with the charge. The provider charges the card, but confirming the order throws. The transaction rolls back, which frees the seats, and A gets 500 Internal Server Error. The caller sends the same order again. The retry holds the seats again and sends the same key, so the provider returns the first charge instead of charging the card again. This time the transaction commits and A gets 200 OK, with one charge on the card.</desc>
+<style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+<defs>
+<clipPath id="reveal"><rect x="156" y="238" width="4" height="210"><animate attributeName="width" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7000;1.0000" values="4;704;704"/></rect></clipPath>
+</defs>
+<rect x="0" y="0" width="960" height="592" class="fill-stage"/>
+<text x="28" y="40" class="la-title">After: the retry gets the first charge back</text>
+<text x="28" y="62" class="la-note">The charge carries the order's id as an idempotency key, so the provider answers a repeat with the first charge.</text>
+<rect x="24" y="80" width="912" height="144" rx="10" class="la-canvas"/>
+<g data-role="code-line" data-call="hold" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.1000;0.3500;0.4250" values="0;1;0;1;0"/><rect x="58" y="126" width="578" height="16" rx="3" class="fill-cell"/><rect x="58" y="126" width="3" height="16" class="fill-sky"/></g>
+<g data-role="code-line" data-call="charge" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2250;0.4250;0.5500" values="0;1;0;1;0"/><rect x="58" y="143" width="578" height="16" rx="3" class="fill-cell"/><rect x="58" y="143" width="3" height="16" class="fill-sky"/></g>
+<g data-role="code-line" data-call="confirm" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3000;0.5500;0.6250" values="0;1;0;1;0"/><rect x="58" y="160" width="578" height="16" rx="3" class="fill-cell"/><rect x="58" y="160" width="3" height="16" class="fill-sky"/></g>
+<g data-role="code-transaction" data-tx="checkout">
+<g data-state="dormant"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250" values="1;0"/><path d="M 52 92 H 44 V 211 H 52" class="fill-none stroke-grid stroke-2.5"/></g>
+<g data-state="open" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.3000;0.3500;0.6250" values="0;1;0;1;0"/><path d="M 52 92 H 44 V 211 H 52" class="fill-none stroke-amber stroke-2.5"/></g>
+<g data-state="rolled-back" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3500" values="0;1;0"/><path d="M 52 92 H 44 V 211 H 52" class="fill-none stroke-red stroke-2.5"/></g>
+<g data-state="committed" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/><path d="M 52 92 H 44 V 211 H 52" class="fill-none stroke-violet stroke-2.5"/></g>
+</g>
+<g data-role="code" class="font-mono text-offset fill-ink">
+<text x="64" y="104">@Transactional</text>
+<text x="64" y="121">public TicketResult checkout(Order order) {</text>
+<text x="82" y="138">seats.hold(order);</text>
+<text x="82" y="155">Charge charge = payments.charge(order.id(), order);</text>
+<text x="82" y="172">orders.confirm(order, charge);</text>
+<text x="82" y="189">return TicketResult.issued(order);</text>
+<text x="64" y="206">}</text>
+</g>
+<g class="font-sans text-offset">
+<text x="650" y="104" class="fill-ink-muted">BEGIN when checkout() starts</text>
+<text x="650" y="155" data-role="code-note" data-call="charge" class="font-semibold fill-emerald">sends order.id() as the Idempotency-Key</text>
+<text x="650" y="172" class="fill-ink-muted">throws on the first attempt</text>
+<text x="650" y="206" class="fill-ink-muted">COMMIT on return, ROLLBACK if it throws</text>
+</g>
+<g class="font-sans">
+<text x="28" y="265" class="text-label font-semibold fill-ink">checkout</text>
+<circle cx="100" cy="261" r="9" class="fill-sky"/>
+<text x="100" y="265" class="text-offset font-bold fill-surface anchor-middle">A</text>
+<text x="28" y="282" class="font-mono text-offset fill-ink-muted">POST /checkout</text>
+<text x="28" y="318" class="text-label font-semibold fill-ink">database</text>
+<text x="28" y="333" class="text-offset fill-ink-muted">seats A12, A13</text>
+<text x="28" y="362" class="text-label font-semibold fill-ink">payment provider</text>
+<text x="28" y="377" class="font-mono text-offset fill-ink-muted">POST /charges</text>
+<text x="28" y="413" class="text-label font-semibold fill-ink">retry</text>
+<circle cx="100" cy="409" r="9" class="fill-sky"/>
+<text x="100" y="413" class="text-offset font-bold fill-surface anchor-middle">A</text>
+<text x="28" y="430" class="font-mono text-offset fill-ink-muted">POST /checkout</text>
+</g>
+<rect x="156" y="246" width="776" height="46" rx="8" class="la-canvas"/>
+<rect x="156" y="306" width="776" height="30" rx="8" class="la-canvas"/>
+<rect x="156" y="350" width="776" height="30" rx="8" class="la-canvas"/>
+<rect x="156" y="394" width="776" height="46" rx="8" class="la-canvas"/>
+<!-- Timeline: a moment t seconds into the loop sits at x = 160 + 50t, and the reveal clip and the playhead reach x = 860 at 14 s. -->
+<g clip-path="url(#reveal)">
+<g data-role="transaction" data-request="A" data-attempt="1" data-tx="checkout">
+<g data-state="open" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.3000" values="0;1;0"/><rect x="185" y="246" width="275" height="46" rx="8" class="la-cell-new"/><text x="193" y="259" font-size="11" class="font-sans fill-cell-ink">transaction</text></g>
+<g data-state="rolled-back" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/><rect x="185" y="246" width="275" height="46" rx="8" class="fill-surface stroke-red stroke-1.5"/><text x="193" y="259" font-size="11" class="font-sans fill-red">rolled back</text></g>
+</g>
+<g data-role="transaction" data-request="A" data-attempt="2" data-tx="checkout">
+<g data-state="open" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.6250" values="0;1;0"/><rect x="510" y="394" width="275" height="46" rx="8" class="la-cell-new"/><text x="518" y="407" font-size="11" class="font-sans fill-cell-ink">transaction</text></g>
+<g data-state="committed" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/><rect x="510" y="394" width="275" height="46" rx="8" class="la-card"/><text x="518" y="407" font-size="11" class="font-sans fill-ink">committed</text></g>
+</g>
+<g data-role="call" data-request="A" data-attempt="1" data-call="hold" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250" values="0;1"/><rect x="189" y="266" width="67" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="222.5" y="281" class="font-sans text-offset fill-ink anchor-middle">hold seats</text></g>
+<g data-role="call" data-request="A" data-attempt="1" data-call="charge" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="0;1"/><rect x="264" y="266" width="117" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="322.5" y="281" class="font-sans text-offset fill-ink anchor-middle">charge the card</text></g>
+<g data-role="call" data-request="A" data-attempt="1" data-call="confirm" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/><g data-state="running"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="1;0"/><rect x="389" y="266" width="67" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="422.5" y="281" class="font-sans text-offset fill-ink anchor-middle">confirm</text></g><g data-state="failed" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/><rect x="389" y="266" width="67" height="22" rx="5" class="fill-surface stroke-red stroke-1.5"/><text x="422.5" y="281" class="font-sans text-offset fill-red anchor-middle">confirm</text></g></g>
+<g data-role="call" data-request="A" data-attempt="2" data-call="hold" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500" values="0;1"/><rect x="514" y="414" width="67" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="547.5" y="429" class="font-sans text-offset fill-ink anchor-middle">hold seats</text></g>
+<g data-role="call" data-request="A" data-attempt="2" data-call="charge" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250" values="0;1"/><rect x="589" y="414" width="117" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="647.5" y="429" class="font-sans text-offset fill-ink anchor-middle">charge the card</text></g>
+<g data-role="call" data-request="A" data-attempt="2" data-call="confirm" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/><rect x="714" y="414" width="67" height="22" rx="5" class="fill-surface stroke-sky stroke-1.5"/><text x="747.5" y="429" class="font-sans text-offset fill-ink anchor-middle">confirm</text></g>
+<g data-role="seat-status" data-state="free"><rect x="161" y="306" width="48" height="30" rx="6" class="fill-surface stroke-grid stroke-1.5"/><text x="185" y="325" class="font-sans text-offset fill-ink-muted anchor-middle">free</text></g>
+<g data-role="seat-lock" data-attempt="1">
+<g data-state="held" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500;0.3000" values="0;1;0"/><rect x="211" y="306" width="248" height="30" rx="6" class="la-cell-new"/><text x="220" y="325" class="font-sans text-offset fill-cell-ink">locked by the first attempt</text></g>
+<g data-state="released" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/><rect x="211" y="306" width="248" height="30" rx="6" class="fill-cell-new"/><text x="220" y="325" class="font-sans text-offset fill-cell-ink">locked by the first attempt</text></g>
+</g>
+<g data-role="seat-status" data-state="free" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/><rect x="461" y="306" width="73" height="30" rx="6" class="fill-surface stroke-grid stroke-1.5"/><text x="497.5" y="325" class="font-sans text-offset fill-ink-muted anchor-middle">free again</text></g>
+<g data-role="seat-lock" data-attempt="2">
+<g data-state="held" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.6250" values="0;1;0"/><rect x="536" y="306" width="248" height="30" rx="6" class="la-cell-new"/><text x="545" y="325" class="font-sans text-offset fill-cell-ink">locked by the retry</text></g>
+<g data-state="released" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/><rect x="536" y="306" width="248" height="30" rx="6" class="fill-cell-new"/><text x="545" y="325" class="font-sans text-offset fill-cell-ink">locked by the retry</text></g>
+</g>
+<g data-role="seat-status" data-state="sold" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/><rect x="786" y="306" width="73" height="30" rx="6" class="la-card"/><text x="822.5" y="325" class="font-sans text-offset fill-ink anchor-middle">sold to A</text></g>
+<g data-role="charge" data-attempt="1" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="0;1"/><rect x="261" y="350" width="123" height="30" rx="6" class="fill-surface stroke-slate stroke-1.5"/><text x="270" y="369" class="font-sans text-offset fill-ink">charging the card</text></g>
+<g data-role="replay" data-attempt="2" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250" values="0;1"/><rect x="586" y="350" width="123" height="30" rx="6" class="la-card"/><text x="595" y="369" class="font-sans text-offset fill-ink">same key</text></g>
+</g>
+<g data-role="charged" data-attempt="1" data-charge="1" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/><text x="393" y="369" class="font-sans text-offset font-semibold fill-emerald">charged</text></g>
+<g data-role="charged" data-attempt="2" data-charge="1" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/><text x="718" y="369" class="font-sans text-offset font-semibold fill-emerald">returns the first charge</text></g>
+<g data-role="response" data-request="A" data-attempt="1" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/><text x="468" y="281" class="font-sans text-offset font-semibold fill-red">500 Internal Server Error</text></g>
+<g data-role="response" data-request="A" data-attempt="2" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/><text x="818" y="429" class="font-sans text-offset font-semibold fill-emerald">200 OK</text></g>
+<line x1="160" y1="458" x2="866" y2="458" class="la-arrow"/>
+<polygon points="874,458 866,454 866,462" class="fill-flow"/>
+<text x="882" y="462" class="la-note">time</text>
+<g data-role="playhead"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="1;0"/><g><animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7000;1.0000" values="0,0;700,0;700,0"/><line x1="160" y1="238" x2="160" y2="448" class="stroke-flow-strong stroke-1.5"/></g></g>
+<g data-role="verdict" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/><text x="28" y="490" class="font-sans text-label font-semibold fill-ink">One order, one charge: the provider answered the retry with the first charge.</text><text x="28" y="510" class="font-sans text-label fill-ink-muted">The key comes from the order, so every attempt sends the same one.</text></g>
+<rect x="28" y="531" width="18" height="12" rx="3" class="la-cell-new"/><text x="54" y="541" class="font-sans text-offset fill-ink-muted">open, not committed yet</text>
+<rect x="222" y="531" width="18" height="12" rx="3" class="la-card"/><text x="248" y="541" class="font-sans text-offset fill-ink-muted">committed</text>
+<rect x="330" y="531" width="18" height="12" rx="3" class="fill-surface stroke-red stroke-1.5"/><text x="356" y="541" class="font-sans text-offset fill-ink-muted">rolled back</text>
+<text x="28" y="576" class="font-sans text-offset fill-ink-muted">Sources: quarkus.io/guides/transaction, RFC 9110 (idempotent methods), and the IETF draft on the Idempotency-Key header.</text>
+</svg>
