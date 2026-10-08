@@ -41,8 +41,22 @@ describe('assertSvgContract', () => {
       /style attributes/,
     );
   });
+  test('ignores a style element holding only a comment', () =>
+    expect(
+      check(svg({ body: `<style><!-- note --></style><rect>${PULSE}</rect>` })),
+    ).not.toThrow());
+  test('ignores a style element holding only an empty CDATA section', () =>
+    expect(check(svg({ body: `<style><![CDATA[]]></style><rect>${PULSE}</rect>` }))).not.toThrow());
+  test('rejects a rule beside a comment', () =>
+    expect(check(svg({ style: `${BLOCK}<!-- note -->.x { fill: none; }` }))).toThrow(
+      /LA-STYLE block/,
+    ));
+  test('rejects a style attribute on the root', () =>
+    expect(check(svg({ root: 'style="fill: none"' }))).toThrow(/style attributes/));
   test('rejects raw colors', () =>
     expect(check(svg({ body: `<rect fill="#ffffff">${PULSE}</rect>` }))).toThrow(/raw colors/));
+  test('rejects a raw color behind spaces and a quote', () =>
+    expect(check(svg({ body: `<rect fill = " #ffffff">${PULSE}</rect>` }))).toThrow(/raw colors/));
   test('rejects dimmed paint', () =>
     expect(check(svg({ body: `<rect fill-opacity="0.5">${PULSE}</rect>` }))).toThrow(
       /full strength/,

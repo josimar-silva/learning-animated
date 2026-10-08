@@ -4,7 +4,7 @@ import { parseSvg, tagOf } from './parse.ts';
 
 const SMIL = new Set(['animate', 'animatetransform', 'animatemotion', 'set']);
 const RAW_COLOR =
-  /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)\s*[:=]\s*["']?\s*(#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\()/gi;
+  /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)\s*[:=][\s"']*(#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\()/gi;
 // The palette pairs are tested at full strength, so these would void that guarantee.
 const DIMMED_PAINT = /(?:stroke|fill)-opacity\s*[:=]/gi;
 const CLOCK = /^(\d+(?:\.\d+)?)(ms|s)?$/;
@@ -44,13 +44,13 @@ export function assertEmbedsStyleBlock(text: string, block: string): void {
 }
 
 export function assertNoCssOutsideBlock(text: string, block: string): void {
-  const rest = withoutBlock(text, block);
-  const rules = [...rest.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)]
-    .map((m) => m[1]!.replace(/<!\[CDATA\[|\]\]>|<!--[\s\S]*?-->/g, '').trim())
+  const { svg } = parseSvg(text);
+  const rules = [...svg.querySelectorAll('style')]
+    .map((style) => withoutBlock(style.textContent, block).trim())
     .filter(Boolean);
   assert.deepEqual(rules, [], 'CSS must live only in the LA-STYLE block');
   assert.equal(
-    /\sstyle\s*=/.test(rest),
+    svg.hasAttribute('style') || svg.querySelector('[style]') !== null,
     false,
     'style attributes are not allowed; use utilities or presentation attributes',
   );
