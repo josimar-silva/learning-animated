@@ -44,6 +44,7 @@ export const REQUIRED_RECIPES = [
   'build-image',
   'start-container',
   'pre-release',
+  'gen',
 ];
 
 export const META_FILES = [

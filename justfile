@@ -42,6 +42,10 @@ style:
 style-check:
     node packages/design/bin/la-style.ts --check tracks/*/src/content/animations
 
+# Write the SVG a generator describes (just gen <path to <id>.gen.ts>)
+gen file:
+    node scripts/gen.ts {{file}}
+
 # The site folders that exist, one per line
 _site-dirs:
     @for d in home tracks/*; do if [ -f "$d/astro.config.ts" ]; then echo "$d"; fi; done
