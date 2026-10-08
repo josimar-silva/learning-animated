@@ -1,0 +1,406 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 560" role="img" preserveAspectRatio="xMidYMid meet">
+  <title>The acks setting</title>
+  <desc>The same write runs under acks=0, acks=1, and acks=all. Each lane shows when the
+  producer is acknowledged and how long it waits, then the leader crashes and only the
+  acks=all record survives on its in-sync replicas.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="kf-head-flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+    <marker id="kf-head-replicate" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-pink" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+    <marker id="kf-head-ack" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-emerald" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+
+    <path id="m-write-acks0" class="fill-none stroke-none" d="M 172 150 L 172 196" />
+    <path id="m-rep1-acks0" class="fill-none stroke-none" d="M 228 244 L 228 282" />
+    <path id="m-rep2-acks0" class="fill-none stroke-none" d="M 132 244 C 64 262, 64 330, 100 361" />
+
+    <path id="m-write-acks1" class="fill-none stroke-none" d="M 480 150 L 480 196" />
+    <path id="m-rep1-acks1" class="fill-none stroke-none" d="M 536 244 L 536 282" />
+    <path id="m-rep2-acks1" class="fill-none stroke-none" d="M 440 244 C 372 262, 372 330, 408 361" />
+    <path id="m-ack-acks1" class="fill-none stroke-none" d="M 550 220 L 592 220 L 592 127 L 544 127" />
+
+    <path id="m-write-acksall" class="fill-none stroke-none" d="M 788 150 L 788 196" />
+    <path id="m-rep1-acksall" class="fill-none stroke-none" d="M 844 244 L 844 282" />
+    <path id="m-rep2-acksall" class="fill-none stroke-none" d="M 748 244 C 680 262, 680 330, 716 361" />
+    <path id="m-ack-acksall" class="fill-none stroke-none" d="M 858 220 L 900 220 L 900 127 L 852 127" />
+  </defs>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="544" rx="16" />
+
+  <g data-role="lane" data-acks="0">
+    <rect class="fill-none stroke-grid stroke-1.5" x="24" y="32" width="296" height="496" rx="12" />
+    <g data-role="header">
+      <rect class="fill-surface stroke-violet stroke-1.5" x="116" y="48" width="112" height="32" rx="8" />
+      <text class="font-mono text-label font-semibold fill-ink" x="172" y="70" text-anchor="middle">acks=0</text>
+    </g>
+    <g data-role="producer">
+      <rect class="fill-green stroke-emerald stroke-1.5" x="108" y="104" width="128" height="46" rx="8" />
+      <text class="font-sans text-label font-semibold fill-surface" x="172" y="132" text-anchor="middle">Producer</text>
+    </g>
+    <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 172 150 L 172 196" />
+    <g data-role="replica" data-replica="leader">
+      <rect class="fill-violet-deep stroke-amber stroke-2.5" x="102" y="196" width="140" height="48" rx="8" />
+      <text class="la-label font-semibold" x="116" y="226" text-anchor="start">Leader</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="194" y="208" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="194" y="208" width="36" height="24" rx="5" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.11;0.115;0.58;0.585;1" />
+        </rect>
+      </g>
+    </g>
+    <g data-role="crash" data-acks="0" opacity="0">
+      <rect class="fill-surface stroke-red stroke-2.5" x="128" y="250" width="88" height="24" rx="6" />
+      <text class="font-sans text-offset font-semibold fill-red" x="172" y="266" text-anchor="middle">crashed</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.58;0.585;0.95;0.97;1" />
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="102" y="282" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="116" y="308" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="194" y="292" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="194" y="292" width="36" height="24" rx="5" opacity="0" />
+      </g>
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="102" y="340" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="116" y="366" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="194" y="350" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="194" y="350" width="36" height="24" rx="5" opacity="0" />
+      </g>
+    </g>
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 228 244 L 228 282" />
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 132 244 C 64 262, 64 330, 100 361" />
+    <text class="la-note" x="192" y="176" text-anchor="start">no ack requested</text>
+    <g data-role="flow" data-flow="write">
+      <circle class="fill-amber" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.03;0.11;1" rotate="0">
+          <mpath xlink:href="#m-write-acks0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.03;0.035;0.11;0.115;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;0.55;0.55" keyTimes="0;0.22;0.34;1" rotate="0">
+          <mpath xlink:href="#m-rep1-acks0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.58;0.585;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;0.55;0.55" keyTimes="0;0.22;0.34;1" rotate="0">
+          <mpath xlink:href="#m-rep2-acks0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.58;0.585;1" />
+      </circle>
+    </g>
+    <text class="la-note" x="72" y="414" text-anchor="start">Time to acknowledge</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="72" y="422" width="200" height="12" rx="6" />
+    <rect class="fill-amber" data-role="latency" data-acks="0" x="72" y="422" width="0" height="12" rx="6">
+      <animate attributeName="width" dur="12s" repeatCount="indefinite" values="0;0;26;26;0;0" keyTimes="0;0.03;0.05;0.95;0.97;1" />
+    </rect>
+    <g data-role="outcome" data-acks="0" data-outcome="lost" opacity="0">
+      <text class="font-sans text-label font-semibold fill-red" x="172" y="462" text-anchor="middle">Lost, and no error raised</text>
+      <text class="la-note" x="172" y="492" text-anchor="middle">The producer does not wait.</text>
+      <text class="la-note" x="172" y="510" text-anchor="middle">Fastest, and failures stay invisible.</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.64;0.645;0.95;0.97;1" />
+    </g>
+  </g>
+
+  <g data-role="lane" data-acks="1">
+    <rect class="fill-none stroke-grid stroke-1.5" x="332" y="32" width="296" height="496" rx="12" />
+    <g data-role="header">
+      <rect class="fill-surface stroke-violet stroke-1.5" x="424" y="48" width="112" height="32" rx="8" />
+      <text class="font-mono text-label font-semibold fill-ink" x="480" y="70" text-anchor="middle">acks=1</text>
+    </g>
+    <g data-role="producer">
+      <rect class="fill-green stroke-emerald stroke-1.5" x="416" y="104" width="128" height="46" rx="8" />
+      <text class="font-sans text-label font-semibold fill-surface" x="480" y="132" text-anchor="middle">Producer</text>
+    </g>
+    <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 480 150 L 480 196" />
+    <g data-role="replica" data-replica="leader">
+      <rect class="fill-violet-deep stroke-amber stroke-2.5" x="410" y="196" width="140" height="48" rx="8" />
+      <text class="la-label font-semibold" x="424" y="226" text-anchor="start">Leader</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="502" y="208" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="502" y="208" width="36" height="24" rx="5" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.11;0.115;0.58;0.585;1" />
+        </rect>
+      </g>
+    </g>
+    <g data-role="crash" data-acks="1" opacity="0">
+      <rect class="fill-surface stroke-red stroke-2.5" x="436" y="250" width="88" height="24" rx="6" />
+      <text class="font-sans text-offset font-semibold fill-red" x="480" y="266" text-anchor="middle">crashed</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.58;0.585;0.95;0.97;1" />
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="410" y="282" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="424" y="308" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="502" y="292" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="502" y="292" width="36" height="24" rx="5" opacity="0" />
+      </g>
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="410" y="340" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="424" y="366" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="502" y="350" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="502" y="350" width="36" height="24" rx="5" opacity="0" />
+      </g>
+    </g>
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 536 244 L 536 282" />
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 440 244 C 372 262, 372 330, 408 361" />
+    <path class="fill-none stroke-emerald stroke-1.5" marker-end="url(#kf-head-ack)" d="M 550 220 L 592 220 L 592 127 L 544 127" />
+    <g data-role="flow" data-flow="write">
+      <circle class="fill-amber" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.03;0.11;1" rotate="0">
+          <mpath xlink:href="#m-write-acks1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.03;0.035;0.11;0.115;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;0.55;0.55" keyTimes="0;0.22;0.34;1" rotate="0">
+          <mpath xlink:href="#m-rep1-acks1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.58;0.585;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;0.55;0.55" keyTimes="0;0.22;0.34;1" rotate="0">
+          <mpath xlink:href="#m-rep2-acks1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.22;0.23;0.58;0.585;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="ack">
+      <circle class="fill-emerald" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.12;0.18;1" rotate="0">
+          <mpath xlink:href="#m-ack-acks1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.12;0.125;0.18;0.185;1" />
+      </circle>
+    </g>
+    <text class="la-note" x="380" y="414" text-anchor="start">Time to acknowledge</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="380" y="422" width="200" height="12" rx="6" />
+    <rect class="fill-amber" data-role="latency" data-acks="1" x="380" y="422" width="0" height="12" rx="6">
+      <animate attributeName="width" dur="12s" repeatCount="indefinite" values="0;0;104;104;0;0" keyTimes="0;0.03;0.18;0.95;0.97;1" />
+    </rect>
+    <g data-role="outcome" data-acks="1" data-outcome="lost" opacity="0">
+      <text class="font-sans text-label font-semibold fill-red" x="480" y="462" text-anchor="middle">Lost after a premature ack</text>
+      <text class="la-note" x="480" y="492" text-anchor="middle">The leader confirms the write.</text>
+      <text class="la-note" x="480" y="510" text-anchor="middle">Lost if it dies before replication.</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.64;0.645;0.95;0.97;1" />
+    </g>
+  </g>
+
+  <g data-role="lane" data-acks="all">
+    <rect class="fill-none stroke-grid stroke-1.5" x="640" y="32" width="296" height="496" rx="12" />
+    <g data-role="header">
+      <rect class="fill-surface stroke-violet stroke-1.5" x="732" y="48" width="112" height="32" rx="8" />
+      <text class="font-mono text-label font-semibold fill-ink" x="788" y="70" text-anchor="middle">acks=all</text>
+    </g>
+    <g data-role="producer">
+      <rect class="fill-green stroke-emerald stroke-1.5" x="724" y="104" width="128" height="46" rx="8" />
+      <text class="font-sans text-label font-semibold fill-surface" x="788" y="132" text-anchor="middle">Producer</text>
+    </g>
+    <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 788 150 L 788 196" />
+    <g data-role="replica" data-replica="leader">
+      <rect class="fill-violet-deep stroke-amber stroke-2.5" x="718" y="196" width="140" height="48" rx="8" />
+      <text class="la-label font-semibold" x="732" y="226" text-anchor="start">Leader</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="810" y="208" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="810" y="208" width="36" height="24" rx="5" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.11;0.115;0.58;0.585;1" />
+        </rect>
+      </g>
+    </g>
+    <g data-role="crash" data-acks="all" opacity="0">
+      <rect class="fill-surface stroke-red stroke-2.5" x="744" y="250" width="88" height="24" rx="6" />
+      <text class="font-sans text-offset font-semibold fill-red" x="788" y="266" text-anchor="middle">crashed</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.58;0.585;0.95;0.97;1" />
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="718" y="282" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="732" y="308" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="810" y="292" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="810" y="292" width="36" height="24" rx="5" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.305;0.95;0.97;1" />
+        </rect>
+      </g>
+    </g>
+    <g data-role="replica" data-replica="follower">
+      <rect class="fill-violet-deep stroke-slate stroke-1.5" x="718" y="340" width="140" height="42" rx="8" />
+      <text class="la-label font-semibold" x="732" y="366" text-anchor="start">Follower</text>
+      <g data-role="record">
+        <rect stroke-dasharray="4 4" class="fill-none stroke-cell-stroke stroke-1.5" x="810" y="350" width="36" height="24" rx="5" />
+        <rect class="la-cell-new" x="810" y="350" width="36" height="24" rx="5" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.305;0.95;0.97;1" />
+        </rect>
+      </g>
+    </g>
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 844 244 L 844 282" />
+    <path class="fill-none stroke-pink stroke-1.5" marker-end="url(#kf-head-replicate)" d="M 748 244 C 680 262, 680 330, 716 361" />
+    <path class="fill-none stroke-emerald stroke-1.5" marker-end="url(#kf-head-ack)" d="M 858 220 L 900 220 L 900 127 L 852 127" />
+    <g data-role="flow" data-flow="write">
+      <circle class="fill-amber" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.03;0.11;1" rotate="0">
+          <mpath xlink:href="#m-write-acksall" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.03;0.035;0.11;0.115;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.13;0.3;1" rotate="0">
+          <mpath xlink:href="#m-rep1-acksall" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.13;0.135;0.3;0.305;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="replicate">
+      <circle class="fill-pink" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.13;0.3;1" rotate="0">
+          <mpath xlink:href="#m-rep2-acksall" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.13;0.135;0.3;0.305;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="ack">
+      <circle class="fill-emerald" r="6" opacity="0">
+        <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.31;0.38;1" rotate="0">
+          <mpath xlink:href="#m-ack-acksall" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.31;0.315;0.38;0.385;1" />
+      </circle>
+    </g>
+    <text class="la-note" x="688" y="414" text-anchor="start">Time to acknowledge</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="688" y="422" width="200" height="12" rx="6" />
+    <rect class="fill-amber" data-role="latency" data-acks="all" x="688" y="422" width="0" height="12" rx="6">
+      <animate attributeName="width" dur="12s" repeatCount="indefinite" values="0;0;188;188;0;0" keyTimes="0;0.03;0.38;0.95;0.97;1" />
+    </rect>
+    <g data-role="outcome" data-acks="all" data-outcome="survives" opacity="0">
+      <text class="font-sans text-label font-semibold fill-emerald" x="788" y="462" text-anchor="middle">Survives on the replicas</text>
+      <text class="la-note" x="788" y="492" text-anchor="middle">Every in-sync replica confirms.</text>
+      <text class="la-note" x="788" y="510" text-anchor="middle">Safest, and the slowest.</text>
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.64;0.645;0.95;0.97;1" />
+    </g>
+  </g>
+</svg>
