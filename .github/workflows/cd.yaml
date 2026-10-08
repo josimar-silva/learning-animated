@@ -57,7 +57,7 @@ jobs:
       contents: write
       id-token: write
       attestations: write
-      actions: read
+      actions: write
 
     env:
       RELEASE_VERSION: ${{ needs.fetch-version.outputs.release_version }}
@@ -115,6 +115,12 @@ jobs:
         run: |
           git tag "v${{ env.RELEASE_VERSION }}" "${{ github.event.workflow_run.head_sha }}"
           git push origin "v${{ env.RELEASE_VERSION }}"
+
+      # A tag pushed with GITHUB_TOKEN starts no workflows, so this step dispatches the deploy.
+      - name: 🚢 Dispatch the deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yaml --ref "v${RELEASE_VERSION}"
 
       - name: 📝 Generate changelog
         uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4

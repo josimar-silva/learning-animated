@@ -209,9 +209,9 @@ packages/site-kit/src/pages/    the pages every site renders, built from src/com
 packages/site-kit/src/client/   browser modules: playback, views, scrubber, steps, theme, and menu
 tracks/<id>/                    one Astro site per track: track.ts, content, pages, and tests
 home/                           the family home page for learning-animated.com
-scripts/                        check-dist, forbidden-terms, affected-sites, and gen CLIs, logic in lib/
+scripts/                        check-dist, forbidden-terms, and gen CLIs, logic in lib/
 test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
-                                affected-sites, e2e, and palette contrast tests
+                                e2e, and palette contrast tests
 e2e-tests/                      Playwright specs that open every built page, helpers in _shared/
 .github/workflows/              CI, CodeQL, Scorecard, Deploy, Docker, and CD
 .github/skills/animate-lesson/  the checklist for adding a lesson
