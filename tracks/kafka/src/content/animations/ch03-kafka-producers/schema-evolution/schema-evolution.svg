@@ -1,0 +1,320 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 560" role="img" preserveAspectRatio="xMidYMid meet">
+  <title>Avro schema evolution through the Schema Registry</title>
+  <desc>Schema v2 drops faxNumber and adds email, both with defaults. A v1 record read with v2 and
+  a v2 record read with v1 both decode: the registry supplies the writer schema, the reader fills
+  what is missing from its defaults, and drops the field it does not know.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="kf-head-flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+    <marker id="kf-head-schema" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-lime" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+
+    <path id="m-record-a" class="fill-none stroke-none" d="M 288 213 L 552 213" />
+    <path id="m-schema-a" class="fill-none stroke-none" d="M 448 258 L 552 258" />
+    <path id="m-record-b" class="fill-none stroke-none" d="M 288 409 L 552 409" />
+    <path id="m-schema-b" class="fill-none stroke-none" d="M 448 454 L 552 454" />
+  </defs>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="544" rx="16" />
+
+  <g data-role="schema" data-version="1">
+    <text class="la-label font-semibold" x="48" y="58">Schema v1</text>
+    <g data-field="id">
+      <rect class="la-cell" x="140" y="38" width="90" height="28" rx="5" />
+      <text class="la-offset" x="185" y="57" text-anchor="middle">id</text>
+    </g>
+    <g data-field="name">
+      <rect class="la-cell" x="238" y="38" width="110" height="28" rx="5" />
+      <text class="la-offset" x="293" y="57" text-anchor="middle">name</text>
+    </g>
+    <g data-field="faxNumber">
+      <rect class="la-cell-new" x="356" y="38" width="130" height="28" rx="5" />
+      <text class="la-offset" x="421" y="57" text-anchor="middle">faxNumber</text>
+    </g>
+  </g>
+
+  <g data-role="schema" data-version="2">
+    <text class="la-label font-semibold" x="48" y="102">Schema v2</text>
+    <g data-field="id">
+      <rect class="la-cell" x="140" y="82" width="90" height="28" rx="5" />
+      <text class="la-offset" x="185" y="101" text-anchor="middle">id</text>
+    </g>
+    <g data-field="name">
+      <rect class="la-cell" x="238" y="82" width="110" height="28" rx="5" />
+      <text class="la-offset" x="293" y="101" text-anchor="middle">name</text>
+    </g>
+    <g data-field="email">
+      <rect class="la-cell-new" x="356" y="82" width="130" height="28" rx="5" />
+      <text class="la-offset" x="421" y="101" text-anchor="middle">email</text>
+    </g>
+  </g>
+
+  <text class="la-note" x="520" y="58">v2 drops faxNumber and adds email.</text>
+  <text class="la-note" x="520" y="80">Both carry a default, which is what lets</text>
+  <text class="la-note" x="520" y="102">a reader cope with either version.</text>
+
+  <g data-role="beat" data-beat="v1-to-v2" data-writer="1" data-reader="2">
+    <rect class="fill-none stroke-grid stroke-1.5" x="32" y="140" width="896" height="180" rx="14" />
+    <text class="la-label font-semibold" x="70" y="166">Written with v1, read with v2</text>
+
+    <text class="font-sans text-offset fill-ink-muted" x="70" y="192">on the wire</text>
+    <g data-field="id">
+      <rect class="la-cell" x="70" y="200" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="219">id</text>
+    </g>
+    <g data-field="name">
+      <rect class="la-cell" x="70" y="234" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="253">name</text>
+    </g>
+    <g data-field="faxNumber">
+      <rect class="la-cell" x="70" y="268" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="287">faxNumber</text>
+    </g>
+
+    <rect class="fill-lime-deep stroke-lime stroke-1.5" x="300" y="234" width="148" height="48" rx="8" />
+    <text class="font-sans text-offset fill-ink" x="374" y="254" text-anchor="middle">Schema Registry</text>
+    <text class="font-mono text-offset fill-ink" x="374" y="272" text-anchor="middle">writer schema v1</text>
+
+    <path class="la-arrow" d="M 288 213 L 548 213" marker-end="url(#kf-head-flow)" />
+    <path class="fill-none stroke-lime stroke-1.5" d="M 448 258 L 548 258" marker-end="url(#kf-head-schema)" />
+
+    <g data-role="flow" data-flow="record">
+      <g opacity="0">
+        <rect class="la-cell" x="-40" y="-12" width="80" height="24" rx="5" />
+        <text class="la-offset" x="0" y="4" text-anchor="middle">record v1</text>
+        <animateMotion dur="10s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.06;0.30;1">
+          <mpath xlink:href="#m-record-a" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.08;0.28;0.32;1" />
+      </g>
+    </g>
+
+    <g data-role="flow" data-flow="writer-schema" data-version="1">
+      <circle class="fill-lime" r="5" opacity="0">
+        <animateMotion dur="10s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.20;0.42;1">
+          <mpath xlink:href="#m-schema-a" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.18;0.22;0.40;0.44;1" />
+      </circle>
+    </g>
+
+    <text class="font-sans text-offset fill-ink-muted" x="560" y="192">after resolution</text>
+    <g data-role="resolved">
+      <g data-field="id" data-source="record" opacity="0">
+        <rect class="la-cell" x="560" y="200" width="160" height="42" rx="5" />
+        <text class="la-offset" x="574" y="217">id</text>
+        <text class="font-sans text-offset fill-cell-ink" x="574" y="234">from record</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.42;0.46;0.92;0.96;1" />
+      </g>
+      <g data-field="name" data-source="record" opacity="0">
+        <rect class="la-cell" x="730" y="200" width="160" height="42" rx="5" />
+        <text class="la-offset" x="744" y="217">name</text>
+        <text class="font-sans text-offset fill-cell-ink" x="744" y="234">from record</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.45;0.49;0.92;0.96;1" />
+      </g>
+      <g data-field="email" data-source="default" opacity="0">
+        <rect class="la-cell-new" x="560" y="250" width="160" height="42" rx="5" />
+        <text class="la-offset" x="574" y="267">email</text>
+        <text class="font-sans text-offset fill-cell-ink" x="574" y="284">from default</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.48;0.52;0.92;0.96;1" />
+      </g>
+      <g data-field="faxNumber" data-source="dropped" opacity="0">
+        <rect class="fill-surface stroke-slate stroke-1.5" x="730" y="250" width="160" height="42" rx="5" />
+        <text class="font-mono text-offset fill-ink-muted" x="744" y="267">faxNumber</text>
+        <text class="font-sans text-offset fill-ink-muted" x="744" y="284">dropped</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.51;0.55;0.92;0.96;1" />
+      </g>
+    </g>
+
+    <text class="font-sans text-label font-semibold fill-emerald" x="890" y="166" text-anchor="end" data-role="outcome" data-outcome="decoded" opacity="0">decoded
+      <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.58;0.62;0.92;0.96;1" />
+    </text>
+  </g>
+
+  <g data-role="beat" data-beat="v2-to-v1" data-writer="2" data-reader="1">
+    <rect class="fill-none stroke-grid stroke-1.5" x="32" y="336" width="896" height="180" rx="14" />
+    <text class="la-label font-semibold" x="70" y="362">Written with v2, read with v1</text>
+
+    <text class="font-sans text-offset fill-ink-muted" x="70" y="388">on the wire</text>
+    <g data-field="id">
+      <rect class="la-cell" x="70" y="396" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="415">id</text>
+    </g>
+    <g data-field="name">
+      <rect class="la-cell" x="70" y="430" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="449">name</text>
+    </g>
+    <g data-field="email">
+      <rect class="la-cell" x="70" y="464" width="210" height="28" rx="5" />
+      <text class="la-offset" x="84" y="483">email</text>
+    </g>
+
+    <rect class="fill-lime-deep stroke-lime stroke-1.5" x="300" y="430" width="148" height="48" rx="8" />
+    <text class="font-sans text-offset fill-ink" x="374" y="450" text-anchor="middle">Schema Registry</text>
+    <text class="font-mono text-offset fill-ink" x="374" y="468" text-anchor="middle">writer schema v2</text>
+
+    <path class="la-arrow" d="M 288 409 L 548 409" marker-end="url(#kf-head-flow)" />
+    <path class="fill-none stroke-lime stroke-1.5" d="M 448 454 L 548 454" marker-end="url(#kf-head-schema)" />
+
+    <g data-role="flow" data-flow="record">
+      <g opacity="0">
+        <rect class="la-cell" x="-40" y="-12" width="80" height="24" rx="5" />
+        <text class="la-offset" x="0" y="4" text-anchor="middle">record v2</text>
+        <animateMotion dur="10s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.06;0.30;1">
+          <mpath xlink:href="#m-record-b" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.08;0.28;0.32;1" />
+      </g>
+    </g>
+
+    <g data-role="flow" data-flow="writer-schema" data-version="2">
+      <circle class="fill-lime" r="5" opacity="0">
+        <animateMotion dur="10s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.20;0.42;1">
+          <mpath xlink:href="#m-schema-b" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.18;0.22;0.40;0.44;1" />
+      </circle>
+    </g>
+
+    <text class="font-sans text-offset fill-ink-muted" x="560" y="388">after resolution</text>
+    <g data-role="resolved">
+      <g data-field="id" data-source="record" opacity="0">
+        <rect class="la-cell" x="560" y="396" width="160" height="42" rx="5" />
+        <text class="la-offset" x="574" y="413">id</text>
+        <text class="font-sans text-offset fill-cell-ink" x="574" y="430">from record</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.42;0.46;0.92;0.96;1" />
+      </g>
+      <g data-field="name" data-source="record" opacity="0">
+        <rect class="la-cell" x="730" y="396" width="160" height="42" rx="5" />
+        <text class="la-offset" x="744" y="413">name</text>
+        <text class="font-sans text-offset fill-cell-ink" x="744" y="430">from record</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.45;0.49;0.92;0.96;1" />
+      </g>
+      <g data-field="faxNumber" data-source="default" opacity="0">
+        <rect class="la-cell-new" x="560" y="446" width="160" height="42" rx="5" />
+        <text class="la-offset" x="574" y="463">faxNumber</text>
+        <text class="font-sans text-offset fill-cell-ink" x="574" y="480">from default</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.48;0.52;0.92;0.96;1" />
+      </g>
+      <g data-field="email" data-source="dropped" opacity="0">
+        <rect class="fill-surface stroke-slate stroke-1.5" x="730" y="446" width="160" height="42" rx="5" />
+        <text class="font-mono text-offset fill-ink-muted" x="744" y="463">email</text>
+        <text class="font-sans text-offset fill-ink-muted" x="744" y="480">dropped</text>
+        <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.51;0.55;0.92;0.96;1" />
+      </g>
+    </g>
+
+    <text class="font-sans text-label font-semibold fill-emerald" x="890" y="362" text-anchor="end" data-role="outcome" data-outcome="decoded" opacity="0">decoded
+      <animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.58;0.62;0.92;0.96;1" />
+    </text>
+  </g>
+</svg>
