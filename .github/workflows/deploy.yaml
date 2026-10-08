@@ -44,9 +44,10 @@ jobs:
     permissions:
       contents: read
       deployments: write
-    # Job-level `if` cannot read secrets, so the deploy step checks this flag instead.
     env:
+      # Job-level `if` cannot read secrets, so the deploy step checks this flag instead.
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+      ASTRO_TELEMETRY_DISABLED: 1
     strategy:
       fail-fast: false
       matrix:

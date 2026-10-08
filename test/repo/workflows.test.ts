@@ -29,6 +29,7 @@ type Step = {
 type Job = {
   needs?: string | string[];
   if?: string;
+  env?: Record<string, unknown>;
   outputs?: Record<string, string>;
   permissions?: Record<string, string>;
   strategy?: { matrix?: { include?: unknown } };
@@ -38,6 +39,7 @@ type Workflow = {
   on?: unknown;
   permissions?: unknown;
   concurrency?: unknown;
+  env?: Record<string, unknown>;
   jobs: Record<string, Job>;
 };
 
@@ -45,6 +47,18 @@ function workflows(): Array<[string, string]> {
   return readdirSync(DIR)
     .filter((f) => f.endsWith('.yaml'))
     .map((f) => [f, readFileSync(DIR + f, 'utf8')]);
+}
+
+// Every job of every workflow, named `<file>#<job>`.
+function jobs(): Array<{ id: string; workflow: Workflow; job: Job }> {
+  return workflows().flatMap(([file, text]) => {
+    const workflow = parse(text) as Workflow;
+    return Object.entries(workflow.jobs).map(([name, job]) => ({
+      id: `${file}#${name}`,
+      workflow,
+      job,
+    }));
+  });
 }
 
 const workflow = (file: string): Workflow => parse(readFileSync(DIR + file, 'utf8')) as Workflow;
@@ -108,12 +122,25 @@ test('every action is pinned to a full commit SHA with a version comment', () =>
 });
 
 test('every job hardens the runner before anything else', () => {
-  const unhardened = workflows().flatMap(([f, text]) =>
-    Object.entries((parse(text) as Workflow).jobs)
-      .filter(([, job]) => !job.steps?.[0]?.uses?.startsWith('step-security/harden-runner@'))
-      .map(([name]) => `${f}#${name}`),
-  );
+  const unhardened = jobs()
+    .filter(({ job }) => !job.steps?.[0]?.uses?.startsWith('step-security/harden-runner@'))
+    .map(({ id }) => id);
   expect(unhardened).toEqual([]);
+});
+
+// Astro comes with the workspace, so any job that installs it can run Astro.
+test('every job that installs the workspace turns off Astro telemetry', () => {
+  const installing = jobs().filter(({ job }) =>
+    job.steps?.some((step) => /\bjust ci\b/.test(step.run ?? '')),
+  );
+  expect(installing).not.toEqual([]);
+  const reporting = installing.filter(({ workflow, job }) =>
+    (job.steps ?? []).some(
+      (step) =>
+        String({ ...workflow.env, ...job.env, ...step.env }.ASTRO_TELEMETRY_DISABLED) !== '1',
+    ),
+  );
+  expect(reporting.map(({ id }) => id)).toEqual([]);
 });
 
 test('every workflow declares permissions at the top level', () => {

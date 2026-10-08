@@ -61,6 +61,7 @@ jobs:
 
     env:
       RELEASE_VERSION: ${{ needs.fetch-version.outputs.release_version }}
+      ASTRO_TELEMETRY_DISABLED: 1
 
     steps:
       - name: 🛡️ Harden the runner

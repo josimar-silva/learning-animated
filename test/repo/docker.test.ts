@@ -14,3 +14,12 @@ test('one Dockerfile builds any site, with its generated nginx config', () => {
   expect(dockerfile).toContain('nginx.generated.conf');
   expect(dockerfile).toMatch(/^EXPOSE 3000$/m);
 });
+test('the build stage turns off Astro telemetry before it builds the site', () => {
+  const lines = dockerfile.split('\n');
+  const stage = lines.findIndex((line) => /^FROM \S+ AS builder$/.test(line));
+  const off = lines.indexOf('ENV ASTRO_TELEMETRY_DISABLED=1');
+  const build = lines.findIndex((line) => line.includes('npm run build'));
+  expect(stage).toBeGreaterThan(-1);
+  expect(off).toBeGreaterThan(stage);
+  expect(off).toBeLessThan(build);
+});
