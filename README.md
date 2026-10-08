@@ -122,7 +122,7 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just start-container <site>`: Serves that image at [http://localhost:3000](http://localhost:3000).
 - `just clean`: Removes coverage reports and build output.
 - `just pre-commit`: Runs `just check` and `just test`, to use before committing.
-- `just pre-release`: Runs the checks, the tests, and every build, then strips `-SNAPSHOT` from the version and commits the bump. See [🚢 Releasing](#-releasing).
+- `just pre-release`: Runs the checks, the tests, every build, and the end-to-end suite in Google Chrome, then strips `-SNAPSHOT` from the version and commits the bump. See [🚢 Releasing](#-releasing).
 
 ## 🧠 How It Works
 

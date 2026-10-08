@@ -109,10 +109,11 @@ pre-release:
       exit 1
     fi
 
-    echo "Running checks, tests, and build..."
+    echo "Running checks, tests, builds, and the end-to-end suite..."
     just check
     just test
     just build-all
+    just test-e2e-on google-chrome
 
     current_version=$(node -p "require('./package.json').version")
     echo "Current version is ${current_version}"
