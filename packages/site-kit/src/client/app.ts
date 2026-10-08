@@ -5,6 +5,8 @@
 import * as playback from './playback.ts';
 
 const LEGACY_HASH = /^#\/a\/([a-z0-9-]+)$/;
+// The map comes out of the page, so it may only send a reader to a lesson on this site.
+const SITE_PATH = /^\/[a-z0-9-]+\/[a-z0-9-]+\/$/;
 
 // Keys typed into these belong to the control, not to the shortcuts.
 const CONTROLS = new Set(['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON']);
@@ -35,7 +37,8 @@ type WindowLike = {
 // Where a legacy #/a/<id> link now lives, from the id-to-path map the home page embeds, or null.
 export function legacyTarget(hash: string | null | undefined, map: LegacyMap): string | null {
   const id = LEGACY_HASH.exec(hash ?? '')?.[1];
-  return id !== undefined && Object.hasOwn(map, id) ? (map[id] ?? null) : null;
+  const path = id !== undefined && Object.hasOwn(map, id) ? map[id] : undefined;
+  return path !== undefined && SITE_PATH.test(path) ? path : null;
 }
 
 // The shortcut a keydown asks for: 'toggle', 'restart', 'prev', 'next', or null

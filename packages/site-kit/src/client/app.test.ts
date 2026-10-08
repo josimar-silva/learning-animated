@@ -31,9 +31,9 @@ const HEADER = `<header>
 </header>`;
 
 // Stand-ins for the rendered pages, with the hooks the site-kit components render.
-function renderHome(): string {
+function renderHome(legacyMap: Record<string, string> = LEGACY_MAP): string {
   return `<body data-page="home">${HEADER}<main>
-    <script type="application/json" data-role="legacy-map">${JSON.stringify(LEGACY_MAP)}</script>
+    <script type="application/json" data-role="legacy-map">${JSON.stringify(legacyMap)}</script>
   </main></body>`;
 }
 
@@ -115,6 +115,25 @@ test('legacy hash links map to the new animation pages', () => {
     expect(legacyTarget(hash, LEGACY_MAP), `"${hash}" has no target`).toBeNull();
   }
   expect(legacyTarget(undefined, LEGACY_MAP)).toBeNull();
+});
+
+test('a legacy map entry that is not a site path has no target', () => {
+  const offSite = [
+    'javascript:alert(1)',
+    '//evil.example/',
+    'https://evil.example/ch03-kafka-producers/acks/',
+    '/ch03-kafka-producers/acks',
+    '/ch03-kafka-producers/acks/?from=legacy',
+  ];
+  for (const path of offSite) expect(legacyTarget('#/a/acks', { acks: path }), path).toBeNull();
+});
+
+test('a home page with a tampered legacy map navigates nowhere', () => {
+  const { doc } = pageDom(renderHome({ acks: 'javascript:alert(1)' }));
+  const { win, replaced, assigned } = fakeWindow('#/a/acks');
+  init(doc, win);
+  expect(replaced).toEqual([]);
+  expect(assigned).toEqual([]);
 });
 
 test('keyAction maps the shortcuts and leaves everything else to the browser', () => {
