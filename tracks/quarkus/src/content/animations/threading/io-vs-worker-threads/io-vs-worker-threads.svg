@@ -1,0 +1,276 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 970" role="img" data-loop="13.5s">
+<title>Quarkus: I/O threads vs worker threads</title>
+<desc>Two requests wait on the same database for the same time. Request A calls an endpoint that returns Uni, so it runs on the event-loop thread, and that thread stays free while the database works. Request B calls an endpoint that returns a plain object, so the event loop hands it to a worker thread, which stays parked for its whole JDBC call. A timeline shows what each thread does, including what happens when the same JDBC call blocks the event loop, and a table compares the two kinds of thread.</desc>
+<style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+<defs>
+<pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+<rect width="7" height="7" class="fill-surface"/>
+<line x1="0" y1="0" x2="0" y2="7" class="stroke-red stroke-2.5"/>
+</pattern>
+<clipPath id="reveal"><rect x="300" y="505" width="0" height="160"><animate attributeName="width" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;1.0000" values="0;776"/></rect></clipPath>
+</defs>
+<rect x="0" y="0" width="1100" height="970" class="fill-stage"/>
+<text x="24" y="42" class="font-sans text-title font-bold fill-ink">Quarkus: I/O threads vs worker threads</text>
+<text x="24" y="68" font-size="14" class="font-sans fill-ink-muted">Every request arrives on an I/O (event-loop) thread. The endpoint's return type decides whether your code runs there or on a worker.</text>
+<rect x="274" y="88" width="220" height="320" rx="12" class="la-canvas"/>
+<rect x="268" y="94" width="220" height="320" rx="12" class="la-canvas"/>
+<line x1="194" y1="210" x2="262" y2="210" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<line x1="194" y1="285" x2="262" y2="285" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<line x1="194" y1="360" x2="262" y2="360" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<line x1="482" y1="210" x2="858" y2="210" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<line x1="482" y1="360" x2="550" y2="360" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<line x1="790" y1="360" x2="858" y2="360" stroke-dasharray="5 5" class="stroke-grid stroke-1.5"/>
+<text x="670" y="200" class="font-sans text-offset fill-emerald anchor-middle">non-blocking call: the I/O thread moves on</text>
+<text x="516" y="350" font-size="11.5" class="font-sans fill-violet anchor-middle">hand-off</text>
+<text x="824" y="350" font-size="11.5" class="font-sans fill-amber anchor-middle">JDBC</text>
+<rect x="24" y="182" width="170" height="56" rx="10" class="la-canvas"/>
+<text x="36" y="205" font-size="14" class="font-sans font-semibold fill-ink">Client A</text>
+<text x="36" y="224" font-size="11.5" class="font-mono fill-ink-muted">GET /seats</text>
+<rect x="24" y="257" width="170" height="56" rx="10" class="la-canvas"/>
+<text x="36" y="280" font-size="14" class="font-sans font-semibold fill-ink">Clients C, D, E</text>
+<text x="36" y="299" font-size="11.5" class="font-mono fill-ink-muted">GET /status</text>
+<rect x="24" y="332" width="170" height="56" rx="10" class="la-canvas"/>
+<text x="36" y="355" font-size="14" class="font-sans font-semibold fill-ink">Client B</text>
+<text x="36" y="374" font-size="11.5" class="font-mono fill-ink-muted">GET /sales</text>
+<g opacity="0"><text x="184" y="224" font-size="11.5" class="font-sans font-bold fill-emerald anchor-end">200 OK</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6074" values="0;1"/></g>
+<g opacity="0"><text x="184" y="374" font-size="11.5" class="font-sans font-bold fill-emerald anchor-end">200 OK</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7556" values="0;1"/></g>
+<g opacity="0"><text x="184" y="299" font-size="11.5" class="font-sans font-bold fill-emerald anchor-end">C ✓</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4148;0.5111" values="0;1;0"/></g>
+<g opacity="0"><text x="184" y="299" font-size="11.5" class="font-sans font-bold fill-emerald anchor-end">C D ✓</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5111;0.6815" values="0;1;0"/></g>
+<g opacity="0"><text x="184" y="299" font-size="11.5" class="font-sans font-bold fill-emerald anchor-end">C D E ✓</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6815" values="0;1"/></g>
+<rect x="262" y="100" width="220" height="320" rx="12" class="fill-surface stroke-sky stroke-1.5"/>
+<g opacity="0"><rect x="262" y="100" width="220" height="320" rx="12" stroke-width="3.5" class="fill-none stroke-sky"/><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0815;0.1259;0.1481;0.1778;0.3407;0.3704;0.4370;0.4667;0.5185;0.5556;0.6074;0.6370;0.6741;0.7037" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0"/></g>
+<line x1="262" y1="210" x2="482" y2="210" stroke-dasharray="2 6" class="stroke-grid stroke-1.5"/>
+<circle cx="372" cy="210" r="15" stroke-dasharray="3 4" class="fill-none stroke-grid stroke-1.5"/>
+<line x1="262" y1="285" x2="372" y2="285" stroke-dasharray="2 6" class="stroke-grid stroke-1.5"/>
+<circle cx="372" cy="285" r="15" stroke-dasharray="3 4" class="fill-none stroke-grid stroke-1.5"/>
+<line x1="262" y1="360" x2="482" y2="360" stroke-dasharray="2 6" class="stroke-grid stroke-1.5"/>
+<circle cx="372" cy="360" r="15" stroke-dasharray="3 4" class="fill-none stroke-grid stroke-1.5"/>
+<text x="372" y="126" font-size="15" class="font-sans font-bold fill-sky anchor-middle">I/O thread (event loop)</text>
+<text x="372" y="145" class="font-mono text-offset fill-ink-muted anchor-middle">vert.x-eventloop-thread-0</text>
+<rect x="274" y="156" width="196" height="24" rx="12" class="la-canvas"/>
+<g opacity="0"><text x="372" y="172" class="font-sans text-offset fill-ink-muted anchor-middle">free</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0815;0.1259;0.1481;0.1778;0.3407;0.3704;0.4370;0.4667;0.5185;0.5556;0.6074;0.6370;0.6741;0.7037" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1"/></g>
+<g data-role="io-busy" data-request="A" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">running availableSeats() for A</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0815;0.1259" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="B" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">handing B to a worker</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1481;0.1778" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="C" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">serving C</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3407;0.3704" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="D" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">serving D</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4370;0.4667" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="A" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">A: continuation + write</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5185;0.5556" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="E" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">serving E</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6074;0.6370" values="0;1;0"/></g>
+<g data-role="io-busy" data-request="B" opacity="0"><text x="372" y="172" class="font-sans text-offset font-semibold fill-sky anchor-middle">writing B's response</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6741;0.7037" values="0;1;0"/></g>
+<text x="372" y="408" font-size="11.5" class="font-sans fill-slate anchor-middle">1 of N event loops (N = CPU cores)</text>
+<rect x="550" y="282" width="240" height="138" rx="12" class="fill-surface stroke-violet stroke-1.5"/>
+<text x="670" y="306" font-size="15" class="font-sans font-bold fill-violet anchor-middle">Worker pool</text>
+<text x="670" y="324" class="font-sans text-offset fill-ink-muted anchor-middle">up to max(200, 8 × cores) threads</text>
+<rect x="560" y="346" width="220" height="28" rx="6" class="fill-cell stroke-grid"/>
+<g opacity="0"><rect x="560" y="346" width="220" height="28" rx="6" class="fill-violet-deep stroke-violet"/><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2222;0.2519;0.6000;0.6296" values="0;1;0;1;0"/></g>
+<g data-role="worker-blocked" opacity="0"><rect x="560" y="346" width="220" height="28" rx="6" fill="url(#hatch)" class="stroke-red stroke-1.5"/><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2519;0.6000" values="0;1;0"/></g>
+<text x="570" y="364.5" font-size="11.5" class="font-mono fill-ink halo">executor-thread-1</text>
+<g opacity="0"><text x="698" y="364.5" class="font-sans text-offset fill-ink-muted">idle</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2222;0.6296" values="1;0;1"/></g>
+<g opacity="0"><text x="698" y="364.5" class="font-sans text-offset font-bold fill-violet">busy</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2222;0.2519;0.6000;0.6296" values="0;1;0;1;0"/></g>
+<g opacity="0"><text x="698" y="364.5" class="font-sans text-offset font-bold fill-red halo">blocked</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2519;0.6000" values="0;1;0"/></g>
+<g opacity="0"><circle cx="762" cy="360" r="6" stroke-width="2" class="fill-none stroke-red"><animate attributeName="r" values="3;10" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1s" repeatCount="indefinite"/></circle><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2519;0.6000" values="0;1;0"/></g>
+<rect x="560" y="380" width="220" height="28" rx="6" class="fill-cell stroke-grid"/>
+<text x="570" y="398.5" font-size="11.5" class="font-mono fill-ink-muted">executor-thread-2</text>
+<text x="698" y="398.5" class="font-sans text-offset fill-ink-muted">idle</text>
+<rect x="858" y="178" width="218" height="64" rx="10" class="fill-surface stroke-emerald"/>
+<text x="870" y="201" font-size="14" class="font-sans font-semibold fill-ink">PostgreSQL</text>
+<text x="870" y="219" class="font-sans text-offset fill-ink-muted">reactive client, non-blocking</text>
+<rect x="870" y="228" width="194" height="5" rx="2.5" class="fill-cell"/>
+<g data-role="db-wait" data-request="A" opacity="0"><rect x="870" y="228" width="0" height="5" rx="2.5" class="fill-emerald"><animate attributeName="width" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1926;0.4519;1.0000" values="0;0;194;194"/></rect><text x="1064" y="201" font-size="11" class="font-sans fill-emerald anchor-end">query running</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1926;0.4519" values="0;1;0"/></g>
+<rect x="858" y="328" width="218" height="64" rx="10" class="fill-surface stroke-amber"/>
+<text x="870" y="351" font-size="14" class="font-sans font-semibold fill-ink">PostgreSQL</text>
+<text x="870" y="369" class="font-sans text-offset fill-ink-muted">JDBC driver, blocking</text>
+<rect x="870" y="378" width="194" height="5" rx="2.5" class="fill-cell"/>
+<g data-role="db-wait" data-request="B" opacity="0"><rect x="870" y="378" width="0" height="5" rx="2.5" class="fill-amber"><animate attributeName="width" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2963;0.5556;1.0000" values="0;0;194;194"/></rect><text x="1064" y="351" font-size="11" class="font-sans fill-amber anchor-end">query running</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2963;0.5556" values="0;1;0"/></g>
+<g data-role="packet" data-request="A" opacity="0"><g transform="translate(206,210)"><circle r="11" stroke-width="2" class="fill-emerald stroke-stage"/><text x="0" y="4" font-size="11" class="font-sans font-bold fill-surface anchor-middle">A</text><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0296;0.0815;0.1259;0.1926;0.4519;0.5185;0.5556;0.6074;1.0000" values="206,210;206,210;372,210;372,210;850,210;850,210;372,210;372,210;206,210;206,210"/></g><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0296;0.1926;0.4519;0.6074" values="0;1;0;1;0"/></g>
+<g data-role="packet" data-request="B" opacity="0"><g transform="translate(206,360)"><circle r="11" stroke-width="2" class="fill-amber stroke-stage"/><text x="0" y="4" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0963;0.1481;0.1778;0.2222;0.2519;0.2963;0.5556;0.6000;0.6296;0.6741;0.7037;0.7556;1.0000" values="206,360;206,360;372,360;372,360;762,360;762,360;850,360;850,360;762,360;762,360;372,360;372,360;206,360;206,360"/></g><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0963;0.2963;0.5556;0.7556" values="0;1;0;1;0"/></g>
+<g data-role="packet" data-request="C" opacity="0"><g transform="translate(206,285)"><circle r="11" stroke-width="2" class="fill-emerald stroke-stage"/><text x="0" y="4" font-size="11" class="font-sans font-bold fill-surface anchor-middle">C</text><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2963;0.3407;0.3704;0.4148;1.0000" values="206,285;206,285;372,285;372,285;206,285;206,285"/></g><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2963;0.4148" values="0;1;0"/></g>
+<g data-role="packet" data-request="D" opacity="0"><g transform="translate(206,285)"><circle r="11" stroke-width="2" class="fill-emerald stroke-stage"/><text x="0" y="4" font-size="11" class="font-sans font-bold fill-surface anchor-middle">D</text><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3926;0.4370;0.4667;0.5111;1.0000" values="206,285;206,285;372,285;372,285;206,285;206,285"/></g><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3926;0.5111" values="0;1;0"/></g>
+<g data-role="packet" data-request="E" opacity="0"><g transform="translate(206,285)"><circle r="11" stroke-width="2" class="fill-emerald stroke-stage"/><text x="0" y="4" font-size="11" class="font-sans font-bold fill-surface anchor-middle">E</text><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5630;0.6074;0.6370;0.6815;1.0000" values="206,285;206,285;372,285;372,285;206,285;206,285"/></g><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5630;0.6815" values="0;1;0"/></g>
+<rect x="24" y="436" width="1052" height="36" rx="8" class="la-canvas"/>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">A calls availableSeats(), which returns Uni&lt;…&gt;, so Quarkus runs it on the I/O thread.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1407" values="1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">B calls salesReport(), which returns a plain object, so the I/O thread hands it to a worker.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1407;0.2519" values="0;1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">Both now wait on PostgreSQL. A's query holds no thread; B's JDBC call parks executor-thread-1.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2519;0.3333" values="0;1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">While both wait, the I/O thread is free and keeps serving other requests.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5111" values="0;1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">A's rows arrive. Its continuation runs on the same event loop, which writes the response.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5111;0.6000" values="0;1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">B's JDBC call returns. The worker finishes salesReport(); the I/O thread writes the bytes.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7630" values="0;1;0"/></g>
+<g data-role="caption" opacity="0"><text x="550" y="459" font-size="14.5" class="font-sans fill-ink anchor-middle">Same database latency for A and B. A's wait held no thread; B's wait held a worker the whole time.</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7630" values="0;1"/></g>
+<text x="24" y="500" font-size="15" class="font-sans font-bold fill-ink">What each thread is doing</text>
+<text x="246" y="500" class="font-sans text-offset fill-slate">(time slowed down)</text>
+<rect x="600" y="490" width="12" height="12" rx="2" class="fill-emerald"/>
+<text x="618" y="500" class="font-sans text-offset fill-ink-muted">Uni request</text>
+<rect x="710" y="490" width="12" height="12" rx="2" class="fill-amber"/>
+<text x="728" y="500" class="font-sans text-offset fill-ink-muted">blocking request</text>
+<rect x="852" y="490" width="12" height="12" rx="2" fill="url(#hatch)" class="stroke-red"/>
+<text x="870" y="500" class="font-sans text-offset fill-ink-muted">thread blocked (parked)</text>
+<text x="288" y="531" class="font-mono text-offset fill-sky anchor-end">vert.x-eventloop-thread-0</text>
+<text x="288" y="567" class="font-mono text-offset fill-violet anchor-end">executor-thread-1</text>
+<text x="24" y="598" class="font-sans text-offset fill-red">Anti-pattern: the same JDBC call made on the I/O thread (for example, blocking code inside a method that returns Uni)</text>
+<text x="288" y="627" class="font-mono text-offset fill-red anchor-end">vert.x-eventloop-thread-0</text>
+<rect x="300" y="512" width="776" height="28" rx="4" class="la-canvas"/>
+<rect x="300" y="548" width="776" height="28" rx="4" class="la-canvas"/>
+<rect x="300" y="608" width="776" height="28" rx="4" class="la-canvas"/>
+<g clip-path="url(#reveal)"><rect x="363.23" y="515" width="34.49" height="22" rx="3" class="fill-emerald"/><text x="380.47" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">A</text><rect x="414.96" y="515" width="22.99" height="22" rx="3" class="fill-amber"/><text x="426.46" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><rect x="564.41" y="515" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="575.91" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">C</text><rect x="639.14" y="515" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="650.64" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">D</text><rect x="702.37" y="515" width="28.74" height="22" rx="3" class="fill-emerald"/><text x="716.74" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">A</text><rect x="771.35" y="515" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="782.84" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">E</text><rect x="823.08" y="515" width="22.99" height="22" rx="3" class="fill-amber"/><text x="834.58" y="530" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><text x="501.19" y="530.5" font-size="11" class="font-sans fill-slate anchor-middle">free</text><text x="961.04" y="530.5" font-size="11" class="font-sans fill-slate anchor-middle">free</text><rect x="472.44" y="551" width="22.99" height="22" rx="3" class="fill-amber"/><text x="483.94" y="566" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><rect x="765.6" y="551" width="22.99" height="22" rx="3" class="fill-amber"/><text x="777.1" y="566" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><rect x="495.44" y="551" width="270.16" height="22" rx="3" fill="url(#hatch)" class="stroke-red"/><text x="630.52" y="566.5" font-size="11.5" class="font-sans font-bold fill-red anchor-middle halo">parked, waiting on JDBC</text><text x="386.22" y="566.5" font-size="11" class="font-sans fill-slate anchor-middle">idle</text><text x="932.3" y="566.5" font-size="11" class="font-sans fill-slate anchor-middle">idle</text><rect x="363.23" y="611" width="34.49" height="22" rx="3" class="fill-emerald"/><text x="380.47" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">A</text><rect x="414.96" y="611" width="22.99" height="22" rx="3" class="fill-amber"/><text x="426.46" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><rect x="708.12" y="611" width="28.74" height="22" rx="3" class="fill-amber"/><text x="722.49" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">B</text><rect x="736.86" y="611" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="748.36" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">C</text><rect x="759.85" y="611" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="771.35" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">D</text><rect x="782.84" y="611" width="28.74" height="22" rx="3" class="fill-emerald"/><text x="797.21" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">A</text><rect x="811.59" y="611" width="22.99" height="22" rx="3" class="fill-emerald"/><text x="823.08" y="626" font-size="11" class="font-sans font-bold fill-surface anchor-middle">E</text><rect x="437.96" y="611" width="270.16" height="22" rx="3" fill="url(#hatch)" class="stroke-red"/><text x="573.04" y="626.5" font-size="11.5" class="font-sans font-bold fill-red anchor-middle halo">B's JDBC call blocks the whole loop</text></g>
+<g opacity="0"><text x="842.58" y="626.5" font-size="11.5" class="font-sans fill-red">C, D, E, A delayed up to 3 s</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6889" values="0;1"/></g>
+<g opacity="0"><polygon points="552.92,638 546.92,649 558.92,649" class="fill-red"/><text x="564.92" y="650" class="font-sans text-offset fill-red">Vert.x logs a blocked-thread warning after 2 s</text><animate attributeName="opacity" dur="13.5s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3259" values="0;1"/></g>
+<line x1="300" y1="662" x2="300" y2="670" class="stroke-slate"/>
+<text x="300" y="683" font-size="11" class="font-sans fill-slate anchor-middle">0 s</text>
+<line x1="357.48" y1="662" x2="357.48" y2="667" class="stroke-slate"/>
+<line x1="414.96" y1="662" x2="414.96" y2="670" class="stroke-slate"/>
+<text x="414.96" y="683" font-size="11" class="font-sans fill-slate anchor-middle">2 s</text>
+<line x1="472.44" y1="662" x2="472.44" y2="667" class="stroke-slate"/>
+<line x1="529.93" y1="662" x2="529.93" y2="670" class="stroke-slate"/>
+<text x="529.93" y="683" font-size="11" class="font-sans fill-slate anchor-middle">4 s</text>
+<line x1="587.41" y1="662" x2="587.41" y2="667" class="stroke-slate"/>
+<line x1="644.89" y1="662" x2="644.89" y2="670" class="stroke-slate"/>
+<text x="644.89" y="683" font-size="11" class="font-sans fill-slate anchor-middle">6 s</text>
+<line x1="702.37" y1="662" x2="702.37" y2="667" class="stroke-slate"/>
+<line x1="759.85" y1="662" x2="759.85" y2="670" class="stroke-slate"/>
+<text x="759.85" y="683" font-size="11" class="font-sans fill-slate anchor-middle">8 s</text>
+<line x1="817.33" y1="662" x2="817.33" y2="667" class="stroke-slate"/>
+<line x1="874.81" y1="662" x2="874.81" y2="670" class="stroke-slate"/>
+<text x="874.81" y="683" font-size="11" class="font-sans fill-slate anchor-middle">10 s</text>
+<line x1="932.3" y1="662" x2="932.3" y2="667" class="stroke-slate"/>
+<line x1="989.78" y1="662" x2="989.78" y2="670" class="stroke-slate"/>
+<text x="989.78" y="683" font-size="11" class="font-sans fill-slate anchor-middle">12 s</text>
+<line x1="1047.26" y1="662" x2="1047.26" y2="667" class="stroke-slate"/>
+<line x1="300" y1="662" x2="1076" y2="662" class="stroke-grid"/>
+<g transform="translate(0,0)"><path d="M300,506 V584 M300,604 V640" class="fill-none stroke-ink stroke-1.5"/><polygon points="295,504 305,504 300,511" class="fill-ink"/><animateTransform attributeName="transform" type="translate" dur="13.5s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;1.0000" values="0,0;776,0"/></g>
+<rect x="24" y="700" width="1052" height="209" rx="10" class="la-canvas"/>
+<line x1="250" y1="700" x2="250" y2="909" class="stroke-grid"/>
+<line x1="658" y1="700" x2="658" y2="909" class="stroke-grid"/>
+<text x="40" y="721" class="font-sans text-label font-semibold fill-ink-muted">At a glance</text>
+<text x="266" y="721" font-size="14" class="font-sans font-bold fill-sky">I/O thread (event loop)</text>
+<text x="674" y="721" font-size="14" class="font-sans font-bold fill-violet">Worker thread</text>
+<line x1="24" y1="732" x2="1076" y2="732" class="stroke-grid"/>
+<text x="40" y="751.5" class="font-sans text-label fill-ink-muted">Thread name</text>
+<text x="266" y="751.5" font-size="12.5" class="font-mono fill-ink">vert.x-eventloop-thread-N</text>
+<text x="674" y="751.5" font-size="12.5" class="font-mono fill-ink">executor-thread-N</text>
+<line x1="24" y1="761.5" x2="1076" y2="761.5" class="stroke-grid"/>
+<text x="40" y="781" class="font-sans text-label fill-ink-muted">Default pool size</text>
+<text x="266" y="781" font-size="12.5" class="font-sans fill-ink">1 per CPU core, min 2</text>
+<text x="674" y="781" font-size="12.5" class="font-sans fill-ink">up to max(200, 8 × CPU cores)</text>
+<line x1="24" y1="791" x2="1076" y2="791" class="stroke-grid"/>
+<text x="40" y="810.5" class="font-sans text-label fill-ink-muted">Your code runs here when</text>
+<text x="266" y="810.5" font-size="12.5" class="font-sans fill-ink">it returns Uni / Multi / CompletionStage, or @NonBlocking</text>
+<text x="674" y="810.5" font-size="12.5" class="font-sans fill-ink">it returns a plain type (String, List, …), or @Blocking</text>
+<line x1="24" y1="820.5" x2="1076" y2="820.5" class="stroke-grid"/>
+<text x="40" y="840" class="font-sans text-label fill-ink-muted">During a DB or HTTP call</text>
+<text x="266" y="840" font-size="12.5" class="font-sans fill-ink">released; the continuation resumes on the same loop</text>
+<text x="674" y="840" font-size="12.5" class="font-sans fill-ink">parked until the call returns</text>
+<line x1="24" y1="850" x2="1076" y2="850" class="stroke-grid"/>
+<text x="40" y="869.5" class="font-sans text-label fill-ink-muted">If your code blocks</text>
+<text x="266" y="869.5" font-size="12.5" class="font-sans fill-ink">every request on that loop stalls; warning after 2 s</text>
+<text x="674" y="869.5" font-size="12.5" class="font-sans fill-ink">expected; Vert.x warns only after 60 s</text>
+<line x1="24" y1="879.5" x2="1076" y2="879.5" class="stroke-grid"/>
+<text x="40" y="899" class="font-sans text-label fill-ink-muted">Config property</text>
+<text x="266" y="899" font-size="12.5" class="font-mono fill-ink">quarkus.vertx.event-loops-pool-size</text>
+<text x="674" y="899" font-size="12.5" class="font-mono fill-ink">quarkus.thread-pool.max-threads</text>
+<text x="24" y="936" class="font-sans text-offset fill-ink-muted">Java 21+: @RunOnVirtualThread runs blocking-style code on a virtual thread instead of a worker.</text>
+<text x="24" y="955" font-size="11.5" class="font-sans fill-slate">Sources: quarkus.io/guides/rest (execution model), quarkus.io/guides/vertx-reference, quarkus.io/guides/duplicated-context.</text>
+</svg>
