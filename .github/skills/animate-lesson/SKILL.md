@@ -22,7 +22,7 @@ A lesson is one folder, `tracks/<track>/src/content/animations/<section>/<id>/`,
 2. Create `index.md`: the frontmatter (`id`, `section`, `order`, `title`, `description`, `objective`, `references`, plus `views` or `steps` when the lesson needs them) and the concept text as the body.
 3. Write `<id>.test.ts` first. State the story beats as timed facts with `@learning-animated/svg-kit/timeline` (`opacityAt`, `onsetOf`, `shownThroughout`, `hiddenThroughout`), and select elements by `data-role`. Run `just test` and watch it fail.
 4. Draw the SVG by hand, or generate it when one story table should drive every timing: `<id>.gen.ts` exports `render(): string`, built with `@learning-animated/svg-kit/author`, which returns the whole SVG with `canonicalStyleBlock()` embedded. `just gen <path to <id>.gen.ts>` writes the file, and the lesson test checks that `render()` equals the committed SVG byte for byte. For a hand-drawn SVG, leave the LA-STYLE markers empty and run `just style`.
-5. Run `just test` and `just check` until both pass. Then run `just dev <track>` and watch the lesson play, scrub, and switch views.
+5. Run `just test` and `just check` until both pass, then `just build-all` and `just test-e2e-on chromium`. The end-to-end suite opens every page, including the new lesson's, and drives its player. Then run `just dev <track>` and watch the lesson play, scrub, and switch views.
 6. Commit as `feat(<track>): animate <lesson>`, with the test and the SVG in the same commit.
 
 ## Hand-off
