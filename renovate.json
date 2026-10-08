@@ -1,0 +1,63 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    "abandonments:recommended",
+    "group:recommended",
+    "replacements:all",
+    "workarounds:all",
+    "mergeConfidence:age-confidence-badges",
+    ":configMigration",
+    ":pinDevDependencies",
+    ":pinAllExceptPeerDependencies",
+    ":dependencyDashboard",
+    ":semanticPrefixFixDepsChoreOthers",
+    ":ignoreModulesAndTests"
+  ],
+  "prHourlyLimit": 30,
+  "prConcurrentLimit": 15,
+  "reviewers": ["josimar-silva"],
+  "labels": ["automated", "dependencies"],
+  "npmrcMerge": true,
+  "postUpdateOptions": ["npmDedupe"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": "after 10pm on sunday"
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "matchPackageNames": ["eslint", "@eslint/js", "/^eslint-plugin/", "/^eslint-config/"],
+      "groupName": "eslint packages"
+    },
+    {
+      "matchPackageNames": ["prettier"],
+      "groupName": "prettier packages"
+    },
+    {
+      "matchPackageNames": ["astro", "@astrojs/**"],
+      "groupName": "astro"
+    },
+    {
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/**"],
+      "groupName": "tailwind"
+    },
+    {
+      "matchPackageNames": ["vitest", "@vitest/**"],
+      "groupName": "vitest"
+    },
+    {
+      "matchDepTypes": ["dependencies"],
+      "labels": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "labels": ["dev-dependencies"],
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ]
+}
