@@ -158,4 +158,4 @@ Unless otherwise specified:
 - **Content:** The lessons, with their animations and text, and the artwork, such as the logo, are licensed under the [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License](LICENSE-CC-BY-NC).
 - **Source code:** Everything else is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
 
-Neither license allows commercial use. Third-party files keep their own licenses, such as the Inter font under the SIL Open Font License 1.1.
+Neither license allows commercial use. The grants cover this project's own work only, not the book _Kafka: The Definitive Guide_, its figures, or any trademark named in [tracks/kafka/ATTRIBUTION.md](tracks/kafka/ATTRIBUTION.md). Third-party files keep their own licenses, such as the Inter font under the SIL Open Font License 1.1.
