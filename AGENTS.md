@@ -30,6 +30,7 @@ A track never imports another track, and packages never import tracks.
 ## Identity and pull requests
 
 - Before the first commit in any clone or worktree, compare `git config user.email` with the email in `~/projects/personal/kafka-the-definitive-guide-animated/.git/config`. If they differ, stop and ask. Never commit with the machine's global identity.
+- Push with `git push -u origin HEAD:<branch>` so the remote branch gets the planned name, whatever the local branch is called.
 - Never open PRs, edit secrets, or touch Cloudflare or DNS. After pushing, hand over the compare URL, a Conventional Commit PR title, and a description of at most 10 lines of prose.
 
 ## Common tasks
