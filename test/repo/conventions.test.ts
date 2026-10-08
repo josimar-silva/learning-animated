@@ -33,6 +33,8 @@ export const REQUIRED_RECIPES = [
   'check',
   'clean',
   'pre-commit',
+  'style',
+  'style-check',
 ];
 
 export const META_FILES = [
