@@ -29,6 +29,7 @@ type Step = {
 type Job = {
   needs?: string | string[];
   if?: string;
+  container?: unknown;
   env?: Record<string, unknown>;
   outputs?: Record<string, string>;
   permissions?: Record<string, string>;
@@ -64,6 +65,23 @@ function jobs(): Array<{ id: string; workflow: Workflow; job: Job }> {
 const workflow = (file: string): Workflow => parse(readFileSync(DIR + file, 'utf8')) as Workflow;
 const DEPLOY = workflow('deploy.yaml');
 const CD = workflow('cd.yaml');
+
+const ENDPOINT = /^(\*\.)?[a-z0-9.-]+:[0-9]+$/;
+
+// The inputs of a job's Harden-Runner step.
+function hardening(job: Job): Record<string, string> {
+  return job.steps?.find((s) => s.uses?.startsWith('step-security/harden-runner@'))?.with ?? {};
+}
+
+// The endpoints a job's Harden-Runner step lets through when it blocks egress.
+const endpoints = (job: Job): string[] =>
+  (hardening(job)['allowed-endpoints'] ?? '').split(/\s+/).filter(Boolean);
+
+// Whether an allow-list entry, `host:port` with an optional leading `*.`, lets `host` through.
+function allows(endpoint: string, host: string): boolean {
+  const allowed = endpoint.slice(0, endpoint.lastIndexOf(':'));
+  return allowed.startsWith('*.') ? host.endsWith(allowed.slice(1)) : host === allowed;
+}
 
 const scratch: string[] = [];
 afterEach(() => {
@@ -126,6 +144,31 @@ test('every job hardens the runner before anything else', () => {
     .filter(({ job }) => !job.steps?.[0]?.uses?.startsWith('step-security/harden-runner@'))
     .map(({ id }) => id);
   expect(unhardened).toEqual([]);
+});
+
+test('every job blocks egress, except container jobs, which Harden-Runner can only audit', () => {
+  const policies = jobs().map(({ id, job }) => [id, hardening(job)['egress-policy']]);
+  const expected = jobs().map(({ id, job }) => [id, job.container ? 'audit' : 'block']);
+  expect(policies).toEqual(expected);
+});
+
+test('every job on the VM allows a non-empty, sorted list of host:port endpoints', () => {
+  for (const { id, job } of jobs().filter(({ job }) => !job.container)) {
+    const allowed = endpoints(job);
+    expect(allowed, id).not.toEqual([]);
+    expect(
+      allowed.filter((endpoint) => !ENDPOINT.test(endpoint)),
+      id,
+    ).toEqual([]);
+    expect(allowed, id).toEqual(allowed.toSorted());
+  }
+});
+
+test('no job lets Astro telemetry out', () => {
+  const leaking = jobs().filter(({ job }) =>
+    endpoints(job).some((endpoint) => allows(endpoint, 'telemetry.astro.build')),
+  );
+  expect(leaking.map(({ id }) => id)).toEqual([]);
 });
 
 // Astro comes with the workspace, so any job that installs it can run Astro.
@@ -197,6 +240,9 @@ describe('Deploy', () => {
 
   test('runs one deploy at a time and never cancels one halfway', () =>
     expect(DEPLOY.concurrency).toEqual({ group: 'deploy', 'cancel-in-progress': false }));
+
+  test('sends Wrangler no metrics, which the allow-list would block', () =>
+    expect(DEPLOY.jobs.deploy?.env?.WRANGLER_SEND_METRICS).toBe(false));
 });
 
 describe('CD', () => {
