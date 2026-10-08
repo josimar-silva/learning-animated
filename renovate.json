@@ -63,6 +63,11 @@
       "description": "The Node types follow the Node major in .nvmrc.",
       "matchPackageNames": ["@types/node"],
       "allowedVersions": "<25"
+    },
+    {
+      "description": "typescript-eslint and @astrojs/check accept only TypeScript below 6.1.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1"
     }
   ]
 }
