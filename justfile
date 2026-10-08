@@ -30,6 +30,7 @@ check:
     npx eslint .
     npx prettier . --check
     npx tsc -p tsconfig.json
+    for p in packages/*/; do npx tsc -p "$p"; done
 
 # Remove build output
 clean:
