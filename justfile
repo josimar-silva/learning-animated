@@ -31,6 +31,15 @@ check:
     npx prettier . --check
     npx tsc -p tsconfig.json
     for p in packages/*/; do npx tsc -p "$p"; done
+    just style-check
+
+# Re-embed the canonical LA-STYLE block into every animation SVG
+style:
+    node packages/design/bin/la-style.ts tracks/*/src/content/animations
+
+# Fail if any SVG's LA-STYLE block drifted from theme.css
+style-check:
+    node packages/design/bin/la-style.ts --check tracks/*/src/content/animations
 
 # Remove build output
 clean:
