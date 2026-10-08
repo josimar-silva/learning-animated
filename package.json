@@ -10,7 +10,8 @@
   },
   "workspaces": [
     "packages/*",
-    "tracks/*"
+    "tracks/*",
+    "home"
   ],
   "scripts": {
     "test": "vitest run",
