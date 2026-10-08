@@ -100,4 +100,14 @@ describe('repository conventions', () => {
     const present = new Set(files());
     expect(META_FILES.filter((f) => !present.has(f))).toEqual([]);
   });
+
+  test('the animate-lesson skill is discoverable and complete', () => {
+    const skill = read('.github/skills/animate-lesson/SKILL.md');
+    expect(skill).toMatch(/^---\nname: animate-lesson\ndescription: .+\n---\n/);
+    for (const heading of ['## Rules', '## Steps', '## Hand-off']) expect(skill).toContain(heading);
+  });
+
+  test('pull requests start from the template', () => {
+    expect(files()).toContain('.github/pull_request_template.md');
+  });
 });
