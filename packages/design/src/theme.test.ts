@@ -24,6 +24,18 @@ test('reads only the stage @theme block and skips the reset', () => {
   ]);
 });
 
+test('reads a declaration with odd spacing', () => {
+  const css = '@theme {\n\t--color-sky :#38bdf8 ;\n  --text-label:   13px;  \n}\n';
+  expect([...parseStageTheme(css)]).toEqual([
+    ['color-sky', '#38bdf8'],
+    ['text-label', '13px'],
+  ]);
+});
+
 test('fails fast when there is no stage block', () => {
   expect(() => parseStageTheme('@theme inline {\n  --color-x: red;\n}\n')).toThrow(/@theme/);
+});
+
+test('fails fast when the stage block never closes', () => {
+  expect(() => parseStageTheme('@theme {\n  --color-x: red;\n')).toThrow(/@theme/);
 });
