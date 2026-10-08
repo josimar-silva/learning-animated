@@ -84,3 +84,37 @@ clean:
 
 # Run all checks and tests before committing
 pre-commit: check test
+
+# Prepare for a new release (strip -SNAPSHOT, run checks, commit the bump)
+pre-release:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [[ -n "$(git status --porcelain)" ]]; then
+      echo "Git working directory is not clean. Please commit or stash your changes."
+      exit 1
+    fi
+
+    echo "Running checks, tests, and build..."
+    just check
+    just test
+    just build-all
+
+    current_version=$(node -p "require('./package.json').version")
+    echo "Current version is ${current_version}"
+
+    if [[ "${current_version}" != *"-SNAPSHOT"* ]]; then
+      echo "Error: current version is not a SNAPSHOT version."
+      exit 1
+    fi
+
+    new_version="${current_version/-SNAPSHOT/}"
+    echo "Bumping version to ${new_version}..."
+    npm version --no-git-tag-version "${new_version}"
+
+    echo "Committing version bump..."
+    git add package.json package-lock.json
+    git commit -m "chore(release): prepare for release v${new_version}"
+
+    echo "Pre-release for version ${new_version} is ready."
+    echo "Open a pull request; merging it triggers the Continuous Delivery workflow."

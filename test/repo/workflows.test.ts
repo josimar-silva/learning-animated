@@ -12,6 +12,7 @@ export const WORKFLOWS = [
   'security-scorecard.yaml',
   'deploy.yaml',
   'docker.yaml',
+  'cd.yaml',
 ];
 
 type Step = { uses?: string };

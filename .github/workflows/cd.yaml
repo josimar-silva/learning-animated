@@ -1,0 +1,157 @@
+name: Continuous Delivery
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-version:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    outputs:
+      release_version: ${{ steps.get_version.outputs.VERSION }}
+      is_release: ${{ steps.check_snapshot.outputs.RELEASE }}
+
+    steps:
+      - name: 🛡️ Harden the runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: 📦 Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: 🇳 Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: 🏷️ Get package version
+        id: get_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: 🔍 Check if version is a SNAPSHOT
+        id: check_snapshot
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          if [[ "$VERSION" == *"-SNAPSHOT"* ]]; then
+            echo "RELEASE=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "RELEASE=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Release version: $VERSION"
+
+  release:
+    needs: [fetch-version]
+    if: ${{ github.event.workflow_run.conclusion == 'success' && needs.fetch-version.outputs.is_release == 'true' }}
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      actions: read
+
+    env:
+      RELEASE_VERSION: ${{ needs.fetch-version.outputs.release_version }}
+
+    steps:
+      - name: 🛡️ Harden the runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: 📦 Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: 🇳 Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: ⚒️ Setup just
+        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: '1.40.0'
+
+      - name: ⚙️ Install dependencies
+        run: just ci
+
+      - name: 🏗️ Build every site
+        run: just build-all
+
+      - name: 📝 Collect the sites and the licenses
+        run: |
+          mkdir release
+          for d in $(just _site-dirs); do cp -r "$d/dist" "release/$(basename "$d")"; done
+          cp LICENSE LICENSE-CC-BY-NC release/
+
+      - name: 📦 Create archive
+        run: |
+          tar -czvf learning-animated-${{ env.RELEASE_VERSION }}.tar.gz -C release .
+          shasum -a 512 learning-animated-${{ env.RELEASE_VERSION }}.tar.gz > learning-animated-${{ env.RELEASE_VERSION }}.tar.gz.sha512
+
+      - name: 📝 Attest release provenance
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        with:
+          subject-path: '${{ github.workspace }}/learning-animated-${{ env.RELEASE_VERSION }}.tar.gz'
+
+      - name: 🛠️ Setup git
+        run: |
+          git config --global user.name "radagastbot[bot]"
+          git config --global user.email "radagastbot[bot]@users.noreply.github.com"
+
+      - name: 🔖 Create git tag
+        run: |
+          git tag "v${{ env.RELEASE_VERSION }}" "${{ github.event.workflow_run.head_sha }}"
+          git push origin "v${{ env.RELEASE_VERSION }}"
+
+      - name: 📝 Generate changelog
+        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4
+        with:
+          config: cliff.toml
+          args: -v --latest --strip header
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: 🚀 Create GitHub release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+        with:
+          files: |
+            learning-animated-${{ env.RELEASE_VERSION }}.tar.gz
+            learning-animated-${{ env.RELEASE_VERSION }}.tar.gz.sha512
+          tag_name: v${{ env.RELEASE_VERSION }}
+          name: Release v${{ env.RELEASE_VERSION }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: true
+
+      - name: 🔢 Generate next package version
+        run: |
+          MAJOR=$(echo "${{ env.RELEASE_VERSION }}" | cut -d. -f1)
+          MINOR=$(echo "${{ env.RELEASE_VERSION }}" | cut -d. -f2)
+          PATCH=$(echo "${{ env.RELEASE_VERSION }}" | cut -d. -f3)
+          PATCH=$((PATCH + 1))
+          NEXT_PACKAGE_VERSION="$MAJOR.$MINOR.$PATCH-SNAPSHOT"
+          echo "Next version will be: ${NEXT_PACKAGE_VERSION}"
+          echo "NEXT_PACKAGE_VERSION=${NEXT_PACKAGE_VERSION}" >> "$GITHUB_ENV"
+
+      - name: ⬆️ Increment package version
+        run: npm version "${{ env.NEXT_PACKAGE_VERSION }}" --no-git-tag-version
+
+      - name: 📤 Push next snapshot version
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore(release): start next iteration v${{ env.NEXT_PACKAGE_VERSION }}"
+          git push origin HEAD:main
