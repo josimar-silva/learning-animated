@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 600" role="img" preserveAspectRatio="xMidYMid meet">
+  <title>A big data ecosystem</title>
+  <desc>Kafka sits at the centre as a shared data backbone. Four data sources (Metrics, Logs,
+  Transaction Data, and IoT Data) produce into Kafka, while three families of systems (online
+  applications, stream processing, and offline processing) both read from and write back to Kafka.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="kf-head-flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto-start-reverse">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+  </defs>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="584" rx="16" />
+  <text class="la-title" x="480" y="34" text-anchor="middle">A big data ecosystem</text>
+
+  <g data-role="kafka">
+    <rect class="fill-violet-deep stroke-violet stroke-2.5" x="160" y="254" width="640" height="92" />
+    <ellipse class="fill-violet-deep stroke-violet stroke-2.5" cx="160" cy="300" rx="22" ry="46" />
+    <ellipse class="fill-cell-stroke stroke-violet stroke-1.5" cx="800" cy="300" rx="22" ry="46" />
+    <text class="la-title" x="470" y="307" text-anchor="middle">Kafka</text>
+  </g>
+
+  <g data-role="system" data-system="online-applications">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="175" y="68" width="160" height="112" rx="8" />
+    <text class="la-label font-semibold" x="255" y="100" text-anchor="middle">Online</text>
+    <text class="la-label font-semibold" x="255" y="118" text-anchor="middle">Applications</text>
+    <text font-style="italic" font-size="11px" class="font-sans fill-ink-muted" x="255" y="142" text-anchor="middle">Apache Solr,</text>
+    <text font-style="italic" font-size="11px" class="font-sans fill-ink-muted" x="255" y="159" text-anchor="middle">OpenTSDB</text>
+  </g>
+  <g data-role="system" data-system="stream-processing">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="400" y="68" width="160" height="112" rx="8" />
+    <text class="la-label font-semibold" x="480" y="100" text-anchor="middle">Stream</text>
+    <text class="la-label font-semibold" x="480" y="118" text-anchor="middle">Processing</text>
+    <text font-style="italic" font-size="11px" class="font-sans fill-ink-muted" x="480" y="142" text-anchor="middle">Samza, Spark,</text>
+    <text font-style="italic" font-size="11px" class="font-sans fill-ink-muted" x="480" y="159" text-anchor="middle">Storm, Flink</text>
+  </g>
+  <g data-role="system" data-system="offline-processing">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="625" y="68" width="160" height="112" rx="8" />
+    <text class="la-label font-semibold" x="705" y="100" text-anchor="middle">Offline</text>
+    <text class="la-label font-semibold" x="705" y="118" text-anchor="middle">Processing</text>
+    <text font-style="italic" font-size="11px" class="font-sans fill-ink-muted" x="705" y="144" text-anchor="middle">Hadoop</text>
+  </g>
+
+  <g data-role="source" data-source="metrics">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="150" y="452" width="150" height="92" rx="8" />
+    <text class="la-label font-semibold" x="225" y="503" text-anchor="middle">Metrics</text>
+  </g>
+  <g data-role="source" data-source="logs">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="330" y="452" width="150" height="92" rx="8" />
+    <text class="la-label font-semibold" x="405" y="503" text-anchor="middle">Logs</text>
+  </g>
+  <g data-role="source" data-source="transaction-data">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="510" y="452" width="150" height="92" rx="8" />
+    <text class="la-label font-semibold" x="585" y="494" text-anchor="middle">Transaction</text>
+    <text class="la-label font-semibold" x="585" y="512" text-anchor="middle">Data</text>
+  </g>
+  <g data-role="source" data-source="iot-data">
+    <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="690" y="452" width="150" height="92" rx="8" />
+    <text class="la-label font-semibold" x="765" y="503" text-anchor="middle">IoT Data</text>
+  </g>
+
+  <g data-role="flows">
+    <g data-role="flow" data-flow="produce" data-source="metrics">
+      <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 225 452 L 225 348" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#src-metrics" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="0s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <path id="src-metrics" d="M 225 448 L 225 350" fill="none" stroke="none" />
+    </g>
+    <g data-role="flow" data-flow="produce" data-source="logs">
+      <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 405 452 L 405 348" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="0.2s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#src-logs" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="0.2s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <path id="src-logs" d="M 405 448 L 405 350" fill="none" stroke="none" />
+    </g>
+    <g data-role="flow" data-flow="produce" data-source="transaction-data">
+      <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 585 452 L 585 348" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="0.4s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#src-transaction" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="0.4s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <path id="src-transaction" d="M 585 448 L 585 350" fill="none" stroke="none" />
+    </g>
+    <g data-role="flow" data-flow="produce" data-source="iot-data">
+      <path class="la-arrow" marker-end="url(#kf-head-flow)" d="M 765 452 L 765 348" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="0.6s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#src-iot" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="0.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <path id="src-iot" d="M 765 448 L 765 350" fill="none" stroke="none" />
+    </g>
+
+    <g data-role="flow" data-flow="exchange" data-system="online-applications">
+      <path class="la-arrow" marker-start="url(#kf-head-flow)" marker-end="url(#kf-head-flow)" d="M 255 252 L 255 182" />
+      <path id="sys-online-read" d="M 248 250 L 248 184" fill="none" stroke="none" />
+      <path id="sys-online-write" d="M 262 184 L 262 250" fill="none" stroke="none" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="0.9s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-online-read" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="0.9s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="1.5s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-online-write" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="1.5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="exchange" data-system="stream-processing">
+      <path class="la-arrow" marker-start="url(#kf-head-flow)" marker-end="url(#kf-head-flow)" d="M 480 252 L 480 182" />
+      <path id="sys-stream-read" d="M 473 250 L 473 184" fill="none" stroke="none" />
+      <path id="sys-stream-write" d="M 487 184 L 487 250" fill="none" stroke="none" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="1.1s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-stream-read" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="1.1s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="1.7s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-stream-write" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="1.7s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="exchange" data-system="offline-processing">
+      <path class="la-arrow" marker-start="url(#kf-head-flow)" marker-end="url(#kf-head-flow)" d="M 705 252 L 705 182" />
+      <path id="sys-offline-read" d="M 698 250 L 698 184" fill="none" stroke="none" />
+      <path id="sys-offline-write" d="M 712 184 L 712 250" fill="none" stroke="none" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="1.3s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-offline-read" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="1.3s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.6s" begin="1.9s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.7;1" calcMode="linear"><mpath xlink:href="#sys-offline-write" /></animateMotion>
+        <animate attributeName="opacity" dur="1.6s" begin="1.9s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.65;0.74;1" />
+      </circle>
+    </g>
+  </g>
+</svg>
