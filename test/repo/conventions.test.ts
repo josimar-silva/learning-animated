@@ -39,6 +39,7 @@ export const REQUIRED_RECIPES = [
 
 export const META_FILES = [
   'LICENSE',
+  'LICENSE-CC-BY-NC',
   'README.md',
   'AGENTS.md',
   'CODE_OF_CONDUCT.md',
