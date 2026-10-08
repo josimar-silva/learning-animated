@@ -1,0 +1,356 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" data-loop="20s">
+  <title>Scalar vs SIMD lanes with fma()</title>
+  <desc>Two arrays of eight doubles, q and v1, sit in rows of cells on the left. A scalar loop walks them one index per step: each step multiplies one pair and adds the product to a single accumulator cell that starts at zero, so the dot product takes eight steps. On the right, a 256-bit DoubleVector has four lanes of 64-bit doubles. Each step loads four doubles of q into register a and four of v1 into register b, and fma() multiplies and adds all four lanes into a four-lane accumulator, also zero at first, so two steps cover the eight elements. Then reduceLanes adds the four lanes into one double, 1.44, and the vector loop is done while the scalar loop is still on step four. Both loops end with the same 1.44: eight steps against two steps and one reduction.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="540"/>
+  <text class="la-title" x="28" y="40">Scalar vs SIMD lanes with fma()</text>
+  <text class="la-note" x="28" y="64">A scalar loop does one multiply-add per step. DoubleVector.fma() does one in each lane: 4 per step at 256 bits.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="528" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="108">scalar loop: one multiply-add per step</text>
+  <text class="font-mono text-offset fill-ink-muted" x="40" y="132">k</text>
+  <text class="la-offset anchor-middle" x="163" y="132">0</text>
+  <text class="la-offset anchor-middle" x="213" y="132">1</text>
+  <text class="la-offset anchor-middle" x="263" y="132">2</text>
+  <text class="la-offset anchor-middle" x="313" y="132">3</text>
+  <text class="la-offset anchor-middle" x="363" y="132">4</text>
+  <text class="la-offset anchor-middle" x="413" y="132">5</text>
+  <text class="la-offset anchor-middle" x="463" y="132">6</text>
+  <text class="la-offset anchor-middle" x="513" y="132">7</text>
+  <text class="font-mono text-label font-bold fill-sky" x="40" y="163">q</text>
+  <text class="font-mono text-label font-bold fill-pink" x="40" y="205">v1</text>
+  <text class="font-mono text-label font-bold fill-amber" x="40" y="247">acc</text>
+  <g data-role="element" data-vector="q" data-index="0">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="140" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="163">-0.6</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="1">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="190" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="213" y="163">0.3</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="2">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="240" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="263" y="163">0.7</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="3">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="290" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="313" y="163">0.9</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="4">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="340" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="363" y="163">-0.2</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="5">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="390" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="413" y="163">0.6</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="6">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="440" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="463" y="163">0.3</text>
+  </g>
+  <g data-role="element" data-vector="q" data-index="7">
+    <rect class="fill-cell stroke-sky stroke-1.5" x="490" y="142" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="513" y="163">-0.1</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="0">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="140" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="205">-0.3</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="1">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="190" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="213" y="205">-0.2</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="2">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="240" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="263" y="205">0.6</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="3">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="290" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="313" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="4">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="340" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="363" y="205">0.2</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="5">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="390" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="413" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="6">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="440" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="463" y="205">0.5</text>
+  </g>
+  <g data-role="element" data-vector="v1" data-index="7">
+    <rect class="fill-cell stroke-pink stroke-1.5" x="490" y="184" width="46" height="32" rx="6"/>
+    <text class="font-mono text-label fill-cell-ink anchor-middle" x="513" y="205">-0.4</text>
+  </g>
+  <rect class="la-cell" x="140" y="226" width="46" height="32" rx="6"/>
+  <rect class="la-cell-new" x="140" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250;0.1750;0.2000;0.2500;0.2750;0.3250;0.3500;0.4000;0.4250;0.4750;0.5000;0.5500;0.5750;0.6250;0.6500" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0"/></rect>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.00<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.18<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.12<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.54<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.99<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4000" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">0.95<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">1.25<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">1.40<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6250" values="0;1;0"/></text>
+  <text data-role="acc" data-side="scalar" class="font-mono text-label fill-cell-ink anchor-middle" x="163" y="247">1.44<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></text>
+  <text data-role="madd" data-index="0" class="font-mono text-label fill-amber" x="200" y="247">= 0.00 + -0.6 × -0.3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="madd" data-index="1" class="font-mono text-label fill-amber" x="200" y="247">= 0.18 + 0.3 × -0.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/></text>
+  <text data-role="madd" data-index="2" class="font-mono text-label fill-amber" x="200" y="247">= 0.12 + 0.7 × 0.6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/></text>
+  <text data-role="madd" data-index="3" class="font-mono text-label fill-amber" x="200" y="247">= 0.54 + 0.9 × 0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4000" values="0;1;0"/></text>
+  <text data-role="madd" data-index="4" class="font-mono text-label fill-amber" x="200" y="247">= 0.99 + -0.2 × 0.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/></text>
+  <text data-role="madd" data-index="5" class="font-mono text-label fill-amber" x="200" y="247">= 0.95 + 0.6 × 0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500" values="0;1;0"/></text>
+  <text data-role="madd" data-index="6" class="font-mono text-label fill-amber" x="200" y="247">= 1.25 + 0.3 × 0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6250" values="0;1;0"/></text>
+  <text data-role="madd" data-index="7" class="font-mono text-label fill-amber" x="200" y="247">= 1.40 + -0.1 × -0.4<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.7000" values="0;1;0"/></text>
+  <g data-role="pair" data-index="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="137" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="137" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="187" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="187" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="237" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="237" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="287" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="287" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="337" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="337" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="387" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="387" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="6">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="437" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="437" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <g data-role="pair" data-index="7">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.7000" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="487" y="139" width="52" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="487" y="181" width="52" height="38" rx="8"/>
+  </g>
+  <text class="font-mono text-offset fill-ink-muted" x="40" y="280">double acc: 1 × 64 bits</text>
+  <text class="font-mono text-offset fill-ink" x="40" y="302">double acc = 0;</text>
+  <text class="font-mono text-offset fill-ink-muted" x="40" y="318">for (int k = 0; k &lt; 8; k++)</text>
+  <text class="font-mono text-offset fill-ink" x="69" y="334">acc += q[k] * v1[k];</text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 1 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 2 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 3 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 4 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4000" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 5 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 6 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 7 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6250" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label fill-amber" x="40" y="428">step 8 of 8<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250;0.7000" values="0;1;0"/></text>
+  <text data-role="status" data-side="scalar" class="font-mono text-label font-semibold fill-ink" x="40" y="428"><tspan class="fill-sky">q</tspan> · <tspan class="fill-pink">v1</tspan> = 1.44 after 8 steps<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/></text>
+  <rect class="la-canvas stroke-1.5" x="568" y="84" width="368" height="370" rx="12"/>
+  <text class="la-label font-semibold" x="584" y="108">Vector API loop: four lanes per step</text>
+  <text class="font-mono text-offset fill-ink-muted" x="584" y="132">lane</text>
+  <text class="la-offset anchor-middle" x="663" y="132">0</text>
+  <text class="la-offset anchor-middle" x="713" y="132">1</text>
+  <text class="la-offset anchor-middle" x="763" y="132">2</text>
+  <text class="la-offset anchor-middle" x="813" y="132">3</text>
+  <text class="font-mono text-label font-bold fill-sky" x="584" y="163">a</text>
+  <text class="font-mono text-label font-bold fill-pink" x="584" y="205">b</text>
+  <text class="font-mono text-label font-bold fill-amber" x="584" y="247">acc</text>
+  <rect data-role="lane" data-register="a" data-lane="0" class="fill-cell stroke-sky stroke-1.5" x="640" y="142" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="a" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="163">-0.6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="a" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="163">-0.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="a" data-lane="1" class="fill-cell stroke-sky stroke-1.5" x="690" y="142" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="a" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="163">0.3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="a" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="163">0.6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="a" data-lane="2" class="fill-cell stroke-sky stroke-1.5" x="740" y="142" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="a" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="163">0.7<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="a" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="163">0.3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="a" data-lane="3" class="fill-cell stroke-sky stroke-1.5" x="790" y="142" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="a" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="163">0.9<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="a" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="163">-0.1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <text data-role="chunk" data-register="a" class="font-mono text-offset fill-sky" x="848" y="162">q[0..3]<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="chunk" data-register="a" class="font-mono text-offset fill-sky" x="848" y="162">q[4..7]<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="b" data-lane="0" class="fill-cell stroke-pink stroke-1.5" x="640" y="184" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="b" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="205">-0.3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="b" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="205">0.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="b" data-lane="1" class="fill-cell stroke-pink stroke-1.5" x="690" y="184" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="b" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="205">-0.2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="b" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="205">0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="b" data-lane="2" class="fill-cell stroke-pink stroke-1.5" x="740" y="184" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="b" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="205">0.6<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="b" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="205">0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="b" data-lane="3" class="fill-cell stroke-pink stroke-1.5" x="790" y="184" width="46" height="32" rx="6"/>
+  <text data-role="lane-value" data-register="b" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="205">0.5<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="b" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="205">-0.4<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <text data-role="chunk" data-register="b" class="font-mono text-offset fill-pink" x="848" y="204">v1[0..3]<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="chunk" data-register="b" class="font-mono text-offset fill-pink" x="848" y="204">v1[4..7]<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="acc" data-lane="0" class="la-cell" x="640" y="226" width="46" height="32" rx="6"/>
+  <rect class="la-cell-new" x="640" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250;0.1750;0.2000" values="0;1;0;1;0"/></rect>
+  <text data-role="lane-value" data-register="acc" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="247">0.00<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="247">0.18<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="0" class="font-mono text-label fill-cell-ink anchor-middle" x="663" y="247">0.14<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="acc" data-lane="1" class="la-cell" x="690" y="226" width="46" height="32" rx="6"/>
+  <rect class="la-cell-new" x="690" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250;0.1750;0.2000" values="0;1;0;1;0"/></rect>
+  <text data-role="lane-value" data-register="acc" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="247">0.00<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="247">-0.06<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="1" class="font-mono text-label fill-cell-ink anchor-middle" x="713" y="247">0.24<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="acc" data-lane="2" class="la-cell" x="740" y="226" width="46" height="32" rx="6"/>
+  <rect class="la-cell-new" x="740" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250;0.1750;0.2000" values="0;1;0;1;0"/></rect>
+  <text data-role="lane-value" data-register="acc" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="247">0.00<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="247">0.42<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="2" class="font-mono text-label fill-cell-ink anchor-middle" x="763" y="247">0.57<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <rect data-role="lane" data-register="acc" data-lane="3" class="la-cell" x="790" y="226" width="46" height="32" rx="6"/>
+  <rect class="la-cell-new" x="790" y="226" width="46" height="32" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1250;0.1750;0.2000" values="0;1;0;1;0"/></rect>
+  <text data-role="lane-value" data-register="acc" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="247">0.00<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="247">0.45<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="lane-value" data-register="acc" data-lane="3" class="font-mono text-label fill-cell-ink anchor-middle" x="813" y="247">0.49<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+  <text class="font-mono text-offset fill-amber" x="848" y="246">+= a × b<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2500" values="0;1;0"/></text>
+  <g data-role="lanes" data-step="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="637" y="139" width="202" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="637" y="181" width="202" height="38" rx="8"/>
+  </g>
+  <g data-role="lanes" data-step="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="637" y="139" width="202" height="38" rx="8"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="637" y="181" width="202" height="38" rx="8"/>
+  </g>
+  <g data-role="reduce">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="637" y="223" width="202" height="38" rx="8"/>
+  </g>
+  <text data-role="species" class="font-mono text-offset fill-ink-muted" x="584" y="280">S = DoubleVector.SPECIES_256: 4 × 64 bits</text>
+  <text class="font-mono text-offset fill-ink" x="584" y="302">var acc = DoubleVector.zero(S);</text>
+  <text class="font-mono text-offset fill-ink-muted" x="584" y="318">for (int k = 0; k &lt; 8; k += S.length()) {</text>
+  <text class="font-mono text-offset fill-ink" x="613" y="334">var a = DoubleVector.fromArray(S, q, k);</text>
+  <text class="font-mono text-offset fill-ink" x="613" y="350">var b = DoubleVector.fromArray(S, v1, k);</text>
+  <text class="font-mono text-offset fill-ink" x="613" y="366">acc = a.fma(b, acc);</text>
+  <text class="font-mono text-offset fill-ink-muted" x="584" y="382">}</text>
+  <text class="font-mono text-offset fill-ink" x="584" y="398">double dot = acc.reduceLanes(ADD);</text>
+  <text data-role="status" data-side="vector" class="font-mono text-label fill-amber" x="584" y="428">step 1 of 2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.1750" values="0;1;0"/></text>
+  <text data-role="status" data-side="vector" class="font-mono text-label fill-amber" x="584" y="428">step 2 of 2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2500" values="0;1;0"/></text>
+  <text data-role="status" data-side="vector" class="font-mono text-label fill-amber" x="584" y="428">0.14 + 0.24 + 0.57 + 0.49 = 1.44<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3250" values="0;1;0"/></text>
+  <text data-role="status" data-side="vector" class="font-mono text-label font-semibold fill-ink" x="584" y="428"><tspan class="fill-sky">q</tspan> · <tspan class="fill-pink">v1</tspan> = 1.44 after 2 steps + reduceLanes<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/></text>
+  <rect class="la-canvas" x="24" y="470" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Two loops compute the same dot product, q · v1 over 8 doubles: a scalar loop on the left, a Vector API loop on the right.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Per step, the scalar loop does one multiply-add. fma() does four, one in each lane of a 256-bit DoubleVector.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Two steps cover all 8 doubles. Then reduceLanes(ADD) adds the 4 lanes into one: 0.14 + 0.24 + 0.57 + 0.49 = 1.44.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">The vector loop is done. The scalar loop is only on step 4 of 8, adding one product at a time.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500;0.7000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="493">Same result, 1.44. The scalar loop took 8 steps; the vector loop took 2 fma() steps and one reduceLanes().<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="526">Sources: openjdk.org/jeps/537 (JEP 537: Vector API) and netflixtechblog.com (Optimizing recommendation systems with JDK's Vector API).</text>
+</svg>
