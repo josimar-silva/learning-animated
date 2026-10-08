@@ -17,7 +17,9 @@
     "./version": "./src/version.ts",
     "./components/*": "./src/components/*",
     "./pages/*": "./src/pages/*",
-    "./styles/site.css": "./src/styles/site.css"
+    "./styles/site.css": "./src/styles/site.css",
+    "./content": "./src/content.ts",
+    "./integration": "./src/integration.ts"
   },
   "dependencies": {
     "@learning-animated/design": "*",
