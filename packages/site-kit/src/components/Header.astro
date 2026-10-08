@@ -2,6 +2,7 @@
 import { AUTHOR } from '../family.ts';
 import { pathForAbout, pathForHome } from '../routes.ts';
 import type { Track } from '../schemas.ts';
+import Brand from './Brand.astro';
 
 interface Props {
   track: Track;
@@ -20,15 +21,7 @@ const button =
 
 <header class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
   <div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4">
-    <a href={pathForHome()} class="flex items-center gap-2 font-semibold text-foreground">
-      <span
-        class="inline-flex size-8 flex-none items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
-        aria-hidden="true"
-      >
-        JS
-      </span>
-      <span>{track.site.shortName}</span>
-    </a>
+    <Brand name={track.site.shortName} />
     <nav
       id="site-nav"
       aria-label="Main"
