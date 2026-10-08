@@ -1,0 +1,86 @@
+---
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Layout from '../components/Layout.astro';
+import { figureLabel, sectionName } from '../model.ts';
+import { pathForAnimation, pathForHome, pathForSection } from '../routes.ts';
+import type { Animation, Section, Track } from '../schemas.ts';
+import { breadcrumbJsonLd } from '../seo.ts';
+
+interface Props {
+  track: Track;
+  section: Section;
+  animations: readonly Animation[];
+  prev: Section | null;
+  next: Section | null;
+  sections: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const { track, section, animations, prev, next, sections } = Astro.props;
+const book = track.kind === 'book';
+const name = sectionName(track, section);
+const path = pathForSection(section);
+// Kafka's chapter pages end their trail at the chapter number.
+const trail = [
+  { name: 'Contents', path: pathForHome() },
+  { name: book ? `Chapter ${section.number}` : section.title, path },
+];
+const unit = book ? 'chapter' : 'topic';
+const badge =
+  'inline-flex w-fit items-center rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground';
+const pager = 'flex flex-col gap-1 rounded-xl border border-border p-4 hover:border-primary';
+---
+
+<Layout
+  track={track}
+  kind="section"
+  path={path}
+  title={`${name} | ${track.site.name}`}
+  description={section.description}
+  jsonLd={[breadcrumbJsonLd(track, trail)]}
+  sections={sections}
+>
+  <Breadcrumb trail={trail} />
+  <header class="mt-4">
+    <h1 class="text-3xl font-bold">{name}</h1>
+    <p class="mt-2 text-lg text-muted-foreground">{section.description}</p>
+    {track.source &&
+      // prettier-ignore
+      <p class="mt-2 text-sm text-muted-foreground" data-role="chapter-ref">Read it alongside Chapter {section.number} of <a href={track.source.url} target="_blank" rel="noopener">{track.source.title}</a>.</p>}
+  </header>
+  <ol class="mt-8 grid gap-4 sm:grid-cols-2">
+    {animations.map((animation) => {
+      const figure = figureLabel(track, animation);
+      return (
+        <li>
+          <a
+            data-role="anim-link"
+            href={pathForAnimation(animation)}
+            class="flex h-full flex-col gap-2 rounded-xl border border-border bg-card p-5 text-card-foreground hover:border-primary"
+          >
+            {figure && <span class={badge}>{figure}</span>}
+            <h2 class="text-lg font-semibold">{animation.title}</h2>
+            <p class="text-sm text-muted-foreground">{animation.objective}</p>
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+  {(prev || next) && (
+    <nav class="mt-10 grid gap-4 sm:grid-cols-2" aria-label={book ? 'Chapters' : 'Topics'}>
+      {prev ? (
+        <a data-role="prev" rel="prev" href={pathForSection(prev)} class={pager}>
+          <span class="text-xs text-muted-foreground">{`Previous ${unit}`}</span>
+          <span>{sectionName(track, prev)}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next && (
+        <a data-role="next" rel="next" href={pathForSection(next)} class={`${pager} sm:text-right`}>
+          <span class="text-xs text-muted-foreground">{`Next ${unit}`}</span>
+          <span>{sectionName(track, next)}</span>
+        </a>
+      )}
+    </nav>
+  )}
+</Layout>

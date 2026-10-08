@@ -1,0 +1,114 @@
+---
+import Layout from '../components/Layout.astro';
+import SectionCard from '../components/SectionCard.astro';
+import { sectionName } from '../model.ts';
+import { pathForAnimation, pathForHome, pathForSection } from '../routes.ts';
+import type { Animation, Section, Track } from '../schemas.ts';
+import { serializeJsonLd, websiteJsonLd } from '../seo.ts';
+
+interface Props {
+  track: Track;
+  contents: ReadonlyArray<Section & { animations: readonly Animation[] }>;
+  legacyMap?: Readonly<Record<string, string>>;
+}
+
+const { track, contents, legacyMap } = Astro.props;
+const { source } = track;
+const book = track.kind === 'book';
+const sections = contents
+  .filter((section) => section.animations.length > 0)
+  .map((section) => ({ name: sectionName(track, section), path: pathForSection(section) }));
+const start = contents.find((section) => section.animations.length > 0);
+const first = start?.animations[0];
+const lead = source
+  ? `${track.site.tagline} Open the book, find the figure, play the animation.`
+  : track.site.tagline;
+const authors =
+  source &&
+  new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(source.authors);
+const button = 'inline-flex h-10 items-center rounded-md px-4 text-sm font-medium';
+const step =
+  'step flex flex-col gap-2 rounded-xl border border-border bg-card p-5 text-card-foreground';
+const number =
+  'inline-flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground';
+---
+
+<Layout
+  track={track}
+  kind="home"
+  path={pathForHome()}
+  title={track.site.name}
+  description={track.site.tagline}
+  jsonLd={[websiteJsonLd(track)]}
+  sections={sections}
+>
+  <section class="py-6">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{track.site.name}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-muted-foreground">{lead}</p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      {start && first && (
+        <a class={`${button} bg-primary text-primary-foreground`} href={pathForAnimation(first)}>
+          {`Start with ${book ? `Chapter ${start.number}` : start.title}`}
+        </a>
+      )}
+      {source && (
+        <a class={`${button} border border-border text-foreground hover:bg-accent`} href="#how-to">
+          How to use it
+        </a>
+      )}
+    </div>
+    {source &&
+      // prettier-ignore
+      <p class="mt-6 max-w-2xl text-sm text-muted-foreground" data-role="disclaimer">An unofficial, fan-made companion to <a href={source.url} target="_blank" rel="noopener">{`${source.title}, ${source.edition}`}</a> by {authors} ({source.publisher}, {source.year}). Not affiliated with or endorsed by the authors or {source.publisher}.</p>}
+  </section>
+  {source && (
+    <section class="mt-12" id="how-to" aria-labelledby="how-to-title">
+      <h2 class="text-2xl font-bold" id="how-to-title">
+        Follow along with the book
+      </h2>
+      <ol class="mt-6 grid gap-4 md:grid-cols-3">
+        <li class={step}>
+          <span class={number} aria-hidden="true">
+            1
+          </span>
+          <h3 class="font-semibold">Read the chapter</h3>
+          {/* prettier-ignore */}
+          <p class="text-sm text-muted-foreground">Open <a href={source.url} target="_blank" rel="noopener">{source.title}</a> at the chapter you are reading.</p>
+        </li>
+        <li class={step}>
+          <span class={number} aria-hidden="true">
+            2
+          </span>
+          <h3 class="font-semibold">Find the figure</h3>
+          <p class="text-sm text-muted-foreground">
+            Every animation carries the number of the figure it brings to life, so you can match it
+            to the page in front of you.
+          </p>
+        </li>
+        <li class={step}>
+          <span class={number} aria-hidden="true">
+            3
+          </span>
+          <h3 class="font-semibold">Play the animation</h3>
+          <p class="text-sm text-muted-foreground">
+            Watch for the "What to notice" note on each animation: it names the one idea the motion
+            makes clear.
+          </p>
+        </li>
+      </ol>
+    </section>
+  )}
+  <section class="mt-12" aria-labelledby="sections-title">
+    <h2 class="text-2xl font-bold" id="sections-title">
+      {book ? 'Chapters' : 'Topics'}
+    </h2>
+    <ol class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {contents.map((section) => (
+        <SectionCard track={track} section={section} animations={section.animations} />
+      ))}
+    </ol>
+  </section>
+  {legacyMap && (
+    <script type="application/json" data-role="legacy-map" set:html={serializeJsonLd(legacyMap)} />
+  )}
+</Layout>

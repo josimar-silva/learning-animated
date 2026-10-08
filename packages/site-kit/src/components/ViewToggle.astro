@@ -1,0 +1,26 @@
+---
+interface Props {
+  views: ReadonlyArray<{ label: string | null; src: string }>;
+}
+const { views } = Astro.props;
+---
+
+{views.length > 1 && (
+  <div
+    class="mt-3 inline-flex overflow-hidden rounded-md border border-border"
+    role="group"
+    aria-label="View"
+  >
+    {views.map((view, i) => (
+      <button
+        type="button"
+        data-action="view"
+        data-src={view.src}
+        aria-pressed={i === 0 ? 'true' : 'false'}
+        class="px-3 py-1 text-sm aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+      >
+        {view.label}
+      </button>
+    ))}
+  </div>
+)}

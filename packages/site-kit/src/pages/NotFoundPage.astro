@@ -1,0 +1,35 @@
+---
+import Layout from '../components/Layout.astro';
+import { pathForHome, pathForNotFound } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+
+interface Props {
+  track: Track;
+}
+
+const { track } = Astro.props;
+---
+
+<Layout
+  track={track}
+  kind="not-found"
+  path={pathForNotFound()}
+  title={`Page not found | ${track.site.name}`}
+  description="This page does not exist. Browse the contents to find an animation."
+>
+  <div
+    data-role="not-found"
+    class="mx-auto max-w-xl rounded-xl border border-border bg-card p-8 text-center text-card-foreground"
+  >
+    <h1 class="text-2xl font-bold">That page is not here yet</h1>
+    <p class="mt-2 text-muted-foreground">
+      The link may be stale, or the animation is still planned.
+    </p>
+    <a
+      href={pathForHome()}
+      class="mt-6 inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+    >
+      Back to Contents
+    </a>
+  </div>
+</Layout>

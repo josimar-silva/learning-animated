@@ -67,6 +67,10 @@ export function figureLabel(
   return animation.figure ? `Figure ${animation.figure}` : 'Companion extra';
 }
 
+export function countLabel(n: number): string {
+  return `${n} animation${n === 1 ? '' : 's'}`;
+}
+
 export function viewFiles(animation: Pick<Animation, 'id' | 'views'>): string[] {
   return animation.views
     ? animation.views.map((v) => `${animation.id}.${v.id}.svg`)
