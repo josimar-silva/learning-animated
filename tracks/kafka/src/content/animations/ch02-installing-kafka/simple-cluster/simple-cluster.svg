@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 960 560" role="img" preserveAspectRatio="xMidYMid meet">
+  <title>A simple Kafka cluster</title>
+  <desc>A three-broker Kafka cluster. Broker 1 holds topic A partition 0, broker 2 holds topic A
+  partition 1, and broker 3 holds topic B partition 0. One producer writes to both topic A
+  partitions, a second producer writes topic B partition 0, and a single consumer reads from all
+  three partitions.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="kf-head-flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z" />
+    </marker>
+  </defs>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="544" rx="16" />
+
+  <g data-role="cluster">
+    <rect stroke-dasharray="6 5" class="fill-none stroke-ink-muted stroke-1.5" x="330" y="70" width="320" height="448" rx="14" />
+    <text class="la-title" x="490" y="100" text-anchor="middle">Kafka Cluster</text>
+
+    <g data-role="broker" data-broker="1">
+      <rect class="la-card" x="360" y="118" width="260" height="118" rx="10" />
+      <text class="la-label font-semibold" x="490" y="144" text-anchor="middle">Broker 1</text>
+      <g data-role="partition" data-broker="1" data-topic="A" data-partition="0">
+        <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="402" y="158" width="176" height="64" rx="8" />
+        <text class="la-label" x="490" y="184" text-anchor="middle">Topic A</text>
+        <text class="la-label" x="490" y="204" text-anchor="middle">Partition 0</text>
+      </g>
+    </g>
+
+    <g data-role="broker" data-broker="2">
+      <rect class="la-card" x="360" y="252" width="260" height="118" rx="10" />
+      <text class="la-label font-semibold" x="490" y="278" text-anchor="middle">Broker 2</text>
+      <g data-role="partition" data-broker="2" data-topic="A" data-partition="1">
+        <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="402" y="292" width="176" height="64" rx="8" />
+        <text class="la-label" x="490" y="318" text-anchor="middle">Topic A</text>
+        <text class="la-label" x="490" y="338" text-anchor="middle">Partition 1</text>
+      </g>
+    </g>
+
+    <g data-role="broker" data-broker="3">
+      <rect class="la-card" x="360" y="386" width="260" height="118" rx="10" />
+      <text class="la-label font-semibold" x="490" y="412" text-anchor="middle">Broker 3</text>
+      <g data-role="partition" data-broker="3" data-topic="B" data-partition="0">
+        <rect class="fill-surface stroke-cell-stroke stroke-1.5" x="402" y="426" width="176" height="64" rx="8" />
+        <text class="la-label" x="490" y="452" text-anchor="middle">Topic B</text>
+        <text class="la-label" x="490" y="472" text-anchor="middle">Partition 0</text>
+      </g>
+    </g>
+  </g>
+
+  <g data-role="producer" data-producer="1">
+    <rect class="fill-green stroke-emerald stroke-1.5" x="64" y="228" width="112" height="58" rx="8" />
+    <text class="font-sans text-label font-semibold fill-surface" x="120" y="261" text-anchor="middle">Producer</text>
+  </g>
+
+  <g data-role="producer" data-producer="2">
+    <rect class="fill-green stroke-emerald stroke-1.5" x="64" y="429" width="112" height="58" rx="8" />
+    <text class="font-sans text-label font-semibold fill-surface" x="120" y="462" text-anchor="middle">Producer</text>
+  </g>
+
+  <g data-role="consumer">
+    <rect class="fill-sky stroke-sky-light stroke-1.5" x="792" y="292" width="112" height="64" rx="8" />
+    <text class="font-sans text-label font-semibold fill-surface" x="848" y="328" text-anchor="middle">Consumer</text>
+  </g>
+
+  <g data-role="flows">
+    <g data-role="flow" data-flow="produce" data-producer="1" data-topic="A" data-partition="0">
+      <path id="f-prod-a0" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 176 249 C 280 208, 330 194, 402 190" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="0s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-prod-a0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="0s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="produce" data-producer="1" data-topic="A" data-partition="1">
+      <path id="f-prod-a1" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 176 265 C 300 300, 330 320, 402 324" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="0.45s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-prod-a1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="0.45s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="produce" data-producer="2" data-topic="B" data-partition="0">
+      <path id="f-prod-b0" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 176 458 L 402 458" />
+      <circle class="fill-amber" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="0.9s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-prod-b0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="0.9s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+
+    <g data-role="flow" data-flow="consume" data-topic="A" data-partition="0">
+      <path id="f-con-a0" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 578 190 C 690 200, 720 292, 792 312" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="0.7s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-con-a0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="0.7s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="consume" data-topic="A" data-partition="1">
+      <path id="f-con-a1" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 578 324 L 792 324" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="1.15s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-con-a1" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="1.15s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+    <g data-role="flow" data-flow="consume" data-topic="B" data-partition="0">
+      <path id="f-con-b0" class="la-arrow" marker-end="url(#kf-head-flow)" d="M 578 458 C 690 450, 720 360, 792 338" />
+      <circle class="fill-sky" r="5" opacity="0">
+        <animateMotion dur="1.4s" begin="1.6s" repeatCount="indefinite" rotate="0" keyPoints="0;1;1" keyTimes="0;0.75;1" calcMode="linear">
+          <mpath xlink:href="#f-con-b0" />
+        </animateMotion>
+        <animate attributeName="opacity" dur="1.4s" begin="1.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.7;0.78;1" />
+      </circle>
+    </g>
+  </g>
+</svg>
