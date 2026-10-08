@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 572" role="img" aria-labelledby="title desc" data-loop="18s">
+<title id="title">Capture inbound headers</title>
+<desc id="desc">Two checkout requests, A and B, overlap in time. Each carries an X-Correlation-Id and an X-Box-Office header. A request filter reads both headers before checkout() runs and stores the values in that request's own duplicated context, so B's values never land in A's context. When checkout() reads its context, A gets 7f3a and web, and B gets c41e and kiosk.</desc>
+<style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+<rect x="0" y="0" width="960" height="572" rx="0" class="fill-stage"/>
+<text x="28" y="40" class="la-title">Capture inbound headers</text>
+<text x="28" y="62" class="la-note">A request filter puts each request's headers in that request's duplicated context before checkout() runs.</text>
+<text x="127" y="116" class="la-note anchor-middle">inbound requests</text>
+<text x="610" y="116" class="la-note anchor-middle">one duplicated context per request</text>
+<rect x="262" y="84" width="184" height="396" rx="10" class="la-canvas"/>
+<text x="354" y="106" class="font-sans text-label font-semibold fill-ink anchor-middle">request filter</text>
+<text x="354" y="124" class="font-mono text-offset fill-ink-muted anchor-middle">@ServerRequestFilter</text>
+<rect x="774" y="84" width="162" height="396" rx="10" class="la-canvas"/>
+<text x="855" y="106" class="font-mono text-label font-semibold fill-ink anchor-middle">checkout()</text>
+<text x="855" y="124" class="font-mono text-offset fill-ink-muted anchor-middle">POST /checkout</text>
+<rect x="272" y="144" width="164" height="156" rx="8" class="fill-stage stroke-grid"/>
+<g opacity="0" data-role="filter-run" data-request="A"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2889" values="0;1;0"/><rect x="272" y="144" width="164" height="156" rx="8" class="fill-none stroke-amber stroke-1.5"/></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/><text x="314" y="200" class="font-sans text-offset fill-ink">reads both headers</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="0;1;0"/><text x="314" y="200" class="font-sans text-offset fill-ink">stores the values</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="1;0;1"/><text x="426" y="248" class="font-mono text-offset fill-ink-muted anchor-end">ContextLocals.put</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="0;1;0"/><text x="426" y="248" class="font-mono text-offset fill-amber anchor-end">ContextLocals.put</text></g>
+<rect x="784" y="144" width="142" height="156" rx="8" class="fill-stage stroke-grid"/>
+<g opacity="0" data-role="endpoint-run" data-request="A"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/><rect x="784" y="144" width="142" height="156" rx="8" class="fill-none stroke-amber stroke-1.5"/></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.6111" values="0;1;0"/><text x="822" y="200" class="font-sans text-offset fill-ink-muted">holding seats</text></g>
+<g opacity="0" data-role="endpoint-read" data-request="A"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111" values="0;1"/><text x="822" y="200" class="font-sans text-offset font-semibold fill-sky">read 7f3a, web</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7000" values="1;0;1"/><text x="794" y="248" class="font-mono text-offset fill-ink-muted">ContextLocals.get</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7000" values="0;1;0"/><text x="794" y="248" class="font-mono text-offset fill-emerald">ContextLocals.get</text></g>
+<g><line x1="230" y1="196" x2="254" y2="196" class="la-arrow"/><polygon points="262,196 254,192 254,200" class="fill-flow"/>
+<line x1="446" y1="196" x2="766" y2="196" class="la-arrow"/><polygon points="774,196 766,192 766,200" class="fill-flow"/>
+<line x1="436" y1="264" x2="482" y2="264" class="la-arrow"/><polygon points="490,264 482,260 482,268" class="fill-flow"/>
+<line x1="730" y1="264" x2="776" y2="264" class="la-arrow"/><polygon points="784,264 776,260 776,268" class="fill-flow"/></g>
+<g opacity="0" data-role="put-arrow" data-request="A"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="0;1;0"/><line x1="436" y1="264" x2="482" y2="264" class="fill-none stroke-amber stroke-2.5"/><polygon points="490,264 482,260 482,268" class="fill-amber"/></g>
+<g opacity="0" data-role="get-arrow" data-request="A"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7000" values="0;1;0"/><line x1="730" y1="264" x2="776" y2="264" class="fill-none stroke-emerald stroke-2.5"/><polygon points="784,264 776,260 776,268" class="fill-emerald"/></g>
+<g data-role="context" data-request="A"><rect x="490" y="212" width="240" height="88" rx="8" class="la-card"/>
+<text x="502" y="230" class="font-sans text-offset font-semibold fill-sky">duplicated context of A</text>
+<text x="502" y="254" class="font-mono text-offset fill-ink-muted">X-Correlation-Id</text>
+<rect x="642" y="239" width="76" height="22" rx="4" class="la-cell-tail"/>
+<g opacity="0" data-role="writing" data-request="A" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="0;1;0"/><rect x="642" y="239" width="76" height="22" rx="4" class="la-cell-new"/><text x="680" y="254" class="la-offset anchor-middle">7f3a</text></g>
+<g opacity="0" data-role="stored" data-request="A" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2889" values="0;1"/><rect x="642" y="239" width="76" height="22" rx="4" class="la-cell"/><text x="680" y="254" class="font-mono text-offset fill-sky anchor-middle">7f3a</text></g>
+<g opacity="0" data-role="read-marker" data-request="A" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7000" values="0;1;0"/><rect x="639" y="236" width="82" height="28" rx="6" class="la-read-marker"/></g>
+<text x="502" y="282" class="font-mono text-offset fill-ink-muted">X-Box-Office</text>
+<rect x="642" y="267" width="76" height="22" rx="4" class="la-cell-tail"/>
+<g opacity="0" data-role="writing" data-request="A" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.2889" values="0;1;0"/><rect x="642" y="267" width="76" height="22" rx="4" class="la-cell-new"/><text x="680" y="282" class="la-offset anchor-middle">web</text></g>
+<g opacity="0" data-role="stored" data-request="A" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2889" values="0;1"/><rect x="642" y="267" width="76" height="22" rx="4" class="la-cell"/><text x="680" y="282" class="font-mono text-offset fill-sky anchor-middle">web</text></g>
+<g opacity="0" data-role="read-marker" data-request="A" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7000" values="0;1;0"/><rect x="639" y="264" width="82" height="28" rx="6" class="la-read-marker"/></g></g>
+<g data-role="request" data-request="A"><rect x="24" y="144" width="206" height="104" rx="10" class="fill-surface stroke-sky stroke-1.5"/>
+<text x="38" y="168" class="font-sans text-label font-semibold fill-sky">Request A</text>
+<text x="216" y="168" class="font-mono text-offset fill-ink-muted anchor-end">POST /checkout</text>
+<g data-role="header" data-request="A" data-header="X-Correlation-Id"><rect x="36" y="180" width="182" height="24" rx="4" class="la-cell"/><text x="46" y="196" class="la-offset">X-Correlation-Id: 7f3a</text></g>
+<g opacity="0" data-role="header-read" data-request="A" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/><rect x="33" y="177" width="188" height="30" rx="6" class="fill-none stroke-amber stroke-1.5"/></g>
+<g data-role="header" data-request="A" data-header="X-Box-Office"><rect x="36" y="210" width="182" height="24" rx="4" class="la-cell"/><text x="46" y="226" class="la-offset">X-Box-Office: web</text></g>
+<g opacity="0" data-role="header-read" data-request="A" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/><rect x="33" y="207" width="188" height="30" rx="6" class="fill-none stroke-amber stroke-1.5"/></g></g>
+<rect x="272" y="316" width="164" height="156" rx="8" class="fill-stage stroke-grid"/>
+<g opacity="0" data-role="filter-run" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5556" values="0;1;0"/><rect x="272" y="316" width="164" height="156" rx="8" class="fill-none stroke-amber stroke-1.5"/></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4667" values="0;1;0"/><text x="314" y="372" class="font-sans text-offset fill-ink">reads both headers</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="0;1;0"/><text x="314" y="372" class="font-sans text-offset fill-ink">stores the values</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="1;0;1"/><text x="426" y="420" class="font-mono text-offset fill-ink-muted anchor-end">ContextLocals.put</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="0;1;0"/><text x="426" y="420" class="font-mono text-offset fill-amber anchor-end">ContextLocals.put</text></g>
+<rect x="784" y="316" width="142" height="156" rx="8" class="fill-stage stroke-grid"/>
+<g opacity="0" data-role="endpoint-run" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/><rect x="784" y="316" width="142" height="156" rx="8" class="fill-none stroke-amber stroke-1.5"/></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7444" values="0;1;0"/><text x="822" y="372" class="font-sans text-offset fill-ink-muted">holding seats</text></g>
+<g opacity="0" data-role="endpoint-read" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444" values="0;1"/><text x="822" y="372" class="font-sans text-offset font-semibold fill-pink">read c41e, kiosk</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8333" values="1;0;1"/><text x="794" y="420" class="font-mono text-offset fill-ink-muted">ContextLocals.get</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8333" values="0;1;0"/><text x="794" y="420" class="font-mono text-offset fill-emerald">ContextLocals.get</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/><line x1="230" y1="368" x2="254" y2="368" class="la-arrow"/><polygon points="262,368 254,364 254,372" class="fill-flow"/>
+<line x1="446" y1="368" x2="766" y2="368" class="la-arrow"/><polygon points="774,368 766,364 766,372" class="fill-flow"/>
+<line x1="436" y1="436" x2="482" y2="436" class="la-arrow"/><polygon points="490,436 482,432 482,440" class="fill-flow"/>
+<line x1="730" y1="436" x2="776" y2="436" class="la-arrow"/><polygon points="784,436 776,432 776,440" class="fill-flow"/></g>
+<g opacity="0" data-role="put-arrow" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="0;1;0"/><line x1="436" y1="436" x2="482" y2="436" class="fill-none stroke-amber stroke-2.5"/><polygon points="490,436 482,432 482,440" class="fill-amber"/></g>
+<g opacity="0" data-role="get-arrow" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8333" values="0;1;0"/><line x1="730" y1="436" x2="776" y2="436" class="fill-none stroke-emerald stroke-2.5"/><polygon points="784,436 776,432 776,440" class="fill-emerald"/></g>
+<g opacity="0" data-role="context" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/><rect x="490" y="384" width="240" height="88" rx="8" class="la-card"/>
+<text x="502" y="402" class="font-sans text-offset font-semibold fill-pink">duplicated context of B</text>
+<text x="502" y="426" class="font-mono text-offset fill-ink-muted">X-Correlation-Id</text>
+<rect x="642" y="411" width="76" height="22" rx="4" class="la-cell-tail"/>
+<g opacity="0" data-role="writing" data-request="B" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="0;1;0"/><rect x="642" y="411" width="76" height="22" rx="4" class="la-cell-new"/><text x="680" y="426" class="la-offset anchor-middle">c41e</text></g>
+<g opacity="0" data-role="stored" data-request="B" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5556" values="0;1"/><rect x="642" y="411" width="76" height="22" rx="4" class="la-cell"/><text x="680" y="426" class="font-mono text-offset fill-pink anchor-middle">c41e</text></g>
+<g opacity="0" data-role="read-marker" data-request="B" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8333" values="0;1;0"/><rect x="639" y="408" width="82" height="28" rx="6" class="la-read-marker"/></g>
+<text x="502" y="454" class="font-mono text-offset fill-ink-muted">X-Box-Office</text>
+<rect x="642" y="439" width="76" height="22" rx="4" class="la-cell-tail"/>
+<g opacity="0" data-role="writing" data-request="B" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.5556" values="0;1;0"/><rect x="642" y="439" width="76" height="22" rx="4" class="la-cell-new"/><text x="680" y="454" class="la-offset anchor-middle">kiosk</text></g>
+<g opacity="0" data-role="stored" data-request="B" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5556" values="0;1"/><rect x="642" y="439" width="76" height="22" rx="4" class="la-cell"/><text x="680" y="454" class="font-mono text-offset fill-pink anchor-middle">kiosk</text></g>
+<g opacity="0" data-role="read-marker" data-request="B" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8333" values="0;1;0"/><rect x="639" y="436" width="82" height="28" rx="6" class="la-read-marker"/></g></g>
+<g opacity="0" data-role="request" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/><rect x="24" y="316" width="206" height="104" rx="10" class="fill-surface stroke-pink stroke-1.5"/>
+<text x="38" y="340" class="font-sans text-label font-semibold fill-pink">Request B</text>
+<text x="216" y="340" class="font-mono text-offset fill-ink-muted anchor-end">POST /checkout</text>
+<g data-role="header" data-request="B" data-header="X-Correlation-Id"><rect x="36" y="352" width="182" height="24" rx="4" class="la-cell"/><text x="46" y="368" class="la-offset">X-Correlation-Id: c41e</text></g>
+<g opacity="0" data-role="header-read" data-request="B" data-header="X-Correlation-Id"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4667" values="0;1;0"/><rect x="33" y="349" width="188" height="30" rx="6" class="fill-none stroke-amber stroke-1.5"/></g>
+<g data-role="header" data-request="B" data-header="X-Box-Office"><rect x="36" y="382" width="182" height="24" rx="4" class="la-cell"/><text x="46" y="398" class="la-offset">X-Box-Office: kiosk</text></g>
+<g opacity="0" data-role="header-read" data-request="B" data-header="X-Box-Office"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4667" values="0;1;0"/><rect x="33" y="379" width="188" height="30" rx="6" class="fill-none stroke-amber stroke-1.5"/></g></g>
+<g data-role="packet" data-request="A"><g transform="translate(242,196)"><animateTransform attributeName="transform" type="translate" dur="18s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0667;0.1000;0.2889;0.3333;1.0000" values="242,196;242,196;294,196;294,196;804,196;804,196"/><circle r="11" class="fill-sky stroke-stage stroke-1.5"/><text x="0" y="4" class="font-sans text-offset font-bold fill-surface anchor-middle">A</text></g></g>
+<g opacity="0" data-role="packet" data-request="B"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/><g transform="translate(242,368)"><animateTransform attributeName="transform" type="translate" dur="18s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3667;0.4000;0.5556;0.6000;1.0000" values="242,368;242,368;294,368;294,368;804,368;804,368"/><circle r="11" class="fill-pink stroke-stage stroke-1.5"/><text x="0" y="4" class="font-sans text-offset font-bold fill-surface anchor-middle">B</text></g></g>
+<rect x="24" y="496" width="912" height="38" rx="8" class="la-canvas"/>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/>Request A arrives at POST /checkout with X-Correlation-Id 7f3a and X-Box-Office web.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/>Routing has picked checkout(), but the request filter runs first and reads both headers.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.3333" values="0;1;0"/>The filter puts both values in A's duplicated context. Vert.x creates one for every request.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.4667" values="0;1;0"/>Request B arrives while checkout() is still running for A. The same filter reads B's headers.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4667;0.6111" values="0;1;0"/>B's values go into B's own duplicated context. A's context still holds 7f3a and web.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6111;0.7444" values="0;1;0"/>A's checkout() reads its context and gets 7f3a and web, not B's values.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7444;0.8667" values="0;1;0"/>B's checkout() reads c41e and kiosk from its own context.</text>
+<text x="480" y="520" class="font-sans text-label fill-ink anchor-middle" opacity="0" data-role="caption"><animate attributeName="opacity" dur="18s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667" values="0;1"/>The filter code and the keys are the same, but each request keeps its own values.</text>
+<text x="28" y="556" class="font-sans text-offset fill-ink-muted">Sources: quarkus.io/guides/rest (request or response filters) and quarkus.io/guides/duplicated-context (context local data).</text>
+</svg>
