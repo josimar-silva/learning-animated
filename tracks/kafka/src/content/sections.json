@@ -1,0 +1,86 @@
+[
+  {
+    "id": "ch01-meet-kafka",
+    "number": 1,
+    "title": "Meet Kafka",
+    "description": "Why publish/subscribe messaging matters, and how messages, topics, partitions, producers, consumers, brokers, and clusters fit together."
+  },
+  {
+    "id": "ch02-installing-kafka",
+    "number": 2,
+    "title": "Installing Kafka",
+    "description": "Setting up ZooKeeper and Kafka brokers, the broker and topic defaults worth tuning, and choosing hardware and cluster size for production."
+  },
+  {
+    "id": "ch03-kafka-producers",
+    "number": 3,
+    "title": "Kafka Producers: Writing Messages to Kafka",
+    "description": "How producers write to Kafka: sending records, configuring acknowledgments and retries, serializing with Avro and a schema registry, and partitioning."
+  },
+  {
+    "id": "ch04-kafka-consumers",
+    "number": 4,
+    "title": "Kafka Consumers: Reading Data from Kafka",
+    "description": "How consumers read from Kafka: consumer groups and rebalances, the poll loop, committing offsets, and reacting when partitions are reassigned."
+  },
+  {
+    "id": "ch05-managing-kafka-programmatically",
+    "number": 5,
+    "title": "Managing Apache Kafka Programmatically",
+    "description": "Using the AdminClient to create and inspect topics, change configurations, manage consumer groups, and read cluster metadata from code."
+  },
+  {
+    "id": "ch06-kafka-internals",
+    "number": 6,
+    "title": "Kafka Internals",
+    "description": "How Kafka works under the hood: the controller, replication, request processing, and how partitions are stored as segments, indexes, and compacted logs."
+  },
+  {
+    "id": "ch07-reliable-data-delivery",
+    "number": 7,
+    "title": "Reliable Data Delivery",
+    "description": "The reliability guarantees Kafka makes, and how to configure brokers, producers, and consumers so no message is lost, then validate it."
+  },
+  {
+    "id": "ch08-exactly-once-semantics",
+    "number": 8,
+    "title": "Exactly-Once Semantics",
+    "description": "How idempotent producers and transactions combine to give exactly-once processing, and where those guarantees stop."
+  },
+  {
+    "id": "ch09-building-data-pipelines",
+    "number": 9,
+    "title": "Building Data Pipelines",
+    "description": "Moving data between systems with Kafka and Kafka Connect, weighing timeliness, reliability, throughput, data formats, and transformations."
+  },
+  {
+    "id": "ch10-cross-cluster-data-mirroring",
+    "number": 10,
+    "title": "Cross-Cluster Data Mirroring",
+    "description": "Replicating data between clusters with MirrorMaker, and the multicluster architectures it enables, from hub and spoke to active-active."
+  },
+  {
+    "id": "ch11-securing-kafka",
+    "number": 11,
+    "title": "Securing Kafka",
+    "description": "Protecting a deployment with encryption, authentication, authorization, auditing, and quotas, including ZooKeeper and the platform around it."
+  },
+  {
+    "id": "ch12-administering-kafka",
+    "number": 12,
+    "title": "Administering Kafka",
+    "description": "Day to day operations with the command line tools: topics, consumer groups, dynamic configuration, partition management, and unsafe operations."
+  },
+  {
+    "id": "ch13-monitoring-kafka",
+    "number": 13,
+    "title": "Monitoring Kafka",
+    "description": "Which broker, client, and lag metrics to watch, how to set service-level objectives, and how to alert on what actually matters."
+  },
+  {
+    "id": "ch14-stream-processing",
+    "number": 14,
+    "title": "Stream Processing",
+    "description": "Processing data as it arrives with Kafka Streams: time, state, windows, joins, and the design patterns that let stream processing scale."
+  }
+]
