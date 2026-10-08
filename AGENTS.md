@@ -40,6 +40,10 @@ Read `packages/design/signature.md` before drawing. Author with palette utilitie
 - well-formed `keyTimes`;
 - optionally, `data-loop="<seconds>s"` on the root, equal to the story's `dur`, with no animation running longer.
 
+## Adding a lesson
+
+Before you create anything under `tracks/*/src/content/animations/`, load the animate-lesson skill, [`.github/skills/animate-lesson/SKILL.md`](.github/skills/animate-lesson/SKILL.md), and follow its steps. It covers the redraw into the track's domain, the story-beat test that comes first, the generator flow, and the hand-off.
+
 ## Identity and pull requests
 
 - Before the first commit in any clone or worktree, compare `git config user.email` with the email in `~/projects/personal/kafka-the-definitive-guide-animated/.git/config`. If they differ, stop and ask. Never commit with the machine's global identity.
@@ -48,7 +52,19 @@ Read `packages/design/signature.md` before drawing. Author with palette utilitie
 
 ## Common tasks
 
-    just            # list recipes
-    just test       # run every suite
-    just check      # lint, format check, type-check
-    just format     # apply lint fixes and formatting
+    just                         # list recipes
+    just test                    # run every suite
+    just check                   # lint, format check, type-check, astro check
+    just format                  # apply lint fixes and formatting
+    just style                   # re-embed the LA-STYLE block into every SVG
+    just style-check             # fail if an SVG's LA-STYLE block drifted
+    just dev <site>              # dev server for home, kafka, quarkus, or java
+    just build <site>            # build one site into its dist/
+    just build-all               # build every site
+    just preview <site>          # serve a built site with its production headers
+    just check-dist              # audit the built sites' links and inline scripts
+    just forbidden-terms         # scan files (and --commits <range>) for forbidden terms
+    just gen <file>              # write the SVG an <id>.gen.ts generator describes
+    just build-image <site>      # build a site's nginx image
+    just start-container <site>  # serve that image on http://localhost:3000
+    just pre-release             # strip -SNAPSHOT and commit the release bump
