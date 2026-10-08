@@ -101,6 +101,8 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just build <site>`: Builds one site into its `dist/` folder.
 - `just preview <site>`: Serves a built site with its production headers.
 - `just build-all`: Builds every site.
+- `just check-dist`: Audits every built site: links resolve, the theme boot is the only inline script, and `robots.txt` agrees with `_headers` about indexing.
+- `just forbidden-terms [--commits <range>]`: Scans tracked files, and with `--commits` the metadata of each commit in the range, for the private list of forbidden terms.
 - `just clean`: Removes coverage reports and build output.
 - `just pre-commit`: Runs `just check` and `just test`, to use before committing.
 
@@ -117,7 +119,7 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 
 ## 🧪 Testing
 
-Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, and `just build-all` on every pull request and every push to `main`.
+Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, `just build-all`, `just check-dist`, and the forbidden-terms scan on every pull request and every push to `main`.
 
 Each track's `test/content.test.ts` checks its content: the sections and animations validate, every SVG passes the contract below, and every id in the track's `embed-ids.txt` still exists, so a published embed keeps working. Kafka's [`test/attribution.test.ts`](tracks/kafka/test/attribution.test.ts) keeps the book's credit and the license links in place, in [`ATTRIBUTION.md`](tracks/kafka/ATTRIBUTION.md) and in this README.
 
@@ -137,6 +139,12 @@ Each track's `test/content.test.ts` checks its content: the sections and animati
 
 [`test/repo/conventions.test.ts`](test/repo/conventions.test.ts) checks the repository itself: the justfile defines the standard recipes, every external dependency is pinned to an exact version, `@types/node` follows the Node major in `.nvmrc`, no text file contains an em dash or an en dash, and the shared meta and config files exist. [`test/repo/workflows.test.ts`](test/repo/workflows.test.ts) checks that the CI, CodeQL, and Scorecard workflows exist, that every action is pinned to a full commit SHA with a version comment, that every job hardens the runner first, and that every workflow declares its permissions at the top level.
 
+[`test/repo/boundaries.test.ts`](test/repo/boundaries.test.ts) keeps the workspaces apart. It fails when an import leaves its workspace or names a package that the workspace's `package.json` does not declare, and when one track depends on another.
+
+`just check-dist` audits every page of every built site. Each root-relative link must resolve to a built file, the theme boot must be the only inline script (the CSP allows it by its hash), and `robots.txt` and `_headers` must agree about indexing.
+
+`just forbidden-terms` scans every tracked file, and with `--commits <range>` each commit's author, committer, and message, for terms from a private list: the `FORBIDDEN_TERMS` secret in CI, or a git-ignored `.forbidden-terms` file locally. CI logs of a public repository are public, so a finding names only the file and line, or the commit, and the term's number in the list, never the term itself. Without a list, the scan skips, and CI shows a warning.
+
 ## 🗂️ Project Layout
 
 ```
@@ -154,7 +162,9 @@ packages/site-kit/src/pages/    the pages every site renders, built from src/com
 packages/site-kit/src/client/   browser modules: playback, views, scrubber, steps, theme, and menu
 tracks/<id>/                    one Astro site per track: track.ts, content, pages, and tests
 home/                           the family home page for learning-animated.com
-test/repo/                      conventions, workflows, and palette contrast tests
+scripts/                        check-dist, forbidden-terms, and affected-sites CLIs, logic in lib/
+test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
+                                affected-sites, and palette contrast tests
 .github/workflows/              CI, CodeQL, and Scorecard
 ```
 
