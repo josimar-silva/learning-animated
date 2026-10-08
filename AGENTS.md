@@ -53,7 +53,9 @@ Before you create anything under `tracks/*/src/content/animations/`, load the an
 ## Common tasks
 
     just                         # list recipes
-    just test                    # run every suite
+    just test                    # run every Vitest suite
+    just test-e2e                # build every site, then run the end-to-end suite
+    just test-e2e-on <project>   # run the end-to-end suite in one browser project
     just check                   # lint, format check, type-check, astro check
     just format                  # apply lint fixes and formatting
     just style                   # re-embed the LA-STYLE block into every SVG

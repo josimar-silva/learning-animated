@@ -98,14 +98,18 @@ just build-all  # build every site into its own dist/
 
 `just dev` serves the site at [http://localhost:4321](http://localhost:4321) and reloads it as you edit. A track site serves its contents at `/`, a section at `/<section>/`, an animation at `/<section>/<id>/`, and the about page at `/about/`. Each animation SVG also has its own address for embedding elsewhere, `/embed/<id>.svg`.
 
+Before the first end-to-end run, download the headless Chromium that `just test-e2e-on chromium` uses: `npx playwright install --only-shell chromium`.
+
 ## 🛠️ Available Recipes
 
-This project uses `just` as its command runner. The npm scripts in `package.json` (`npm test`, `npm run lint`, `npm run format`, and `npm run format:check`) cover a subset of the recipes if you prefer npm.
+This project uses `just` as its command runner. The npm scripts in `package.json` (`npm test`, `npm run test-e2e`, `npm run lint`, `npm run format`, and `npm run format:check`) cover a subset of the recipes if you prefer npm.
 
 - `just`: Lists every recipe.
 - `just install`: Installs dependencies.
 - `just ci`: Installs dependencies exactly as locked, as CI does.
 - `just test`: Runs every test suite once with Vitest.
+- `just test-e2e`: Builds every site, then runs the end-to-end suite with Playwright in all seven browser projects.
+- `just test-e2e-on <project>`: Runs the end-to-end suite in one browser project, such as `chromium` or `webkit`, against the sites already built.
 - `just lint`: Lints the code with ESLint.
 - `just format`: Applies ESLint fixes, then formats with Prettier.
 - `just check`: Runs ESLint, the Prettier check, the TypeScript type-check for the root and each package, `just style-check`, and `astro check` for each site.
@@ -148,7 +152,7 @@ One multi-stage [Dockerfile](Dockerfile) builds any site: the `SITE` build argum
 
 ## 🧪 Testing
 
-Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, `just build-all`, `just check-dist`, and the forbidden-terms scan on every pull request and every push to `main`.
+Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, `just build-all`, `just check-dist`, and the forbidden-terms scan on every pull request and every push to `main`, then runs the end-to-end suite against the sites it built.
 
 Each track's `test/content.test.ts` checks its content: the sections and animations validate, every SVG passes the contract below, and every id in the track's `embed-ids.txt` still exists, so a published embed keeps working. Kafka's [`test/attribution.test.ts`](tracks/kafka/test/attribution.test.ts) keeps the book's credit and the license links in place, in [`ATTRIBUTION.md`](tracks/kafka/ATTRIBUTION.md) and in this README.
 
@@ -174,12 +178,16 @@ Each track's `test/content.test.ts` checks its content: the sections and animati
 
 `just forbidden-terms` scans every tracked file, and with `--commits <range>` each commit's author, committer, and message, for terms from a private list: the `FORBIDDEN_TERMS` secret in CI, or a git-ignored `.forbidden-terms` file locally. CI logs of a public repository are public, so a finding names only the file and line, or the commit, and the term's number in the list, never the term itself. Without a list, the scan skips, and CI shows a warning.
 
+The end-to-end suite in [`e2e-tests`](e2e-tests) loads the built sites in real browsers with [Playwright](https://playwright.dev/). It serves each site with `astro preview`, which sends the production headers, and opens every page in that site's `sitemap.xml`, so a page added later is covered without writing a test for it. A page fails on any console error, uncaught exception, CSP violation, or response with an error status. The suite also checks that `sitemap.xml` is served, that `robots.txt` agrees with the `noindex` header, and that pages carry the content security policy. It checks that the theme button switches to dark and remembers it, that the menu opens and closes on phone screens, and that every SVG an embed box offers is served. On a lesson page it drives the player: the Pause and Play button, the Space and R shortcuts, the scrubber, the steps, and the views. Each player test skips until a lesson has the feature it drives.
+
+[`playwright.config.ts`](playwright.config.ts) defines seven browser projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`, `mobile-safari`, `microsoft-edge`, and `google-chrome`. `just test-e2e-on chromium` needs only the headless Chromium. `just test-e2e` runs every project, so it also needs `npx playwright install firefox webkit` and local installs of Microsoft Edge and Google Chrome. In CI, each project runs as its own `Test E2E (<project>)` job in the official Playwright container, against the sites the `verify` job built, and the Chromium job uploads a UI coverage report. [`test/repo/e2e.test.ts`](test/repo/e2e.test.ts) checks that the container runs the Playwright version `package.json` pins and that CI runs every project in the config.
+
 To add a lesson, follow the [animate-lesson skill](.github/skills/animate-lesson/SKILL.md). In short:
 
 1. Create `tracks/<track>/src/content/animations/<section>/<id>/` and its `index.md`, with the frontmatter and the concept text.
 2. Write `<id>.test.ts` first, with the story beats as timed facts from the timeline helpers, and watch `just test` fail.
 3. Draw `<id>.svg` and run `just style`, or write `<id>.gen.ts` and run `just gen`, until the lesson test and the contract pass.
-4. Watch the lesson play with `just dev <track>`, then commit the test and the SVG together.
+4. Run `just build-all` and `just test-e2e-on chromium`, watch the lesson play with `just dev <track>`, then commit the test and the SVG together.
 
 ## 🗂️ Project Layout
 
@@ -187,6 +195,7 @@ To add a lesson, follow the [animate-lesson skill](.github/skills/animate-lesson
 justfile                        task runner (just ci, check, test, dev, build-all, style)
 Dockerfile                      one image per site: node builds the site, nginx serves it
 vitest.config.ts                the Vitest projects: every package, every track, and test/repo
+playwright.config.ts            the end-to-end browser projects, reporters, and preview servers
 docs/images/logo.svg            the project mark, drawn from the stage palette
 packages/design/theme.css       every color, font, and size (single source of truth)
 packages/design/signature.md    the aesthetic signature, in prose
@@ -201,7 +210,8 @@ tracks/<id>/                    one Astro site per track: track.ts, content, pag
 home/                           the family home page for learning-animated.com
 scripts/                        check-dist, forbidden-terms, affected-sites, and gen CLIs, logic in lib/
 test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
-                                affected-sites, and palette contrast tests
+                                affected-sites, e2e, and palette contrast tests
+e2e-tests/                      Playwright specs that open every built page, helpers in _shared/
 .github/workflows/              CI, CodeQL, Scorecard, Deploy, Docker, and CD
 .github/skills/animate-lesson/  the checklist for adding a lesson
 ```
