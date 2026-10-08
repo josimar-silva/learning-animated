@@ -98,7 +98,8 @@ export function wireMenu(doc: Document): void {
 }
 
 // Wires Pause/Play and Restart to the stage and returns those two actions, or
-// null on a page without a stage. Readers who prefer less motion start paused.
+// null on a page without a stage. Readers who prefer less motion start paused,
+// and an svg that loads while the player is paused, such as a new view, stays paused.
 export function wirePlayback(
   doc: Document,
   { reducedMotion = playback.prefersReducedMotion }: { reducedMotion?: () => boolean } = {},
@@ -130,7 +131,7 @@ export function wirePlayback(
   doc.querySelector('[data-role="scrubber"]')?.addEventListener('input', () => show(true));
 
   const holdStill = (): void => {
-    if (!reducedMotion()) return;
+    if (!paused && !reducedMotion()) return;
     playback.pause(object);
     show(true);
   };
@@ -161,8 +162,14 @@ export function wireKeyboard(
   });
 }
 
-// Swaps the stage between before and after views.
-export function wireViewToggle(doc: Document): void {
+// Swaps the stage between before and after views. The new view opens at the moment the old one
+// showed, so both show the same instant of the loop they share.
+export function wireViewToggle(
+  doc: Document,
+  {
+    defer = (run: () => void) => void setTimeout(run, 0),
+  }: { defer?: (run: () => void) => void } = {},
+): void {
   const object = doc.querySelector<HTMLObjectElement>('[data-role="stage"] object');
   const buttons = [...doc.querySelectorAll<HTMLButtonElement>('[data-action="view"]')];
   if (!object || buttons.length === 0) return;
@@ -170,6 +177,20 @@ export function wireViewToggle(doc: Document): void {
     button.addEventListener('click', () => {
       const src = button.dataset.src;
       if (!src || object.getAttribute('data') === src) return;
+      const moment = playback.currentTime(object);
+      if (moment !== null) {
+        const seek = (): void => playback.seek(object, moment);
+        // WebKit starts the new view's clock only after the load event, and a paused clock keeps
+        // no seek made before then, so seek once more after the load task.
+        object.addEventListener(
+          'load',
+          () => {
+            seek();
+            defer(seek);
+          },
+          { once: true },
+        );
+      }
       object.setAttribute('data', src);
       for (const other of buttons) other.setAttribute('aria-pressed', String(other === button));
     });

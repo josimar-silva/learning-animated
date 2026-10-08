@@ -352,17 +352,18 @@ test('every module the browser loads is a relative, browser-safe module', () => 
 
 type FakeSvg = { time: number; paused: boolean; seeks: number[] };
 
-function stage(extra = '', loop: string | null = '10s') {
-  const { document, Event } = parseHTML(`<html><body>
-    <div data-role="stage"><object data="/embed/x.before.svg"></object></div>${extra}</body></html>`);
+// An svg root whose clock and pause the tests can read and set. With startsLate, the clock
+// ignores seeks until start(), as a paused WebKit view does with seeks made during its load event.
+function fakeSvg(loop: string | null = '10s', { startsLate = false } = {}) {
   const state: FakeSvg = { time: 0, paused: false, seeks: [] };
+  let started = !startsLate;
   const svg = {
     getAttribute: (name: string) => (name === 'data-loop' ? loop : null),
     getCurrentTime: () => state.time,
     setCurrentTime: (t: number) => {
       state.seeks.push(t);
       // Browsers keep SVG times as 32-bit floats.
-      state.time = Math.fround(t);
+      if (started) state.time = Math.fround(t);
     },
     pauseAnimations: () => {
       state.paused = true;
@@ -371,15 +372,39 @@ function stage(extra = '', loop: string | null = '10s') {
       state.paused = false;
     },
   };
+  return {
+    svg,
+    state,
+    start: () => {
+      started = true;
+    },
+  };
+}
+
+function stage(extra = '', loop: string | null = '10s') {
+  const { document, Event } = parseHTML(`<html><body>
+    <div data-role="stage"><object data="/embed/x.before.svg"></object></div>${extra}</body></html>`);
   const object = document.querySelector('object')!;
-  Object.defineProperty(object, 'contentDocument', { value: { querySelector: () => svg } });
+  const showSvg = (svg: object): void => {
+    Object.defineProperty(object, 'contentDocument', {
+      configurable: true,
+      value: { querySelector: () => svg },
+    });
+  };
   const fire = (el: Element, type: string) =>
     el.dispatchEvent(new Event(type) as unknown as globalThis.Event);
+  const { svg, state } = fakeSvg(loop);
+  showSvg(svg);
   return {
     document: document as unknown as Document,
     object: object as unknown as HTMLObjectElement,
     state,
     fire,
+    // What the browser does once a new view's svg arrives.
+    load: (next: object): void => {
+      showSvg(next);
+      fire(object, 'load');
+    },
   };
 }
 
@@ -395,16 +420,57 @@ describe('playback additions', () => {
 });
 
 describe('wireViewToggle', () => {
-  test('swaps the stage to the picked view and marks the pressed button', () => {
-    const { document, object, fire } = stage(`
+  const views = `
       <button data-action="view" data-src="/embed/x.before.svg" aria-pressed="true">Before</button>
-      <button data-action="view" data-src="/embed/x.after.svg" aria-pressed="false">After</button>`);
+      <button data-action="view" data-src="/embed/x.after.svg" aria-pressed="false">After</button>`;
+  const player = '<button data-action="toggle" aria-pressed="false">Pause</button>';
+  test('swaps the stage to the picked view and marks the pressed button', () => {
+    const { document, object, fire } = stage(views);
     wireViewToggle(document);
     const [before, after] = document.querySelectorAll('[data-action="view"]');
     fire(after!, 'click');
     expect(object.getAttribute('data')).toBe('/embed/x.after.svg');
     expect(before!.getAttribute('aria-pressed')).toBe('false');
     expect(after!.getAttribute('aria-pressed')).toBe('true');
+  });
+  test('a view switch keeps the moment and the pause', () => {
+    const { document, state, fire, load } = stage(player + views);
+    wirePlayback(document, { reducedMotion: () => false });
+    wireViewToggle(document, { defer: () => {} });
+    state.time = 4.5;
+    fire(document.querySelector('[data-action="toggle"]')!, 'click');
+    fire(document.querySelectorAll('[data-action="view"]')[1]!, 'click');
+    const after = fakeSvg();
+    load(after.svg);
+    expect(after.state).toMatchObject({ time: 4.5, paused: true });
+  });
+  test('a view switch keeps the moment and keeps playing', () => {
+    const { document, state, fire, load } = stage(player + views);
+    wirePlayback(document, { reducedMotion: () => false });
+    wireViewToggle(document, { defer: () => {} });
+    state.time = 4.5;
+    fire(document.querySelectorAll('[data-action="view"]')[1]!, 'click');
+    const after = fakeSvg();
+    load(after.svg);
+    expect(after.state).toMatchObject({ time: 4.5, paused: false });
+  });
+  test('a view whose clock starts after the load event still lands on the moment', () => {
+    const { document, state, fire, load } = stage(player + views);
+    const deferred: Array<() => void> = [];
+    wirePlayback(document, { reducedMotion: () => false });
+    wireViewToggle(document, {
+      defer: (run) => {
+        deferred.push(run);
+      },
+    });
+    state.time = 4.5;
+    fire(document.querySelector('[data-action="toggle"]')!, 'click');
+    fire(document.querySelectorAll('[data-action="view"]')[1]!, 'click');
+    const after = fakeSvg('10s', { startsLate: true });
+    load(after.svg);
+    after.start();
+    for (const run of deferred) run();
+    expect(after.state).toMatchObject({ time: 4.5, paused: true });
   });
 });
 
