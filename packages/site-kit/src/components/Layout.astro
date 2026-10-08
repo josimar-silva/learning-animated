@@ -1,0 +1,76 @@
+---
+import '../styles/site.css';
+
+import interUrl from '@learning-animated/design/fonts/inter-latin.woff2?url';
+
+import { absoluteUrl } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+import { serializeJsonLd } from '../seo.ts';
+import { THEME_BOOT } from '../theme-boot.ts';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+
+export type PageKind = 'home' | 'section' | 'animation' | 'about' | 'not-found';
+
+interface Props {
+  track: Track;
+  kind: PageKind;
+  path: string;
+  title: string;
+  description: string;
+  jsonLd?: unknown[];
+  sections?: ReadonlyArray<{ name: string; path: string }>;
+}
+
+const THEME_COLOR = '#6d28d9';
+const { track, kind, path, title, description, jsonLd = [], sections = [] } = Astro.props;
+const indexable = track.launched && kind !== 'not-found';
+const url = absoluteUrl(track.site.url, path);
+const image = absoluteUrl(track.site.url, '/og.png');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Josimar Silva" />
+    <meta name="robots" content={indexable ? 'index,follow' : 'noindex'} />
+    {indexable && <link rel="canonical" href={url} />}
+    <meta name="theme-color" content={THEME_COLOR} />
+    <meta property="og:type" content={kind === 'home' ? 'website' : 'article'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {indexable && <meta property="og:url" content={url} />}
+    <meta property="og:site_name" content={track.site.name} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
+    <script is:inline set:html={THEME_BOOT}></script>
+    {jsonLd.map((data) => (
+      <script type="application/ld+json" set:html={serializeJsonLd(data)} />
+    ))}
+  </head>
+  <body data-page={kind} class="min-h-screen antialiased">
+    <a class="sr-only focus:not-sr-only" href="#main">
+      Skip to content
+    </a>
+    <Header track={track} path={path} />
+    <main id="main" class="mx-auto w-full max-w-5xl px-4 py-8">
+      <slot />
+    </main>
+    <Footer track={track} sections={sections} />
+    <script>
+      import '../client/app.ts';
+    </script>
+  </body>
+</html>

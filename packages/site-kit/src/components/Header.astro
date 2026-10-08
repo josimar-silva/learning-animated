@@ -1,0 +1,120 @@
+---
+import { AUTHOR } from '../family.ts';
+import { pathForAbout, pathForHome } from '../routes.ts';
+import type { Track } from '../schemas.ts';
+
+interface Props {
+  track: Track;
+  path: string;
+}
+
+const { track, path } = Astro.props;
+const links = [
+  { label: 'Contents', href: pathForHome() },
+  // The family home has no about page.
+  ...(track.kind === 'home' ? [] : [{ label: 'About', href: pathForAbout() }]),
+];
+const button =
+  'inline-flex size-10 items-center justify-center rounded-md text-foreground hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring';
+---
+
+<header class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+  <div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4">
+    <a href={pathForHome()} class="flex items-center gap-2 font-semibold text-foreground">
+      <span
+        class="inline-flex size-8 flex-none items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
+        aria-hidden="true"
+      >
+        JS
+      </span>
+      <span>{track.site.shortName}</span>
+    </a>
+    <nav
+      id="site-nav"
+      aria-label="Main"
+      class="absolute inset-x-0 top-16 hidden flex-col gap-1 border-b border-border bg-background px-4 pt-2 pb-4 shadow-md md:static md:flex md:flex-row md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none [&.is-open]:flex"
+    >
+      {links.map((link) => (
+        <a
+          href={link.href}
+          aria-current={path === link.href ? 'page' : undefined}
+          class="inline-flex min-h-10 items-center text-sm font-medium text-foreground hover:text-link aria-[current=page]:text-link"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href={AUTHOR.url}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex min-h-10 items-center text-sm font-medium text-foreground hover:text-link"
+      >
+        Blog
+      </a>
+    </nav>
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        class={button}
+        data-action="theme"
+        aria-pressed="false"
+        aria-label="Dark theme"
+      >
+        <svg
+          class="hidden dark:block"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg
+          class="block dark:hidden"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class={`${button} md:hidden`}
+        data-action="menu"
+        aria-controls="site-nav"
+        aria-expanded="false"
+        aria-label="Menu"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>

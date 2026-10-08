@@ -8,6 +8,7 @@
     "./theme": "./src/theme.ts",
     "./style-block": "./src/style-block.ts",
     "./canonical": "./src/canonical.ts",
-    "./sync": "./src/sync.ts"
+    "./sync": "./src/sync.ts",
+    "./fonts/*": "./fonts/*"
   }
 }
