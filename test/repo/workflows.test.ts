@@ -6,7 +6,7 @@ import { parse } from 'yaml';
 
 const DIR = fileURLToPath(new URL('../../.github/workflows/', import.meta.url));
 
-export const WORKFLOWS = ['ci.yaml', 'codeql.yaml', 'security-scorecard.yaml'];
+export const WORKFLOWS = ['ci.yaml', 'codeql.yaml', 'security-scorecard.yaml', 'deploy.yaml'];
 
 type Step = { uses?: string };
 type Workflow = { permissions?: unknown; jobs: Record<string, { steps?: Step[] }> };
