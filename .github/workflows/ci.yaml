@@ -39,3 +39,6 @@ jobs:
 
       - name: 🧪 Test
         run: just test
+
+      - name: 🏗️ Build every site
+        run: just build-all
