@@ -1,0 +1,16 @@
+{
+  "name": "@learning-animated/svg-kit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./parse": "./src/parse.ts",
+    "./contract": "./src/contract.ts",
+    "./contrast": "./src/contrast.ts",
+    "./timeline": "./src/timeline.ts",
+    "./author": "./src/author.ts"
+  },
+  "dependencies": {
+    "linkedom": "0.18.13"
+  }
+}
