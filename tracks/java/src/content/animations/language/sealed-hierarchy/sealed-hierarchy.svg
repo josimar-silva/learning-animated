@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 466" role="img" data-loop="20s">
+  <title>A sealed hierarchy</title>
+  <desc>On the left, sealed interface DecodeResult permits two records, Decoded and Rejected, drawn as a tree under the interface. On the right, a switch over a DecodeResult has one case for each record and a comment saying it has no default. javac checks the switch, marks Decoded and Rejected covered, and the switch compiles. Then a third record, Expired, joins the permits clause and the tree. javac checks again, finds no case for Expired, and fails at the switch with the error: the switch expression does not cover all possible input values. Last, the switch gets case Expired e, javac marks Expired covered, and the switch compiles again, still with no default.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="466"/>
+  <text class="la-title" x="28" y="40">A sealed hierarchy</text>
+  <text class="la-note" x="28" y="64">The decoder returns a DecodeResult. Its permits clause lets javac check that a switch covers every subtype.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="912" height="216" rx="12"/>
+  <line class="stroke-grid" x1="464" y1="96" x2="464" y2="288"/>
+  <text class="la-label font-semibold" x="40" y="108">the sealed interface</text>
+  <text class="la-label font-semibold" x="480" y="108">a switch over it</text>
+  <rect class="la-card" x="40" y="120" width="360" height="52" rx="8"/>
+  <text class="font-mono text-offset fill-ink" x="52" y="142"><tspan class="font-bold">sealed</tspan> interface DecodeResult</text>
+  <rect data-role="permits-highlight" class="fill-none stroke-amber stroke-1.5" x="75" y="148" width="216.4" height="20" rx="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="1;0"/></rect>
+  <text data-role="permits" class="font-mono text-offset fill-ink" x="81" y="162">permits <tspan data-role="type-name" data-type="Decoded" class="font-semibold fill-sky">Decoded</tspan>, <tspan data-role="type-name" data-type="Rejected" class="font-semibold fill-pink">Rejected</tspan> {}<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="1;0"/></text>
+  <text data-role="permits" class="font-mono text-offset fill-ink" x="81" y="162">permits <tspan data-role="type-name" data-type="Decoded" class="font-semibold fill-sky">Decoded</tspan>, <tspan data-role="type-name" data-type="Rejected" class="font-semibold fill-pink">Rejected</tspan>, <tspan data-role="type-name" data-type="Expired" class="font-semibold fill-amber">Expired</tspan> {}<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+  <g data-role="subtype" data-type="Decoded">
+    <path class="la-arrow" d="M 60 172 V 198 H 76"/>
+    <rect class="la-cell" x="76" y="184" width="300" height="28" rx="6"/>
+    <text class="font-mono text-offset fill-ink" x="88" y="202">record <tspan data-role="type-name" data-type="Decoded" class="font-semibold fill-sky">Decoded</tspan>(BoardingPass pass)</text>
+  </g>
+  <g data-role="subtype" data-type="Rejected">
+    <path class="la-arrow" d="M 60 198 V 234 H 76"/>
+    <rect class="la-cell" x="76" y="220" width="300" height="28" rx="6"/>
+    <text class="font-mono text-offset fill-ink" x="88" y="238">record <tspan data-role="type-name" data-type="Rejected" class="font-semibold fill-pink">Rejected</tspan>(String reason)</text>
+  </g>
+  <g data-role="subtype" data-type="Expired">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+    <path class="la-arrow" d="M 60 234 V 270 H 76"/>
+    <rect class="la-cell-new" x="76" y="256" width="300" height="28" rx="6"/>
+    <text class="font-mono text-offset fill-ink" x="88" y="274">record <tspan data-role="type-name" data-type="Expired" class="font-semibold fill-amber">Expired</tspan>(BoardingPass pass)</text>
+  </g>
+  <g data-role="mark" data-mark="covered" data-type="Decoded">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <path class="fill-none stroke-emerald stroke-1.5" d="M 386 198 l 4 4 l 8 -9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-sans text-offset font-semibold fill-emerald" x="402" y="202">covered</text>
+  </g>
+  <g data-role="mark" data-mark="covered" data-type="Rejected">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500" values="0;1"/>
+    <path class="fill-none stroke-emerald stroke-1.5" d="M 386 234 l 4 4 l 8 -9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-sans text-offset font-semibold fill-emerald" x="402" y="238">covered</text>
+  </g>
+  <g data-role="mark" data-mark="missing" data-type="Expired">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.7500" values="0;1;0"/>
+    <path class="fill-none stroke-red stroke-1.5" d="M 387 265 l 9 9 m 0 -9 l -9 9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-sans text-offset font-semibold fill-red" x="402" y="274">no case</text>
+  </g>
+  <g data-role="mark" data-mark="covered" data-type="Expired">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/>
+    <path class="fill-none stroke-emerald stroke-1.5" d="M 386 270 l 4 4 l 8 -9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-sans text-offset font-semibold fill-emerald" x="402" y="274">covered</text>
+  </g>
+  <rect data-role="switch-error" class="fill-none stroke-red stroke-1.5" x="503" y="148" width="187.2" height="20" rx="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7500" values="0;1;0"/></rect>
+  <g data-role="switch">
+    <text class="font-mono text-offset fill-ink" x="480" y="142">String describe(DecodeResult result) {</text>
+    <text data-role="switch-line" class="font-mono text-offset fill-ink" x="509" y="162">return switch (result) {</text>
+    <text data-role="case" data-type="Decoded" class="font-mono text-offset fill-ink" x="538" y="182">case <tspan data-role="type-name" data-type="Decoded" class="font-semibold fill-sky">Decoded</tspan> d -&gt; &quot;seat &quot; + d.pass().seat();</text>
+    <text data-role="case" data-type="Rejected" class="font-mono text-offset fill-ink" x="538" y="202">case <tspan data-role="type-name" data-type="Rejected" class="font-semibold fill-pink">Rejected</tspan> r -&gt; &quot;rejected: &quot; + r.reason();</text>
+    <text data-role="case" data-type="Expired" class="font-mono text-offset fill-ink" x="538" y="222">case <tspan data-role="type-name" data-type="Expired" class="font-semibold fill-amber">Expired</tspan> e -&gt; &quot;expired: &quot; + e.pass().flight();<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="0;1"/></text>
+    <g data-role="closers">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="1;0"/>
+      <rect data-role="no-default-highlight" class="fill-none stroke-amber stroke-1.5" x="532" y="208" width="106.9" height="20" rx="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5000;0.8500" values="0;1;0;1"/></rect>
+      <text data-role="no-default" class="font-mono text-offset fill-ink-muted" x="538" y="222">// no default</text>
+      <text class="font-mono text-offset fill-ink" x="509" y="242">};</text>
+      <text class="font-mono text-offset fill-ink" x="480" y="262">}</text>
+    </g>
+    <g data-role="closers">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="0;1"/>
+      <rect data-role="no-default-highlight" class="fill-none stroke-amber stroke-1.5" x="532" y="228" width="106.9" height="20" rx="4"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5000;0.8500" values="0;1;0;1"/></rect>
+      <text data-role="no-default" class="font-mono text-offset fill-ink-muted" x="538" y="242">// no default</text>
+      <text class="font-mono text-offset fill-ink" x="509" y="262">};</text>
+      <text class="font-mono text-offset fill-ink" x="480" y="282">}</text>
+    </g>
+  </g>
+  <rect class="la-canvas stroke-1.5" x="24" y="316" width="912" height="48" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="345">javac</text>
+  <g data-role="verdict" data-verdict="checking">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.4000;0.5000;0.6000;0.7500;0.8500" values="0;1;0;1;0;1;0"/>
+    <text class="la-note" x="104" y="345">checking that every subtype in the permits clause has a case</text>
+  </g>
+  <g data-role="verdict" data-verdict="compiles">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5000;0.8500" values="0;1;0;1"/>
+    <path class="fill-none stroke-emerald stroke-1.5" d="M 104 341 l 4 4 l 8 -9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-sans text-label" x="124" y="345"><tspan class="font-semibold fill-emerald">compiles</tspan><tspan class="fill-ink-muted">: every permitted subtype has a case, so the switch needs no default</tspan></text>
+  </g>
+  <g data-role="verdict" data-verdict="error">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.7500" values="0;1;0"/>
+    <path class="fill-none stroke-red stroke-1.5" d="M 105 336 l 9 9 m 0 -9 l -9 9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="font-mono text-offset fill-red" x="124" y="345">error: the switch expression does not cover all possible input values</text>
+  </g>
+  <rect class="la-canvas" x="24" y="380" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="403">The permits clause names every subtype of DecodeResult: Decoded and Rejected. No other class can implement it.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="403">The switch has a case for each permitted subtype. The compiler knows there are no others, so the switch needs no default.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.5000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="403">Expired joins the permits clause. The switch has no case for it, so the build fails right at that switch.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.7500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="403">With case Expired e added, the switch covers all three subtypes again and compiles, still with no default.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="446">Sources: JEP 409 (Sealed Classes) and JEP 441 (Pattern Matching for switch). The error is javac's own message, checked with JDK 25.</text>
+</svg>
