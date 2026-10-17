@@ -1,0 +1,491 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124 640" role="img" data-loop="30s">
+  <title>One B-tree per partition</title>
+  <desc>An animation in six steps. A matches table is partitioned by played_on into three partitions, one each for January, February, and March 2026. CREATE INDEX on matches (match_id) builds one B-tree in each partition and none for matches itself. A lookup for match 51042 then searches the three trees in turn: January's tree finds it, and the February and March trees are searched anyway. Adding UNIQUE (match_id) fails, because each tree checks only its own month, so a second 51042 dated in February would never meet the one in January. Adding UNIQUE (match_id, played_on) succeeds and builds a second tree in each partition, keyed by match id and date. Inserting match 51042 dated 2026-01-31 a second time lands in January, and January's tree refuses the duplicate pair. Inserting match 51042 dated 2026-02-01 is a new pair, so February's trees take it, and match 51042 is now in two months.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1124" height="640"/>
+  <text class="la-title" x="30" y="44">One B-tree per partition</text>
+  <text class="la-note" x="30" y="68">An index on a partitioned table is one B-tree per partition, and each tree sees only its own partition's rows.</text>
+  <rect class="la-canvas" x="30" y="84" width="1064" height="76" rx="10"/>
+  <text data-role="statement" data-step="1" class="font-mono text-label fill-ink" x="46" y="108">CREATE INDEX ON matches (match_id);<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667" values="1;0"/></text>
+  <text data-role="result" data-step="1" data-outcome="ok" class="font-mono text-offset fill-emerald" x="46" y="130">CREATE INDEX<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0833;0.1667" values="0;1;0"/></text>
+  <text data-role="statement" data-step="2" class="font-mono text-label fill-ink" x="46" y="108">SELECT * FROM matches WHERE match_id = 51042;<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667;0.3667" values="0;1;0"/></text>
+  <text data-role="result" data-step="2" data-outcome="ok" class="font-mono text-offset fill-emerald" x="46" y="130">(1 row)<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3200;0.3667" values="0;1;0"/></text>
+  <text data-role="statement" data-step="3" class="font-mono text-label fill-ink" x="46" y="108">ALTER TABLE matches ADD UNIQUE (match_id);<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5667" values="0;1;0"/></text>
+  <text data-role="result" data-step="3" data-outcome="error" class="font-mono text-offset fill-red" x="46" y="130">ERROR: UNIQUE constraint on partitioned table must include all partitioning columns<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3833;0.5667" values="0;1;0"/></text>
+  <text data-role="detail" data-step="3" class="font-mono text-offset fill-ink-muted" x="46" y="149">DETAIL: UNIQUE constraint on table &quot;matches&quot; lacks column &quot;played_on&quot; which is part of the partition key.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3833;0.5667" values="0;1;0"/></text>
+  <text data-role="statement" data-step="4" class="font-mono text-label fill-ink" x="46" y="108">ALTER TABLE matches ADD UNIQUE (match_id, played_on);<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5667;0.7000" values="0;1;0"/></text>
+  <text data-role="result" data-step="4" data-outcome="ok" class="font-mono text-offset fill-emerald" x="46" y="130">ALTER TABLE<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6433;0.7000" values="0;1;0"/></text>
+  <text data-role="statement" data-step="5" class="font-mono text-label fill-ink" x="46" y="108">INSERT INTO matches (match_id, played_on) VALUES (51042, '2026-01-31');<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.8333" values="0;1;0"/></text>
+  <text data-role="result" data-step="5" data-outcome="error" class="font-mono text-offset fill-red" x="46" y="130">ERROR: duplicate key value violates unique constraint &quot;matches_2026_01_match_id_played_on_key&quot;<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7767;0.8333" values="0;1;0"/></text>
+  <text data-role="detail" data-step="5" class="font-mono text-offset fill-ink-muted" x="46" y="149">DETAIL: Key (match_id, played_on)=(51042, 2026-01-31) already exists.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7767;0.8333" values="0;1;0"/></text>
+  <text data-role="statement" data-step="6" class="font-mono text-label fill-ink" x="46" y="108">INSERT INTO matches (match_id, played_on) VALUES (51042, '2026-02-01');<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333" values="0;1"/></text>
+  <text data-role="result" data-step="6" data-outcome="ok" class="font-mono text-offset fill-emerald" x="46" y="130">INSERT 0 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9233" values="0;1"/></text>
+  <text data-role="count-label" class="la-note anchor-end" x="1056" y="108">trees searched<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667;0.3667" values="0;1;0"/></text>
+  <text data-role="count" class="font-mono text-label font-bold fill-ink anchor-end" x="1078" y="108">0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667;0.2133" values="0;1;0"/></text>
+  <text data-role="count" class="font-mono text-label font-bold fill-ink anchor-end" x="1078" y="108">1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2133;0.2600" values="0;1;0"/></text>
+  <text data-role="count" class="font-mono text-label font-bold fill-ink anchor-end" x="1078" y="108">2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.3067" values="0;1;0"/></text>
+  <text data-role="count" class="font-mono text-label font-bold fill-ink anchor-end" x="1078" y="108">3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3067;0.3667" values="0;1;0"/></text>
+  <g data-role="table" data-table="matches">
+    <rect class="fill-surface stroke-violet stroke-1.5" x="30" y="178" width="1064" height="32" rx="8" stroke-dasharray="6 4"/>
+    <text class="font-mono text-label font-semibold fill-ink" x="46" y="199">matches</text>
+    <text class="font-mono text-label fill-ink-muted" x="118" y="199">PARTITION BY RANGE (played_on)</text>
+    <text class="la-note anchor-end" x="1078" y="199">holds no rows or index trees of its own</text>
+  </g>
+  <path class="la-arrow" d="M 200 210 V 234" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 562 210 V 234" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 924 210 V 234" marker-end="url(#head)"/>
+  <g data-role="partition" data-partition="matches_2026_01" data-month="2026-01">
+    <rect data-role="bounds" class="la-card" x="30" y="236" width="340" height="312" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink" x="42" y="258">matches_2026_01</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="358" y="258">January 2026</text>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_02" data-month="2026-02">
+    <rect data-role="bounds" class="la-card" x="392" y="236" width="340" height="312" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink" x="404" y="258">matches_2026_02</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="720" y="258">February 2026</text>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_03" data-month="2026-03">
+    <rect data-role="bounds" class="la-card" x="754" y="236" width="340" height="312" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink" x="766" y="258">matches_2026_03</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="1082" y="258">March 2026</text>
+  </g>
+  <g data-role="tree" data-partition="matches_2026_01" data-index="matches_2026_01_match_id_played_on_key" data-columns="match_id played_on">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5867" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="42" y="406">matches_2026_01_match_id_played_on_key</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5967" values="0;1"/>
+      <path class="la-arrow" d="M 184 462 L 119 486"/>
+      <path class="la-arrow" d="M 216 462 L 281 486"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5967" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="173" y="420" width="54" height="42" rx="6"/>
+      <g data-role="separator" data-match="51007" data-played-on="2026-01-23">
+        <rect data-role="cell" class="la-cell" x="177" y="424" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="200" y="438">51007</text>
+        <text class="la-offset anchor-middle" x="200" y="452">01-23</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="42" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="146" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="50918" data-played-on="2026-01-04">
+        <rect data-role="cell" class="la-cell" x="46" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="69" y="504">50918</text>
+        <text class="la-offset anchor-middle" x="69" y="518">01-04</text>
+      </g>
+      <g data-role="key" data-match="50963" data-played-on="2026-01-12">
+        <rect data-role="cell" class="la-cell" x="96" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="119" y="504">50963</text>
+        <text class="la-offset anchor-middle" x="119" y="518">01-12</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="204" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="308" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="51007" data-played-on="2026-01-23">
+        <rect data-role="cell" class="la-cell" x="208" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="231" y="504">51007</text>
+        <text class="la-offset anchor-middle" x="231" y="518">01-23</text>
+      </g>
+      <g data-role="key" data-match="51042" data-played-on="2026-01-31">
+        <rect data-role="cell" class="la-cell" x="258" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="281" y="504">51042</text>
+        <text class="la-offset anchor-middle" x="281" y="518">01-31</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="tree" data-partition="matches_2026_02" data-index="matches_2026_02_match_id_played_on_key" data-columns="match_id played_on">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6033" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="404" y="406">matches_2026_02_match_id_played_on_key</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6133" values="0;1"/>
+      <path class="la-arrow" d="M 546 462 L 481 486"/>
+      <path class="la-arrow" d="M 578 462 L 643 486"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6133" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="535" y="420" width="54" height="42" rx="6"/>
+      <g data-role="separator" data-match="51168" data-played-on="2026-02-17">
+        <rect data-role="cell" class="la-cell" x="539" y="424" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="562" y="438">51168</text>
+        <text class="la-offset anchor-middle" x="562" y="452">02-17</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="404" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="508" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="51077" data-played-on="2026-02-02">
+        <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8967;0.9100;1.0000" values="0,0;0,0;50,0;50,0"/>
+        <rect data-role="cell" class="la-cell" x="408" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="431" y="504">51077</text>
+        <text class="la-offset anchor-middle" x="431" y="518">02-02</text>
+      </g>
+      <g data-role="key" data-match="51120" data-played-on="2026-02-09">
+        <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8967;0.9100;1.0000" values="0,0;0,0;50,0;50,0"/>
+        <rect data-role="cell" class="la-cell" x="458" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="481" y="504">51120</text>
+        <text class="la-offset anchor-middle" x="481" y="518">02-09</text>
+      </g>
+      <g data-role="key" data-new="true" data-match="51042" data-played-on="2026-02-01">
+        <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9100" values="0;1"/>
+        <rect data-role="cell" class="la-cell-new" x="408" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="431" y="504">51042</text>
+        <text class="la-offset anchor-middle" x="431" y="518">02-01</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="566" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="670" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="51168" data-played-on="2026-02-17">
+        <rect data-role="cell" class="la-cell" x="570" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="593" y="504">51168</text>
+        <text class="la-offset anchor-middle" x="593" y="518">02-17</text>
+      </g>
+      <g data-role="key" data-match="51203" data-played-on="2026-02-25">
+        <rect data-role="cell" class="la-cell" x="620" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="643" y="504">51203</text>
+        <text class="la-offset anchor-middle" x="643" y="518">02-25</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="tree" data-partition="matches_2026_03" data-index="matches_2026_03_match_id_played_on_key" data-columns="match_id played_on">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="766" y="406">matches_2026_03_match_id_played_on_key</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6300" values="0;1"/>
+      <path class="la-arrow" d="M 908 462 L 843 486"/>
+      <path class="la-arrow" d="M 940 462 L 1005 486"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6300" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="897" y="420" width="54" height="42" rx="6"/>
+      <g data-role="separator" data-match="51324" data-played-on="2026-03-18">
+        <rect data-role="cell" class="la-cell" x="901" y="424" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="924" y="438">51324</text>
+        <text class="la-offset anchor-middle" x="924" y="452">03-18</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="766" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="870" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="51239" data-played-on="2026-03-03">
+        <rect data-role="cell" class="la-cell" x="770" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="793" y="504">51239</text>
+        <text class="la-offset anchor-middle" x="793" y="518">03-03</text>
+      </g>
+      <g data-role="key" data-match="51286" data-played-on="2026-03-10">
+        <rect data-role="cell" class="la-cell" x="820" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="843" y="504">51286</text>
+        <text class="la-offset anchor-middle" x="843" y="518">03-10</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="928" y="486" width="154" height="42" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="1032" y="490" width="46" height="34" rx="4"/>
+      <g data-role="key" data-match="51324" data-played-on="2026-03-18">
+        <rect data-role="cell" class="la-cell" x="932" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="955" y="504">51324</text>
+        <text class="la-offset anchor-middle" x="955" y="518">03-18</text>
+      </g>
+      <g data-role="key" data-match="51371" data-played-on="2026-03-26">
+        <rect data-role="cell" class="la-cell" x="982" y="490" width="46" height="34" rx="4"/>
+        <text class="la-offset anchor-middle" x="1005" y="504">51371</text>
+        <text class="la-offset anchor-middle" x="1005" y="518">03-26</text>
+      </g>
+    </g>
+  </g>
+  <circle data-role="insert" data-match="51042" data-played-on="2026-01-31" data-partition="matches_2026_01" data-verdict="refused" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7633" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7167;0.7433;0.7467;0.7633;1.0000" values="200,212;200,212;200,414;200,414;281,480;281,480"/>
+  </circle>
+  <text data-role="verdict" data-played-on="2026-01-31" class="font-sans text-offset font-semibold fill-red" x="239" y="445">pair already here<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7633;0.8333" values="0;1;0"/></text>
+  <rect data-role="duplicate" class="fill-none stroke-red stroke-2.5" x="256" y="488" width="50" height="38" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7633;0.8333" values="0;1;0"/></rect>
+  <circle data-role="insert" data-match="51042" data-played-on="2026-02-01" data-partition="matches_2026_02" data-verdict="accepted" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.9100" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8500;0.8767;0.8800;0.8967;1.0000" values="562,212;562,212;562,414;562,414;431,480;431,480"/>
+  </circle>
+  <text data-role="verdict" data-played-on="2026-02-01" class="font-sans text-offset font-semibold fill-emerald" x="601" y="445">new pair<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9100" values="0;1"/></text>
+  <g data-role="tree" data-partition="matches_2026_01" data-index="matches_2026_01_match_id_idx" data-columns="match_id">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0200" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="42" y="280">matches_2026_01_match_id_idx</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0300" values="0;1"/>
+      <path class="la-arrow" d="M 184 324 L 119 350"/>
+      <path class="la-arrow" d="M 216 324 L 281 350"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0300" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="173" y="294" width="54" height="30" rx="6"/>
+      <g data-role="separator" data-match="51007" data-played-on="2026-01-23">
+        <rect data-role="cell" class="la-cell" x="177" y="298" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="200" y="313">51007</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="42" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="146" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="50918" data-played-on="2026-01-04">
+        <rect data-role="cell" class="la-cell" x="46" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="69" y="369">50918</text>
+      </g>
+      <g data-role="key" data-match="50963" data-played-on="2026-01-12">
+        <rect data-role="cell" class="la-cell" x="96" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="119" y="369">50963</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="204" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="308" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="51007" data-played-on="2026-01-23">
+        <rect data-role="cell" class="la-cell" x="208" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="231" y="369">51007</text>
+      </g>
+      <g data-role="key" data-match="51042" data-played-on="2026-01-31">
+        <rect data-role="cell" class="la-cell" x="258" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="281" y="369">51042</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="tree" data-partition="matches_2026_02" data-index="matches_2026_02_match_id_idx" data-columns="match_id">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0400" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="404" y="280">matches_2026_02_match_id_idx</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500" values="0;1"/>
+      <path class="la-arrow" d="M 546 324 L 481 350"/>
+      <path class="la-arrow" d="M 578 324 L 643 350"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="535" y="294" width="54" height="30" rx="6"/>
+      <g data-role="separator" data-match="51168" data-played-on="2026-02-17">
+        <rect data-role="cell" class="la-cell" x="539" y="298" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="562" y="313">51168</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="404" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="508" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="51077" data-played-on="2026-02-02">
+        <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8967;0.9100;1.0000" values="0,0;0,0;50,0;50,0"/>
+        <rect data-role="cell" class="la-cell" x="408" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="431" y="369">51077</text>
+      </g>
+      <g data-role="key" data-match="51120" data-played-on="2026-02-09">
+        <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8967;0.9100;1.0000" values="0,0;0,0;50,0;50,0"/>
+        <rect data-role="cell" class="la-cell" x="458" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="481" y="369">51120</text>
+      </g>
+      <g data-role="key" data-new="true" data-match="51042" data-played-on="2026-02-01">
+        <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9100" values="0;1"/>
+        <rect data-role="cell" class="la-cell-new" x="408" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="431" y="369">51042</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="566" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="670" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="51168" data-played-on="2026-02-17">
+        <rect data-role="cell" class="la-cell" x="570" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="593" y="369">51168</text>
+      </g>
+      <g data-role="key" data-match="51203" data-played-on="2026-02-25">
+        <rect data-role="cell" class="la-cell" x="620" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="643" y="369">51203</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="tree" data-partition="matches_2026_03" data-index="matches_2026_03_match_id_idx" data-columns="match_id">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0600" values="0;1"/>
+    <text data-role="index-name" class="font-mono text-offset fill-ink-muted" x="766" y="280">matches_2026_03_match_id_idx</text>
+    <g data-role="edges">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0700" values="0;1"/>
+      <path class="la-arrow" d="M 908 324 L 843 350"/>
+      <path class="la-arrow" d="M 940 324 L 1005 350"/>
+    </g>
+    <g data-role="page" data-page="root">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0700" values="0;1"/>
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="897" y="294" width="54" height="30" rx="6"/>
+      <g data-role="separator" data-match="51324" data-played-on="2026-03-18">
+        <rect data-role="cell" class="la-cell" x="901" y="298" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="924" y="313">51324</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="766" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="870" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="51239" data-played-on="2026-03-03">
+        <rect data-role="cell" class="la-cell" x="770" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="793" y="369">51239</text>
+      </g>
+      <g data-role="key" data-match="51286" data-played-on="2026-03-10">
+        <rect data-role="cell" class="la-cell" x="820" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="843" y="369">51286</text>
+      </g>
+    </g>
+    <g data-role="page" data-page="leaf">
+      <rect data-role="frame" class="fill-surface stroke-violet stroke-1.5" x="928" y="350" width="154" height="30" rx="6"/>
+      <rect data-role="free" class="la-cell-tail" x="1032" y="354" width="46" height="22" rx="4"/>
+      <g data-role="key" data-match="51324" data-played-on="2026-03-18">
+        <rect data-role="cell" class="la-cell" x="932" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="955" y="369">51324</text>
+      </g>
+      <g data-role="key" data-match="51371" data-played-on="2026-03-26">
+        <rect data-role="cell" class="la-cell" x="982" y="354" width="46" height="22" rx="4"/>
+        <text class="la-offset anchor-middle" x="1005" y="369">51371</text>
+      </g>
+    </g>
+  </g>
+  <circle data-role="probe" data-partition="matches_2026_01" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800;0.2133" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1800;0.1967;0.2000;0.2133;1.0000" values="200,212;200,212;200,288;200,288;281,344;281,344"/>
+  </circle>
+  <text data-role="search-result" data-partition="matches_2026_01" data-found="true" class="font-sans text-offset font-semibold fill-emerald" x="239" y="313">51042 found<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2133;0.3667" values="0;1;0"/></text>
+  <rect data-role="found" class="la-read-marker" x="256" y="352" width="50" height="26" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2133;0.3667" values="0;1;0"/></rect>
+  <circle data-role="probe" data-partition="matches_2026_02" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2267;0.2600" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2267;0.2433;0.2467;0.2600;1.0000" values="562,212;562,212;562,288;562,288;431,344;431,344"/>
+  </circle>
+  <text data-role="search-result" data-partition="matches_2026_02" data-found="false" class="font-sans text-offset font-semibold fill-ink-muted" x="601" y="313">no 51042<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.3667" values="0;1;0"/></text>
+  <circle data-role="probe" data-partition="matches_2026_03" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2733;0.3067" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2733;0.2900;0.2933;0.3067;1.0000" values="924,212;924,212;924,288;924,288;793,344;793,344"/>
+  </circle>
+  <text data-role="search-result" data-partition="matches_2026_03" data-found="false" class="font-sans text-offset font-semibold fill-ink-muted" x="963" y="313">no 51042<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3067;0.3667" values="0;1;0"/></text>
+  <rect data-role="first" class="fill-none stroke-amber stroke-2.5" x="256" y="352" width="50" height="26" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4100;0.5667" values="0;1;0"/></rect>
+  <g data-role="unseen" data-partition="matches_2026_02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4100;0.5667" values="0;1;0"/>
+    <rect data-role="chip" class="fill-surface stroke-red stroke-1.5" x="538" y="431" width="48" height="26" rx="6" stroke-dasharray="4 3"/>
+    <text class="font-mono text-label fill-red anchor-middle" x="562" y="449">51042</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-middle" x="562" y="478">a second 51042, dated in February</text>
+  </g>
+  <g data-role="blind">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4300;0.5667" values="0;1;0"/>
+    <path data-role="sightline" class="fill-none stroke-red stroke-1.5" d="M 538 444 H 281 V 384" stroke-dasharray="5 4"/>
+    <line data-role="cross" class="stroke-red stroke-2.5" x1="376" y1="439" x2="386" y2="449"/>
+    <line data-role="cross" class="stroke-red stroke-2.5" x1="376" y1="449" x2="386" y2="439"/>
+  </g>
+  <rect data-role="twice" class="fill-none stroke-amber stroke-2.5" x="256" y="352" width="50" height="26" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9433" values="0;1"/></rect>
+  <rect data-role="twice" class="fill-none stroke-amber stroke-2.5" x="406" y="352" width="50" height="26" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9433" values="0;1"/></rect>
+  <rect data-role="twice" class="fill-none stroke-amber stroke-2.5" x="256" y="488" width="50" height="38" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9433" values="0;1"/></rect>
+  <rect data-role="twice" class="fill-none stroke-amber stroke-2.5" x="406" y="488" width="50" height="38" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9433" values="0;1"/></rect>
+  <text data-role="twice-note" class="font-sans text-label font-semibold fill-ink anchor-middle" x="562" y="574">match 51042 is now in January and in February<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.9433" values="0;1"/></text>
+  <rect class="la-canvas" x="30" y="588" width="1064" height="36" rx="8"/>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">CREATE INDEX on matches builds one B-tree in each month's partition, and none for matches itself.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667" values="1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">A lookup by match_id names no month, so all three trees are searched, even after January's tree finds 51042.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1667;0.3667" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">UNIQUE (match_id) is refused. Each tree checks only its own month, so a second 51042 in February would go unseen.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5667" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">UNIQUE (match_id, played_on) includes the partition key, so it is accepted. It builds one more tree per month.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5667;0.7000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">A repeated pair has the same date as its twin, so it lands in January, and January's tree refuses it.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.8333" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="562" y="611">But only duplicate pairs are ruled out. (51042, 2026-02-01) is a new pair, so match 51042 is now in two months.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333" values="0;1"/></text>
+</svg>
