@@ -1,0 +1,482 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" data-loop="30s">
+  <title>Skipping the months a query can't match</title>
+  <desc>An animation in four steps. A query asks for the matches played in March, from a matches table with one partition per month, January to April 2026. The planner compares the query's played_on range with each partition's bounds and prunes January, February, and April. Only matches_2026_03 is scanned, and its 3 rows are returned while the pruned months stay dark. Then a query for the matches that Koala, player 1042, won filters on winner_id instead. It puts no limit on played_on, so the planner keeps every month, and the scan reads all 12 rows to return 2.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="520"/>
+  <text class="la-title" x="32" y="44">Skipping the months a query can't match</text>
+  <text class="la-note" x="32" y="68">The planner compares the WHERE clause with each partition's bounds and scans only the partitions that could hold the rows the query wants.</text>
+  <rect class="la-canvas stroke-1.5" x="32" y="88" width="380" height="100" rx="8"/>
+  <text class="la-label font-semibold" x="48" y="112">query</text>
+  <g data-role="query" data-query="march">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5333" values="1;0"/>
+    <text class="fill-ink font-mono text-offset" x="48" y="138">SELECT * FROM matches</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="156">WHERE played_on &gt;= '2026-03-01'</text>
+    <text class="fill-ink font-mono text-offset" x="64" y="174">AND played_on &lt; '2026-04-01';</text>
+  </g>
+  <g data-role="query" data-query="winner">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5333" values="0;1"/>
+    <text class="fill-ink font-mono text-offset" x="48" y="138">SELECT * FROM matches</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="156">WHERE winner_id = 1042;</text>
+  </g>
+  <path class="la-arrow" d="M 412 138 H 494" marker-end="url(#head)"/>
+  <rect class="la-canvas stroke-1.5" x="500" y="88" width="468" height="100" rx="8"/>
+  <text class="la-label font-semibold" x="516" y="112">planner</text>
+  <text class="fill-ink-muted font-sans text-offset" x="516" y="138">query wants</text>
+  <text data-role="wants" data-query="march" class="fill-ink font-mono text-offset" x="640" y="138">2026-03-01 to 2026-04-01<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0333;0.5333" values="0;1;0"/></text>
+  <text data-role="wants" data-query="winner" class="fill-ink font-mono text-offset" x="640" y="138">any played_on<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5667" values="0;1"/></text>
+  <g data-role="compare" data-query="march" data-partition="matches_2026_01">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333;0.1833" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_01</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-01-01 to 2026-02-01</text>
+  </g>
+  <g data-role="compare" data-query="march" data-partition="matches_2026_02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.2333" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_02</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-02-01 to 2026-03-01</text>
+  </g>
+  <g data-role="compare" data-query="march" data-partition="matches_2026_03">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.2833" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_03</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-03-01 to 2026-04-01</text>
+  </g>
+  <g data-role="compare" data-query="march" data-partition="matches_2026_04">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2833;0.3333" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_04</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-04-01 to 2026-05-01</text>
+  </g>
+  <g data-role="compare" data-query="winner" data-partition="matches_2026_01">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5667;0.6000" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_01</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-01-01 to 2026-02-01</text>
+  </g>
+  <g data-role="compare" data-query="winner" data-partition="matches_2026_02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6333" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_02</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-02-01 to 2026-03-01</text>
+  </g>
+  <g data-role="compare" data-query="winner" data-partition="matches_2026_03">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333;0.6667" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_03</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-03-01 to 2026-04-01</text>
+  </g>
+  <g data-role="compare" data-query="winner" data-partition="matches_2026_04">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667;0.7000" values="0;1;0"/>
+    <text class="fill-ink-muted font-mono text-offset" x="516" y="164">matches_2026_04</text>
+    <text class="fill-ink font-mono text-offset" x="640" y="164">2026-04-01 to 2026-05-01</text>
+  </g>
+  <g data-role="plan" data-query="march">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5333" values="0;1;0"/>
+    <text class="fill-ink-muted font-sans text-offset" x="516" y="164">plan</text>
+    <text class="fill-amber font-mono text-offset font-semibold" x="640" y="164">scan matches_2026_03 only</text>
+  </g>
+  <g data-role="plan" data-query="winner">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/>
+    <text class="fill-ink-muted font-sans text-offset" x="516" y="164">plan</text>
+    <text class="fill-amber font-mono text-offset font-semibold" x="640" y="164">scan all 4 partitions</text>
+  </g>
+  <circle data-role="handoff" data-query="march" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0083;0.0333" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0083;0.0333;1.0000" values="418,138;418,138;488,138;488,138"/>
+  </circle>
+  <circle data-role="handoff" data-query="winner" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417;0.5667" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5417;0.5667;1.0000" values="418,138;418,138;488,138;488,138"/>
+  </circle>
+  <g data-role="table">
+    <text class="fill-ink font-mono text-label font-semibold" x="32" y="214">matches</text>
+    <text class="fill-ink-muted font-sans text-offset" x="100" y="214">partitioned by the month of played_on</text>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_01" data-from="2026-01-01" data-to="2026-02-01">
+    <rect class="la-card" x="32" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink font-mono text-label font-semibold" x="48" y="254">matches_2026_01</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="238" y="254">January</text>
+    <text data-role="bounds" data-partition="matches_2026_01" class="fill-ink-muted font-mono text-offset" x="48" y="278">2026-01-01 to 2026-02-01</text>
+    <g data-role="row" data-partition="matches_2026_01" data-played-on="2026-01-05" data-winner-id="1042">
+      <rect class="la-cell" x="44" y="296" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="56" y="313">2026-01-05</text>
+      <text class="la-offset anchor-end" x="230" y="313">winner 1042</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_01" data-played-on="2026-01-12" data-winner-id="2981">
+      <rect class="la-cell" x="44" y="330" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="56" y="347">2026-01-12</text>
+      <text class="la-offset anchor-end" x="230" y="347">winner 2981</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_01" data-played-on="2026-01-27" data-winner-id="7702">
+      <rect class="la-cell" x="44" y="364" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="56" y="381">2026-01-27</text>
+      <text class="la-offset anchor-end" x="230" y="381">winner 7702</text>
+    </g>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_02" data-from="2026-02-01" data-to="2026-03-01">
+    <rect class="la-card" x="270" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink font-mono text-label font-semibold" x="286" y="254">matches_2026_02</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="476" y="254">February</text>
+    <text data-role="bounds" data-partition="matches_2026_02" class="fill-ink-muted font-mono text-offset" x="286" y="278">2026-02-01 to 2026-03-01</text>
+    <g data-role="row" data-partition="matches_2026_02" data-played-on="2026-02-03" data-winner-id="5214">
+      <rect class="la-cell" x="282" y="296" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="294" y="313">2026-02-03</text>
+      <text class="la-offset anchor-end" x="468" y="313">winner 5214</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_02" data-played-on="2026-02-14" data-winner-id="9128">
+      <rect class="la-cell" x="282" y="330" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="294" y="347">2026-02-14</text>
+      <text class="la-offset anchor-end" x="468" y="347">winner 9128</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_02" data-played-on="2026-02-21" data-winner-id="4127">
+      <rect class="la-cell" x="282" y="364" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="294" y="381">2026-02-21</text>
+      <text class="la-offset anchor-end" x="468" y="381">winner 4127</text>
+    </g>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_03" data-from="2026-03-01" data-to="2026-04-01">
+    <rect class="la-card" x="508" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink font-mono text-label font-semibold" x="524" y="254">matches_2026_03</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="714" y="254">March</text>
+    <text data-role="bounds" data-partition="matches_2026_03" class="fill-ink-muted font-mono text-offset" x="524" y="278">2026-03-01 to 2026-04-01</text>
+    <g data-role="row" data-partition="matches_2026_03" data-played-on="2026-03-02" data-winner-id="1042">
+      <rect class="la-cell" x="520" y="296" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="532" y="313">2026-03-02</text>
+      <text class="la-offset anchor-end" x="706" y="313">winner 1042</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_03" data-played-on="2026-03-09" data-winner-id="8577">
+      <rect class="la-cell" x="520" y="330" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="532" y="347">2026-03-09</text>
+      <text class="la-offset anchor-end" x="706" y="347">winner 8577</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_03" data-played-on="2026-03-23" data-winner-id="2046">
+      <rect class="la-cell" x="520" y="364" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="532" y="381">2026-03-23</text>
+      <text class="la-offset anchor-end" x="706" y="381">winner 2046</text>
+    </g>
+  </g>
+  <g data-role="partition" data-partition="matches_2026_04" data-from="2026-04-01" data-to="2026-05-01">
+    <rect class="la-card" x="746" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink font-mono text-label font-semibold" x="762" y="254">matches_2026_04</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="952" y="254">April</text>
+    <text data-role="bounds" data-partition="matches_2026_04" class="fill-ink-muted font-mono text-offset" x="762" y="278">2026-04-01 to 2026-05-01</text>
+    <g data-role="row" data-partition="matches_2026_04" data-played-on="2026-04-06" data-winner-id="9612">
+      <rect class="la-cell" x="758" y="296" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="770" y="313">2026-04-06</text>
+      <text class="la-offset anchor-end" x="944" y="313">winner 9612</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_04" data-played-on="2026-04-15" data-winner-id="6120">
+      <rect class="la-cell" x="758" y="330" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="770" y="347">2026-04-15</text>
+      <text class="la-offset anchor-end" x="944" y="347">winner 6120</text>
+    </g>
+    <g data-role="row" data-partition="matches_2026_04" data-played-on="2026-04-28" data-winner-id="3560">
+      <rect class="la-cell" x="758" y="364" width="198" height="26" rx="5"/>
+      <text class="la-offset" x="770" y="381">2026-04-28</text>
+      <text class="la-offset anchor-end" x="944" y="381">winner 3560</text>
+    </g>
+  </g>
+  <g data-role="pruned" data-query="march" data-partition="matches_2026_01">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.5333" values="0;1;0"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="32" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink-muted font-mono text-label font-semibold" x="48" y="254">matches_2026_01</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="238" y="254">January</text>
+    <text class="fill-ink-muted font-mono text-offset" x="48" y="278">2026-01-01 to 2026-02-01</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="44" y="296" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="56" y="313">2026-01-05</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="230" y="313">winner 1042</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="44" y="330" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="56" y="347">2026-01-12</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="230" y="347">winner 2981</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="44" y="364" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="56" y="381">2026-01-27</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="230" y="381">winner 7702</text>
+  </g>
+  <g data-role="pruned" data-query="march" data-partition="matches_2026_02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.5333" values="0;1;0"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="270" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink-muted font-mono text-label font-semibold" x="286" y="254">matches_2026_02</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="476" y="254">February</text>
+    <text class="fill-ink-muted font-mono text-offset" x="286" y="278">2026-02-01 to 2026-03-01</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="282" y="296" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="294" y="313">2026-02-03</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="468" y="313">winner 5214</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="282" y="330" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="294" y="347">2026-02-14</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="468" y="347">winner 9128</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="282" y="364" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="294" y="381">2026-02-21</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="468" y="381">winner 4127</text>
+  </g>
+  <g data-role="pruned" data-query="march" data-partition="matches_2026_04">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5333" values="0;1;0"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="746" y="228" width="222" height="180" rx="12"/>
+    <text class="fill-ink-muted font-mono text-label font-semibold" x="762" y="254">matches_2026_04</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="952" y="254">April</text>
+    <text class="fill-ink-muted font-mono text-offset" x="762" y="278">2026-04-01 to 2026-05-01</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="758" y="296" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="770" y="313">2026-04-06</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="944" y="313">winner 9612</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="758" y="330" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="770" y="347">2026-04-15</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="944" y="347">winner 6120</text>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="758" y="364" width="198" height="26" rx="5"/>
+    <text class="fill-ink-muted font-mono text-offset" x="770" y="381">2026-04-28</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-end" x="944" y="381">winner 3560</text>
+  </g>
+  <rect data-role="scanning" data-query="march" data-partition="matches_2026_03" class="fill-none stroke-amber stroke-2.5" x="508" y="228" width="222" height="180" rx="12"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.4333" values="0;1;0"/></rect>
+  <g data-role="read" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="296" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="313">2026-03-02</text>
+    <text class="la-offset anchor-end" x="706" y="313">winner 1042</text>
+  </g>
+  <g data-role="read" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-09">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.4000" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="330" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="347">2026-03-09</text>
+    <text class="la-offset anchor-end" x="706" y="347">winner 8577</text>
+  </g>
+  <g data-role="read" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-23">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4333" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="364" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="381">2026-03-23</text>
+    <text class="la-offset anchor-end" x="706" y="381">winner 2046</text>
+  </g>
+  <rect data-role="returned" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-02" class="fill-none stroke-emerald stroke-2.5" x="520" y="296" width="198" height="26" rx="5"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5333" values="0;1;0"/></rect>
+  <rect data-role="returned" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-09" class="fill-none stroke-emerald stroke-2.5" x="520" y="330" width="198" height="26" rx="5"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5333" values="0;1;0"/></rect>
+  <rect data-role="returned" data-query="march" data-partition="matches_2026_03" data-played-on="2026-03-23" class="fill-none stroke-emerald stroke-2.5" x="520" y="364" width="198" height="26" rx="5"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4333;0.5333" values="0;1;0"/></rect>
+  <rect data-role="scanning" data-query="winner" data-partition="matches_2026_01" class="fill-none stroke-amber stroke-2.5" x="32" y="228" width="222" height="180" rx="12"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7500" values="0;1;0"/></rect>
+  <rect data-role="scanning" data-query="winner" data-partition="matches_2026_02" class="fill-none stroke-amber stroke-2.5" x="270" y="228" width="222" height="180" rx="12"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.8000" values="0;1;0"/></rect>
+  <rect data-role="scanning" data-query="winner" data-partition="matches_2026_03" class="fill-none stroke-amber stroke-2.5" x="508" y="228" width="222" height="180" rx="12"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8500" values="0;1;0"/></rect>
+  <rect data-role="scanning" data-query="winner" data-partition="matches_2026_04" class="fill-none stroke-amber stroke-2.5" x="746" y="228" width="222" height="180" rx="12"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.9000" values="0;1;0"/></rect>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_01" data-played-on="2026-01-05">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7167" values="0;1;0"/>
+    <rect class="la-cell-new" x="44" y="296" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="56" y="313">2026-01-05</text>
+    <text class="la-offset anchor-end" x="230" y="313">winner 1042</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_01" data-played-on="2026-01-12">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7333" values="0;1;0"/>
+    <rect class="la-cell-new" x="44" y="330" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="56" y="347">2026-01-12</text>
+    <text class="la-offset anchor-end" x="230" y="347">winner 2981</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_01" data-played-on="2026-01-27">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333;0.7500" values="0;1;0"/>
+    <rect class="la-cell-new" x="44" y="364" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="56" y="381">2026-01-27</text>
+    <text class="la-offset anchor-end" x="230" y="381">winner 7702</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_02" data-played-on="2026-02-03">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7667" values="0;1;0"/>
+    <rect class="la-cell-new" x="282" y="296" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="294" y="313">2026-02-03</text>
+    <text class="la-offset anchor-end" x="468" y="313">winner 5214</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_02" data-played-on="2026-02-14">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667;0.7833" values="0;1;0"/>
+    <rect class="la-cell-new" x="282" y="330" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="294" y="347">2026-02-14</text>
+    <text class="la-offset anchor-end" x="468" y="347">winner 9128</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_02" data-played-on="2026-02-21">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833;0.8000" values="0;1;0"/>
+    <rect class="la-cell-new" x="282" y="364" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="294" y="381">2026-02-21</text>
+    <text class="la-offset anchor-end" x="468" y="381">winner 4127</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_03" data-played-on="2026-03-02">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8167" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="296" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="313">2026-03-02</text>
+    <text class="la-offset anchor-end" x="706" y="313">winner 1042</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_03" data-played-on="2026-03-09">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167;0.8333" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="330" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="347">2026-03-09</text>
+    <text class="la-offset anchor-end" x="706" y="347">winner 8577</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_03" data-played-on="2026-03-23">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333;0.8500" values="0;1;0"/>
+    <rect class="la-cell-new" x="520" y="364" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="532" y="381">2026-03-23</text>
+    <text class="la-offset anchor-end" x="706" y="381">winner 2046</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_04" data-played-on="2026-04-06">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.8667" values="0;1;0"/>
+    <rect class="la-cell-new" x="758" y="296" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="770" y="313">2026-04-06</text>
+    <text class="la-offset anchor-end" x="944" y="313">winner 9612</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_04" data-played-on="2026-04-15">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667;0.8833" values="0;1;0"/>
+    <rect class="la-cell-new" x="758" y="330" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="770" y="347">2026-04-15</text>
+    <text class="la-offset anchor-end" x="944" y="347">winner 6120</text>
+  </g>
+  <g data-role="read" data-query="winner" data-partition="matches_2026_04" data-played-on="2026-04-28">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833;0.9000" values="0;1;0"/>
+    <rect class="la-cell-new" x="758" y="364" width="198" height="26" rx="5"/>
+    <text class="la-offset" x="770" y="381">2026-04-28</text>
+    <text class="la-offset anchor-end" x="944" y="381">winner 3560</text>
+  </g>
+  <rect data-role="returned" data-query="winner" data-partition="matches_2026_01" data-played-on="2026-01-05" class="fill-none stroke-emerald stroke-2.5" x="44" y="296" width="198" height="26" rx="5"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167" values="0;1"/></rect>
+  <rect data-role="returned" data-query="winner" data-partition="matches_2026_03" data-played-on="2026-03-02" class="fill-none stroke-emerald stroke-2.5" x="520" y="296" width="198" height="26" rx="5"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167" values="0;1"/></rect>
+  <rect data-role="check" data-query="march" data-partition="matches_2026_01" class="fill-none stroke-amber stroke-1.5" x="40" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333;0.1833" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="march" data-partition="matches_2026_01" data-verdict="pruned" class="fill-ink-muted font-sans text-offset anchor-middle" x="143" y="432">can't hold wanted rows: pruned<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.5333" values="0;1;0"/></text>
+  <rect data-role="check" data-query="march" data-partition="matches_2026_02" class="fill-none stroke-amber stroke-1.5" x="278" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.2333" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="march" data-partition="matches_2026_02" data-verdict="pruned" class="fill-ink-muted font-sans text-offset anchor-middle" x="381" y="432">can't hold wanted rows: pruned<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.5333" values="0;1;0"/></text>
+  <rect data-role="check" data-query="march" data-partition="matches_2026_03" class="fill-none stroke-amber stroke-1.5" x="516" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.2833" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="march" data-partition="matches_2026_03" data-verdict="kept" class="fill-amber font-sans text-offset font-semibold anchor-middle" x="619" y="432">may hold wanted rows: kept<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2833;0.5333" values="0;1;0"/></text>
+  <rect data-role="check" data-query="march" data-partition="matches_2026_04" class="fill-none stroke-amber stroke-1.5" x="754" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2833;0.3333" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="march" data-partition="matches_2026_04" data-verdict="pruned" class="fill-ink-muted font-sans text-offset anchor-middle" x="857" y="432">can't hold wanted rows: pruned<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5333" values="0;1;0"/></text>
+  <rect data-role="check" data-query="winner" data-partition="matches_2026_01" class="fill-none stroke-amber stroke-1.5" x="40" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5667;0.6000" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="winner" data-partition="matches_2026_01" data-verdict="kept" class="fill-amber font-sans text-offset font-semibold anchor-middle" x="143" y="432">may hold wanted rows: kept<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></text>
+  <rect data-role="check" data-query="winner" data-partition="matches_2026_02" class="fill-none stroke-amber stroke-1.5" x="278" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6333" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="winner" data-partition="matches_2026_02" data-verdict="kept" class="fill-amber font-sans text-offset font-semibold anchor-middle" x="381" y="432">may hold wanted rows: kept<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333" values="0;1"/></text>
+  <rect data-role="check" data-query="winner" data-partition="matches_2026_03" class="fill-none stroke-amber stroke-1.5" x="516" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333;0.6667" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="winner" data-partition="matches_2026_03" data-verdict="kept" class="fill-amber font-sans text-offset font-semibold anchor-middle" x="619" y="432">may hold wanted rows: kept<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667" values="0;1"/></text>
+  <rect data-role="check" data-query="winner" data-partition="matches_2026_04" class="fill-none stroke-amber stroke-1.5" x="754" y="263" width="206" height="22" rx="6"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667;0.7000" values="0;1;0"/></rect>
+  <text data-role="verdict" data-query="winner" data-partition="matches_2026_04" data-verdict="kept" class="fill-amber font-sans text-offset font-semibold anchor-middle" x="857" y="432">may hold wanted rows: kept<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/></text>
+  <text class="fill-ink-muted font-sans text-offset" x="32" y="462">partitions scanned</text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">0 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">1 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5333" values="0;1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">0 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5333;0.7000" values="0;1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">1 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7500" values="0;1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">2 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.8000" values="0;1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">3 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8500" values="0;1;0"/></text>
+  <text data-role="count" data-of="partitions" class="fill-ink font-mono text-label font-semibold" x="156" y="462">4 of 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500" values="0;1"/></text>
+  <text class="fill-ink-muted font-sans text-offset" x="236" y="462">rows read</text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.4000" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5333" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5333;0.7000" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7167" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7333" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333;0.7500" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7667" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">5<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667;0.7833" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">6<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833;0.8000" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">7<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8167" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">8<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167;0.8333" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">9<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333;0.8500" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">10<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.8667" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">11<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667;0.8833" values="0;1;0"/></text>
+  <text data-role="count" data-of="rows" class="fill-ink font-mono text-label font-semibold" x="304" y="462">12<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <rect class="la-cell-new" x="620" y="451" width="24" height="14" rx="3"/>
+  <text class="fill-ink-muted font-sans text-offset" x="652" y="462">row being read</text>
+  <rect class="fill-cell stroke-emerald stroke-2.5" x="780" y="451" width="24" height="14" rx="3"/>
+  <text class="fill-ink-muted font-sans text-offset" x="812" y="462">row returned</text>
+  <text data-role="caption" class="la-label" x="32" y="502">A query asks for the matches played in March: played_on from 2026-03-01 up to, but not including, 2026-04-01.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333" values="1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="502">The planner compares that range with each partition's bounds. Only March can hold rows in that range, so it prunes the other three months.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333;0.3333" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="502">Only matches_2026_03 is scanned, and all 3 of its rows are returned. The pruned months stay dark, and none of their rows is read.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5333" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="502">A query for the matches Koala (player 1042) won filters on winner_id, not played_on, so no month can be pruned. All 12 rows are read to return 2.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5333" values="0;1"/></text>
+</svg>
