@@ -56,34 +56,36 @@
 
 - [📝 Introduction](#-introduction)
 - [🌐 Sites](#-sites)
+- [🔗 Embedding](#-embedding)
 - [🏁 Getting Started](#-getting-started)
-- [🛠️ Available Recipes](#️-available-recipes)
-- [🧠 How It Works](#-how-it-works)
-- [🐳 Docker](#-docker)
-- [🧪 Testing](#-testing)
-- [🗂️ Project Layout](#️-project-layout)
-- [🎨 Design](#-design)
-- [🚢 Releasing](#-releasing)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
 ## 📝 Introduction
 
-Learning Animated is a family of animated learning sites, one per track, plus a home page at learning-animated.com. The first tracks are Kafka (an unofficial companion to the book _Kafka: The Definitive Guide_), Quarkus, Java, and Data (database indexes, partitioning, and sharding), and more can follow.
+Learning Animated is a family of animated learning sites, one per track, plus a home page at learning-animated.com. Each lesson is a looping SVG animated with SMIL, and blog posts, talks, and pull requests embed that same file, like this one:
 
-Every lesson is a looping SVG animated with SMIL, and blog posts, talks, and pull requests embed that same file.
+<p align="center">
+  <img src="tracks/kafka/src/content/animations/ch01-meet-kafka/consumer-group/consumer-group.svg" width="800" alt="A consumer group reading from a topic">
+</p>
+
+All the animations share one look: a near-black plum stage, purple for whatever is stored, one amber accent for what is new, and one red for failure.
 
 ## 🌐 Sites
 
-Every track gets its own site on a subdomain of learning-animated.com, and the home page sits at the root.
+Each track gets its own site on a subdomain of learning-animated.com, and the home page sits at the root.
 
-| Site    | Domain                        | Status                                                                                                  |
-| ------- | ----------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Home    | learning-animated.com         | Not launched                                                                                            |
-| Kafka   | kafka.learning-animated.com   | Live at [kafka-animated.josimar-silva.com](https://kafka-animated.josimar-silva.com/) until the cutover |
-| Quarkus | quarkus.learning-animated.com | Not launched                                                                                            |
-| Java    | java.learning-animated.com    | Not launched                                                                                            |
-| Data    | data.learning-animated.com    | Not launched                                                                                            |
+| Site    | Covers                                                                                           | Status                                                                                                                              |
+| ------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Kafka   | Kafka internals, chapter by chapter, as an unofficial companion to _Kafka: The Definitive Guide_ | Live at [kafka-animated.josimar-silva.com](https://kafka-animated.josimar-silva.com/) until it moves to kafka.learning-animated.com |
+| Quarkus | Quarkus internals                                                                                | Not launched                                                                                                                        |
+| Java    | Java and the JVM                                                                                 | Not launched                                                                                                                        |
+| Data    | Database indexes, partitioning, and sharding                                                     | Not launched                                                                                                                        |
+| Home    | Every live track                                                                                 | Not launched                                                                                                                        |
+
+## 🔗 Embedding
+
+Lesson pages end with an _Embed this animation_ box: a Markdown and an HTML snippet for the lesson's SVG, and a link to download it. Each site serves those SVGs at `/embed/<id>.svg`, or `/embed/<id>.<view>.svg` for a lesson with several views. The lessons are under [CC BY-NC 4.0](LICENSE-CC-BY-NC), so you can embed them in noncommercial work as long as you give credit.
 
 ## 🏁 Getting Started
 
@@ -91,146 +93,25 @@ Requires [Node.js](https://nodejs.org/) 24+ and [just](https://just.systems/).
 
 ```bash
 just install    # install dependencies
+just dev kafka  # serve one site: home, kafka, quarkus, java, or data
 just test       # run every test suite
 just check      # lint, check formatting, and type-check
-just dev kafka  # run one site's dev server: home, kafka, quarkus, java, or data
 just build-all  # build every site into its own dist/
 ```
 
-`just dev` serves the site at [http://localhost:4321](http://localhost:4321) and reloads it as you edit. A track site serves its contents at `/`, a section at `/<section>/`, an animation at `/<section>/<id>/`, and the about page at `/about/`. Each animation SVG also has its own address for embedding elsewhere, `/embed/<id>.svg`.
-
-Before the first end-to-end run, download the headless Chromium that `just test-e2e-on chromium` uses: `npx playwright install --only-shell chromium`.
-
-## 🛠️ Available Recipes
-
-This project uses `just` as its command runner. The npm scripts in `package.json` (`npm test`, `npm run test-e2e`, `npm run lint`, `npm run format`, and `npm run format:check`) cover a subset of the recipes if you prefer npm.
-
-- `just`: Lists every recipe.
-- `just install`: Installs dependencies.
-- `just ci`: Installs dependencies exactly as locked, as CI does.
-- `just test`: Runs every test suite once with Vitest.
-- `just test-e2e`: Builds every site, then runs the end-to-end suite with Playwright in all seven browser projects.
-- `just test-e2e-on <project>`: Runs the end-to-end suite in one browser project, such as `chromium` or `webkit`, against the sites already built.
-- `just lint`: Lints the code with ESLint.
-- `just format`: Applies ESLint fixes, then formats with Prettier.
-- `just check`: Runs ESLint, the Prettier check, the TypeScript type-check for the root and each package, `just style-check`, and `astro check` for each site.
-- `just style`: Re-embeds the canonical `LA-STYLE` block into every animation SVG under `tracks/*/src/content/animations`.
-- `just style-check`: Fails if the `LA-STYLE` block in any of those SVGs has drifted from `theme.css`.
-- `just gen <file>`: Runs an `<id>.gen.ts` generator and writes the SVG it describes beside it.
-- `just port-kafka <chapter>`: Ports one chapter from the original Kafka repository (its path in `KAFKA`) into `tracks/kafka`, restyling each SVG onto `LA-STYLE` and writing its `index.md`. Removed after the Kafka cutover.
-- `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, `java`, or `data`.
-- `just build <site>`: Builds one site into its `dist/` folder.
-- `just preview <site>`: Serves a built site with its production headers.
-- `just build-all`: Builds every site.
-- `just check-dist`: Audits every built site: links resolve, the theme boot is the only inline script, and `robots.txt` agrees with `_headers` about indexing.
-- `just forbidden-terms [--commits <range>]`: Scans tracked files, and with `--commits` the metadata of each commit in the range, for the private list of forbidden terms.
-- `just build-image <site>`: Builds the nginx image for one site as `learning-animated-<site>:dev`.
-- `just start-container <site>`: Serves that image at [http://localhost:3000](http://localhost:3000).
-- `just clean`: Removes coverage reports and build output.
-- `just pre-commit`: Runs `just check` and `just test`, to use before committing.
-- `just pre-release`: Runs the checks, the tests, every build, and the end-to-end suite in Google Chrome, then strips `-SNAPSHOT` from the version and commits the bump. See [🚢 Releasing](#-releasing).
-
-## 🧠 How It Works
-
-- **One theme.** [`packages/design/theme.css`](packages/design/theme.css) is the single source for every color, font, and size. Tailwind reads it for the site chrome, and the `LA-STYLE` generator reads its first `@theme` block, the stage, for the SVGs.
-- **One style block per SVG.** Every animation SVG embeds the same generated `<style>` block between `/* LA-STYLE:START */` and `/* LA-STYLE:END */`. It declares the stage variables, a `fill-` and a `stroke-` utility for every palette color, the type and fixed utilities, and the `la-*` components. Never edit it by hand: change `theme.css`, then run `just style` to re-embed it everywhere. `just check` runs `just style-check`, which fails when a block has drifted.
-- **The SVG contract.** [`packages/svg-kit`](packages/svg-kit) exports `assertSvgContract`, the rules every animation SVG must pass. [🧪 Testing](#-testing) lists them.
-- **Timeline helpers.** `timeline.ts` reads a SMIL timeline as a function of loop time, so a test can ask what an element shows at any moment.
-- **Author helpers.** `author.ts` writes the timelines of generated SVGs: `show` turns intervals into a discrete opacity timeline, `move` turns waypoints into a translate animation, and `escapeXml` escapes text for markup.
-- **Contrast math.** `contrast.ts` computes WCAG relative luminance and contrast ratios, which the palette contrast test uses.
-- **The site kit.** [`packages/site-kit`](packages/site-kit) holds what every site shares: the Zod schemas for tracks, sections, and animations, the page and chrome components, the browser modules for playback and the theme toggle, and an Astro integration. The integration validates a site's content as Astro starts. After a build, it writes `_headers`, `robots.txt`, `sitemap.xml`, the `/embed/` SVGs, and an nginx config that sends the same headers.
-- **One site per track.** Each track in `tracks/<id>` is a thin Astro project: a `track.ts` that names the site, its content (`sections.json`, `about.md`, and one folder per animation under `src/content/animations`), and five pages that render the kit's components. The home page in `home/` lists the tracks that are live and counts each one's animations from its folder. A site stays out of search engines, with a `noindex` header and a `robots.txt` that disallows everything, until its `track.ts` sets `launched: true`.
-
-## 🐳 Docker
-
-Every site also ships as a container image that serves its built pages from an unprivileged nginx. Build and run one locally with:
-
-```bash
-just build-image kafka      # docker build --build-arg SITE=kafka -t learning-animated-kafka:dev .
-just start-container kafka  # serve it on http://localhost:3000
-```
-
-One multi-stage [Dockerfile](Dockerfile) builds any site: the `SITE` build argument picks it, a node stage builds it, and the nginx stage serves its `dist/` on port 3000. The nginx config is the `nginx.generated.conf` the build writes beside the site, so the container serves each page from its own directory, answers unknown paths with the custom `404.html`, and sends the same security headers as Cloudflare Pages. On every push to `main` that changes a site, a package, or the lockfile, and on every release tag, the [Docker workflow](.github/workflows/docker.yaml) builds one image per site, scans it with Trivy, and publishes it to `ghcr.io/josimar-silva/learning-animated/<site>`, tagged with the package version (and `latest` only on a non-SNAPSHOT release).
-
-## 🧪 Testing
-
-Tests are written first and must fail before the code exists. `just test` runs [Vitest](https://vitest.dev/) once across the projects in [`vitest.config.ts`](vitest.config.ts): one per package (`design`, `svg-kit`, and `site-kit`), with tests next to the code they cover, one per track, and `repo` for the repository-wide checks in [`test/repo`](test/repo). CI runs `just check`, `just test`, `just build-all`, `just check-dist`, and the forbidden-terms scan on every pull request and every push to `main`, then runs the end-to-end suite against the sites it built.
-
-Each track's `test/content.test.ts` checks its content: the sections and animations validate, every SVG passes the contract below, and every id in the track's `embed-ids.txt` still exists, so a published embed keeps working. Kafka's [`test/attribution.test.ts`](tracks/kafka/test/attribution.test.ts) keeps the book's credit and the license links in place, in [`ATTRIBUTION.md`](tracks/kafka/ATTRIBUTION.md) and in this README.
-
-`assertSvgContract` in [`packages/svg-kit/src/contract.ts`](packages/svg-kit/src/contract.ts) is the contract for every animation SVG, and `contract.test.ts` pins each rule. A passing SVG:
-
-- Parses to an `<svg>` root with the SVG namespace and a four-number `viewBox`.
-- Is accessible: `role="img"`, a non-empty `<title>`, and a non-empty `<desc>`.
-- Embeds the canonical `LA-STYLE` block verbatim.
-- Keeps all CSS inside that block, with no other rules and no `style` attributes.
-- Uses no raw colors (hex, `rgb()`, or `hsl()`) in color properties.
-- Paints at full strength, with no `fill-opacity` or `stroke-opacity`.
-- Animates with SMIL only: at least one SMIL element, no `@keyframes`, and no CSS `animation`.
-- Has well-formed `keyTimes`: numeric, starting at 0, never decreasing, within 0 to 1, ending at 1 unless the timeline is discrete, and one per value.
-- May set `data-loop="<seconds>s"` on the root. If it does, that value equals the `dur` of the story's own animations, and no animation runs longer.
-
-[`test/repo/palette-contrast.test.ts`](test/repo/palette-contrast.test.ts) holds the palette in `theme.css` to WCAG AA. Text pairs, such as offsets on cells and labels on actor fills, reach 4.5:1, and graphical marks, such as cell outlines, arrows, and markers, reach 3:1. The test measures each pair at full strength, which is why the contract bans `fill-opacity` and `stroke-opacity`.
-
-[`test/repo/conventions.test.ts`](test/repo/conventions.test.ts) checks the repository itself: the justfile defines the standard recipes, every external dependency is pinned to an exact version, `@types/node` follows the Node major in `.nvmrc`, no text file contains an em dash or an en dash, and the shared meta and config files exist. [`test/repo/workflows.test.ts`](test/repo/workflows.test.ts) checks that the CI, CodeQL, Scorecard, Deploy, Docker, and CD workflows exist, that every action is pinned to a full commit SHA with a version comment, that every workflow declares its permissions at the top level, and that every job that installs the workspace turns off Astro telemetry. It checks that every job hardens the runner first and blocks egress to its own sorted list of `host:port` endpoints, except the end-to-end jobs, which only audit because Harden-Runner can't monitor a job that runs in a container. If a job fails on a blocked endpoint, open the Harden-Runner insights link in its job summary and, if the endpoint is legitimate, add it to the job's `allowed-endpoints`. For Deploy, it checks the triggers (`v*` tags and manual runs only), runs the version check on a release and on a SNAPSHOT version, and checks that each run ships every site to production, waits for the run before it, and sends no Wrangler metrics. It also runs CD's dispatch step with a stand-in `gh` to confirm that CD starts Deploy on the new tag before it pushes to `main`. [`test/repo/docker.test.ts`](test/repo/docker.test.ts) checks that every base image in the Dockerfile is pinned by digest, that one Dockerfile builds any site with its generated nginx config, and that its build stage turns off Astro telemetry.
-
-[`test/repo/boundaries.test.ts`](test/repo/boundaries.test.ts) keeps the workspaces apart. It fails when an import leaves its workspace or names a package that the workspace's `package.json` does not declare, and when one track depends on another.
-
-`just check-dist` audits every page of every built site. Each root-relative link must resolve to a built file, the theme boot must be the only inline script (the CSP allows it by its hash), and `robots.txt` and `_headers` must agree about indexing.
-
-`just forbidden-terms` scans every tracked file, and with `--commits <range>` each commit's author, committer, and message, for terms from a private list: the `FORBIDDEN_TERMS` secret in CI, or a git-ignored `.forbidden-terms` file locally. CI logs of a public repository are public, so a finding names only the file and line, or the commit, and the term's number in the list, never the term itself. Without a list, the scan skips, and CI shows a warning.
-
-The end-to-end suite in [`e2e-tests`](e2e-tests) loads the built sites in real browsers with [Playwright](https://playwright.dev/). It serves each site with `astro preview`, which sends the production headers, and opens every page in that site's `sitemap.xml`, so a page added later is covered without writing a test for it. A page fails on any console error, uncaught exception, CSP violation, or response with an error status. The suite also checks that `sitemap.xml` is served, that `robots.txt` agrees with the `noindex` header, and that pages carry the content security policy. It checks that the theme button switches to dark and remembers it, that the menu opens and closes on phone screens, and that every SVG an embed box offers is served. On a lesson page it drives the player: the Pause and Play button, the Space and R shortcuts, the scrubber, the steps, and the views. Each player test skips until a lesson has the feature it drives.
-
-[`playwright.config.ts`](playwright.config.ts) defines seven browser projects: `chromium`, `firefox`, `webkit`, `mobile-chrome`, `mobile-safari`, `microsoft-edge`, and `google-chrome`. `just test-e2e-on chromium` needs only the headless Chromium. `just test-e2e` runs every project, so it also needs `npx playwright install firefox webkit` and local installs of Microsoft Edge and Google Chrome. In CI, each project runs as its own `Test E2E (<project>)` job in the official Playwright container, against the sites the `verify` job built, and the Chromium job uploads a UI coverage report. [`test/repo/e2e.test.ts`](test/repo/e2e.test.ts) checks that the container runs the Playwright version `package.json` pins and that CI runs every project in the config.
-
-To add a lesson, follow the [animate-lesson skill](.github/skills/animate-lesson/SKILL.md). In short:
-
-1. Create `tracks/<track>/src/content/animations/<section>/<id>/` and its `index.md`, with the frontmatter and the concept text.
-2. Write `<id>.test.ts` first, with the story beats as timed facts from the timeline helpers, and watch `just test` fail.
-3. Draw `<id>.svg` and run `just style`, or write `<id>.gen.ts` and run `just gen`, until the lesson test and the contract pass.
-4. Run `just build-all` and `just test-e2e-on chromium`, watch the lesson play with `just dev <track>`, then commit the test and the SVG together.
-
-## 🗂️ Project Layout
-
-```
-justfile                        task runner (just ci, check, test, dev, build-all, style)
-Dockerfile                      one image per site: node builds the site, nginx serves it
-vitest.config.ts                the Vitest projects: every package, every track, and test/repo
-playwright.config.ts            the end-to-end browser projects, reporters, and preview servers
-packages/design/theme.css       every color, font, and size (single source of truth)
-packages/design/signature.md    the aesthetic signature, in prose
-packages/design/logo.svg        the project mark, drawn from the stage palette
-packages/design/fonts/          Inter, self-hosted, with its license
-packages/design/src/            theme parser, LA-STYLE generator, and sync
-packages/design/bin/la-style.ts the sync CLI behind just style and just style-check
-packages/svg-kit/src/           parse, contract, timeline, author, and contrast helpers
-packages/site-kit/src/          schemas, content model, routes, headers, SEO, and the integration
-packages/site-kit/src/pages/    the pages every site renders, built from src/components
-packages/site-kit/src/client/   browser modules: playback, views, scrubber, steps, theme, and menu
-tracks/<id>/                    one Astro site per track: track.ts, content, pages, and tests
-home/                           the family home page for learning-animated.com
-scripts/                        check-dist, forbidden-terms, and gen CLIs, logic in lib/
-test/repo/                      conventions, workflows, boundaries, audit, forbidden-terms,
-                                e2e, and palette contrast tests
-e2e-tests/                      Playwright specs that open every built page, helpers in _shared/
-.github/workflows/              CI, CodeQL, Scorecard, Deploy, Docker, and CD
-.github/skills/animate-lesson/  the checklist for adding a lesson
-```
-
-## 🎨 Design
-
-We keep the code and the diagrams simple and honest: small pieces that do one thing, tests that describe behavior first, and no accidental complexity. The signature gives every animation the same look: a near-black plum stage, purple for whatever is stored, one amber accent for what is new, and one red for failure. The full aesthetic signature (principles, palette, utilities, components, role recipes, and accessibility) lives in [`packages/design/signature.md`](packages/design/signature.md).
-
-## 🚢 Releasing
-
-Every site shares one version, the one in the root `package.json`, and `main` always carries a `-SNAPSHOT` version. When a release version is merged, the [Continuous Delivery workflow](.github/workflows/cd.yaml) builds every site into one archive, tags the release, starts the deploy, publishes change notes, and opens the next snapshot. See [RELEASING.md](RELEASING.md) for the full process.
-
-Only releases deploy. The [Deploy workflow](.github/workflows/deploy.yaml) runs on `v*` tags and by hand, never on pull requests or pushes to `main`, so there are no preview deploys. It first reads the version in `package.json` and stops with a notice when that version is a SNAPSHOT. Otherwise it builds every site and deploys each one to production on its own Cloudflare Pages project. CD starts it on each new release tag, and you can run it by hand on a tag to deploy that release again. Until the Cloudflare secrets are set, the workflow builds the sites and skips the deploy with a warning.
+`just dev` serves the site at [http://localhost:4321](http://localhost:4321) and reloads it as you edit. Run `just` to list every recipe.
 
 ## 🤝 Contributing
 
-Contributions are welcome. Please read the [Contributing Guidelines](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) before opening a pull request.
+Contributions are welcome. Please read the [Contributing Guidelines](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) before opening a pull request. These guides cover the rest:
+
+| Guide                                                          | Read it to                                                                    |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [Architecture](docs/architecture.md)                           | See how the packages, tracks, and sites fit together                          |
+| [Testing](docs/testing.md)                                     | Learn what each check guards and how to run the browser suite                 |
+| [Aesthetic signature](packages/design/signature.md)            | Draw in the house style: palette, utilities, components, and the SVG contract |
+| [animate-lesson skill](.github/skills/animate-lesson/SKILL.md) | Add a lesson, test first                                                      |
+| [Releasing](RELEASING.md)                                      | Cut a release and deploy it                                                   |
 
 ## 📄 License
 
