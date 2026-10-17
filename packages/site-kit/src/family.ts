@@ -10,7 +10,7 @@ export type FamilyMember = {
   readonly listed: boolean;
 };
 
-// Kafka keeps its old host until the cutover. Quarkus and Java join the list at launch.
+// Kafka keeps its old host until the cutover. Quarkus, Java, and Data join the list at launch.
 export const FAMILY: readonly FamilyMember[] = [
   {
     id: 'kafka',
@@ -31,6 +31,13 @@ export const FAMILY: readonly FamilyMember[] = [
     name: 'Java Animated',
     tagline: 'Java and the JVM, animated one idea at a time.',
     url: 'https://java.learning-animated.com/',
+    listed: false,
+  },
+  {
+    id: 'data',
+    name: 'Data Animated',
+    tagline: 'How databases find, split, and spread data, animated one idea at a time.',
+    url: 'https://data.learning-animated.com/',
     listed: false,
   },
 ];
