@@ -1,0 +1,399 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 580" role="img" data-loop="24s">
+  <title>Consistent hashing on a ring</title>
+  <desc>An animation in four steps. Database servers db-0, db-1, db-2, and db-3 each hash to three points on a ring, called virtual nodes, which cut it into 12 shorter arcs. Twenty players hash onto the same ring by player id, and each walks clockwise to the first point it meets. Egret walks to db-2#3, one of db-2's points, and the servers end up storing between 4 and 6 profiles each. A fifth server, db-4, hashes to three points that split arcs of db-3, db-2, and db-1, and takes 4 players: Heron and Otter from db-3, Petrel from db-2, and Newt from db-1. The other 16 players stay where they were, and the player counts show the loads ending between 3 and 5.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="580"/>
+  <text class="la-title" x="32" y="44">Consistent hashing on a ring</text>
+  <text class="la-note" x="32" y="68">Three points per server, its virtual nodes. The first point clockwise from a player stores the player's profile.</text>
+  <circle data-role="ring" class="fill-none stroke-grid" cx="290" cy="318" r="176" stroke-width="6"/>
+  <path data-role="arc" data-server="db-0" class="fill-none stroke-sky" d="M 147.6 214.5 A 176 176 0 0 1 257 145.1" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-0" class="fill-none stroke-sky" d="M 344.4 485.4 A 176 176 0 0 1 290 494" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-0" class="fill-none stroke-sky" d="M 177.8 453.6 A 176 176 0 0 1 130.8 392.9" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-1" class="fill-none stroke-emerald" d="M 257 145.1 A 176 176 0 0 1 402.2 182.4" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-1" class="fill-none stroke-emerald" d="M 449.2 392.9 A 176 176 0 0 1 402.2 453.6" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-1" class="fill-none stroke-emerald" d="M 246.2 488.5 A 176 176 0 0 1 177.8 453.6" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-2" class="fill-none stroke-pink" d="M 290 494 A 176 176 0 0 1 246.2 488.5" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-2" class="fill-none stroke-pink" d="M 130.8 392.9 A 176 176 0 0 1 119.5 274.2" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-2" class="fill-none stroke-pink" d="M 402.2 182.4 A 176 176 0 0 1 444.2 233.2" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-3" class="fill-none stroke-violet" d="M 119.5 274.2 A 176 176 0 0 1 147.6 214.5" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-3" class="fill-none stroke-violet" d="M 444.2 233.2 A 176 176 0 0 1 449.2 392.9" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-3" class="fill-none stroke-violet" d="M 402.2 453.6 A 176 176 0 0 1 344.4 485.4" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></path>
+  <path data-role="arc" data-server="db-4" class="fill-none stroke-amber" d="M 444.2 233.2 A 176 176 0 0 1 464.6 340.1" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></path>
+  <path data-role="arc" data-server="db-4" class="fill-none stroke-amber" d="M 130.8 392.9 A 176 176 0 0 1 114.3 329.1" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></path>
+  <path data-role="arc" data-server="db-4" class="fill-none stroke-amber" d="M 257 145.1 A 176 176 0 0 1 333.8 147.5" stroke-width="6"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></path>
+  <line class="stroke-ink-muted stroke-1.5" x1="290" y1="151" x2="290" y2="133"/>
+  <text class="fill-ink-muted font-mono text-offset anchor-middle" x="290" y="168">0</text>
+  <g data-role="direction">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <path class="la-arrow" d="M 250.4 196.3 A 128 128 0 0 1 329.6 196.3" marker-end="url(#head)"/>
+    <text class="la-note anchor-middle" x="290" y="216">clockwise</text>
+  </g>
+  <text data-role="featured" class="fill-ink font-sans text-offset font-semibold anchor-middle" x="393.5" y="224.8">Egret<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/></text>
+  <g data-role="walk" data-tag="Egret" data-to="db-2#3">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.5417" values="0;1;0"/>
+    <path data-role="trail" class="fill-none stroke-flow-strong" d="M 408.1 207.1 A 162 162 0 0 1 432 240" stroke-width="2" stroke-dasharray="41 41">
+      <animate attributeName="stroke-dashoffset" dur="24s" repeatCount="indefinite" keyTimes="0.0000;0.2500;0.3333;1.0000" values="41;41;0;0"/>
+    </path>
+    <circle class="fill-flow-strong" r="4">
+      <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3333" values="0;1;0"/>
+      <animateMotion dur="24s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0.0000;0.2500;0.3333;1.0000" path="M 408.1 207.1 A 162 162 0 0 1 432 240"/>
+    </circle>
+  </g>
+  <g data-role="player" data-tag="Egret" data-position="13" transform="translate(418.3 197.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3333" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-2" class="fill-pink stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Stoat" data-position="14" transform="translate(425.6 205.8)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-2" class="fill-pink stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Heron" data-position="20" transform="translate(457.4 263.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle data-role="moved" class="fill-none stroke-amber stroke-1.5" r="8"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></circle>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958;0.6250" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-4" class="fill-amber stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Otter" data-position="25" transform="translate(466 318)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle data-role="moved" class="fill-none stroke-amber stroke-1.5" r="8"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></circle>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958;0.6250" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-4" class="fill-amber stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Jackal" data-position="29" transform="translate(460.5 361.8)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Coyote" data-position="35" transform="translate(432.4 421.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-1" class="fill-emerald stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Iguana" data-position="37" transform="translate(418.3 438.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-1" class="fill-emerald stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Lemur" data-position="41" transform="translate(384.3 466.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Quail" data-position="43" transform="translate(364.9 477.2)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Adder" data-position="47" transform="translate(323 490.9)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-0" class="fill-sky stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Marten" data-position="52" transform="translate(267.9 492.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-2" class="fill-pink stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Tapir" data-position="56" transform="translate(225.2 481.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-1" class="fill-emerald stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Ferret" data-position="58" transform="translate(205.2 472.2)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-1" class="fill-emerald stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Dingo" data-position="64" transform="translate(154.4 430.2)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-0" class="fill-sky stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Koala" data-position="66" transform="translate(141.4 412.3)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-0" class="fill-sky stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Petrel" data-position="70" transform="translate(122.6 372.4)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle data-role="moved" class="fill-none stroke-amber stroke-1.5" r="8"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></circle>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-2" class="fill-pink stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958;0.6250" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-4" class="fill-amber stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Badger" data-position="82" transform="translate(130.8 243.1)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-3" class="fill-violet stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Raven" data-position="88" transform="translate(169.5 189.7)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-0" class="fill-sky stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Gibbon" data-position="91" transform="translate(195.7 169.4)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-0" class="fill-sky stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958" values="0;1"/></circle>
+  </g>
+  <g data-role="player" data-tag="Newt" data-position="99" transform="translate(278.9 142.3)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="0;1"/>
+    <circle data-role="moved" class="fill-none stroke-amber stroke-1.5" r="8"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5833" values="0;1"/></circle>
+    <circle class="fill-ink-muted stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.3958" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-1" class="fill-emerald stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3958;0.6250" values="0;1;0"/></circle>
+    <circle data-role="owner" data-server="db-4" class="fill-amber stroke-stage stroke-1.5" r="4.5"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></circle>
+  </g>
+  <g data-role="point" data-server="db-0" data-label="db-0#1" data-position="97" transform="translate(257 145.1)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000" values="1"/>
+    <rect class="fill-sky stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-middle" x="-5.6" y="-25">db-0#1</text>
+  </g>
+  <g data-role="point" data-server="db-0" data-label="db-0#2" data-position="50" transform="translate(290 494)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000" values="1"/>
+    <rect class="fill-sky stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-middle" x="0" y="34.5">db-0#2</text>
+  </g>
+  <g data-role="point" data-server="db-0" data-label="db-0#3" data-position="68" transform="translate(130.8 392.9)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000" values="1"/>
+    <rect class="fill-sky stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-14.5" y="11.3">db-0#3</text>
+  </g>
+  <g data-role="point" data-server="db-1" data-label="db-1#1" data-position="11" transform="translate(402.2 182.4)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0208" values="0;1"/>
+    <rect class="fill-emerald stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="10.2" y="-7.8">db-1#1</text>
+  </g>
+  <g data-role="point" data-server="db-1" data-label="db-1#2" data-position="39" transform="translate(402.2 453.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0208" values="0;1"/>
+    <rect class="fill-emerald stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="10.2" y="16.8">db-1#2</text>
+  </g>
+  <g data-role="point" data-server="db-1" data-label="db-1#3" data-position="61" transform="translate(177.8 453.6)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0208" values="0;1"/>
+    <rect class="fill-emerald stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-10.2" y="16.8">db-1#3</text>
+  </g>
+  <g data-role="point" data-server="db-2" data-label="db-2#1" data-position="54" transform="translate(246.2 488.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0417" values="0;1"/>
+    <rect class="fill-pink stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-3.9" y="20">db-2#1</text>
+  </g>
+  <g data-role="point" data-server="db-2" data-label="db-2#2" data-position="79" transform="translate(119.5 274.2)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0417" values="0;1"/>
+    <rect class="fill-pink stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-15.5" y="0.6">db-2#2</text>
+  </g>
+  <g data-role="point" data-server="db-2" data-label="db-2#3" data-position="17" transform="translate(444.2 233.2)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0417" values="0;1"/>
+    <rect class="fill-pink stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="14.1" y="-3.2">db-2#3</text>
+  </g>
+  <g data-role="point" data-server="db-3" data-label="db-3#1" data-position="85" transform="translate(147.6 214.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0625" values="0;1"/>
+    <rect class="fill-violet stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-12.9" y="-4.9">db-3#1</text>
+  </g>
+  <g data-role="point" data-server="db-3" data-label="db-3#2" data-position="32" transform="translate(449.2 392.9)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0625" values="0;1"/>
+    <rect class="fill-violet stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="14.5" y="11.3">db-3#2</text>
+  </g>
+  <g data-role="point" data-server="db-3" data-label="db-3#3" data-position="45" transform="translate(344.4 485.4)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0625" values="0;1"/>
+    <rect class="fill-violet stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="4.9" y="19.7">db-3#3</text>
+  </g>
+  <g data-role="point" data-server="db-4" data-label="db-4#1" data-position="27" transform="translate(464.6 340.1)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417" values="0;1"/>
+    <rect class="fill-amber stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="15.9" y="6.5">db-4#1</text>
+  </g>
+  <g data-role="point" data-server="db-4" data-label="db-4#2" data-position="74" transform="translate(114.3 329.1)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417" values="0;1"/>
+    <rect class="fill-amber stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-end" x="-15.9" y="5.5">db-4#2</text>
+  </g>
+  <g data-role="point" data-server="db-4" data-label="db-4#3" data-position="4" transform="translate(333.8 147.5)">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417" values="0;1"/>
+    <rect class="fill-amber stroke-stage stroke-1.5" x="-6.5" y="-6.5" width="13" height="13" rx="2" transform="rotate(45)"/>
+    <text class="la-label font-semibold anchor-start" x="3.9" y="-11">db-4#3</text>
+  </g>
+  <g data-role="moved-count">
+    <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/>
+    <text class="la-title anchor-middle" x="290" y="322">4 of 20</text>
+    <text class="la-note anchor-middle" x="290" y="344">players moved</text>
+  </g>
+  <text data-role="moved-tags" class="la-label anchor-middle" x="290" y="368">Heron, Otter, Petrel, Newt<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></text>
+  <g data-role="loads">
+    <rect class="la-canvas stroke-1.5" x="560" y="142" width="408" height="352" rx="12"/>
+    <text class="la-label font-semibold" x="584" y="174">Players per server</text>
+    <text class="la-note anchor-end" x="944" y="174">before → after<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    <g data-role="load" data-server="db-0">
+      <circle class="fill-sky" cx="592" cy="222" r="6"/>
+      <text class="la-label font-semibold" x="608" y="226.5">db-0</text>
+      <rect data-role="bar-before" class="fill-none stroke-sky stroke-1.5" x="660" y="214" width="100" height="16" rx="3" stroke-dasharray="4 3"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <rect data-role="bar-after" class="fill-sky" x="660" y="217" width="100" height="10" rx="2"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <text data-role="count" class="fill-ink font-mono text-offset anchor-end" x="944" y="226">5 → 5<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    </g>
+    <g data-role="load" data-server="db-1">
+      <circle class="fill-emerald" cx="592" cy="266" r="6"/>
+      <text class="la-label font-semibold" x="608" y="270.5">db-1</text>
+      <rect data-role="bar-before" class="fill-none stroke-emerald stroke-1.5" x="660" y="258" width="100" height="16" rx="3" stroke-dasharray="4 3"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <rect data-role="bar-after" class="fill-emerald" x="660" y="261" width="80" height="10" rx="2"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <text data-role="count" class="fill-ink font-mono text-offset anchor-end" x="944" y="270">5 → 4<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    </g>
+    <g data-role="load" data-server="db-2">
+      <circle class="fill-pink" cx="592" cy="310" r="6"/>
+      <text class="la-label font-semibold" x="608" y="314.5">db-2</text>
+      <rect data-role="bar-before" class="fill-none stroke-pink stroke-1.5" x="660" y="302" width="80" height="16" rx="3" stroke-dasharray="4 3"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <rect data-role="bar-after" class="fill-pink" x="660" y="305" width="60" height="10" rx="2"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <text data-role="count" class="fill-ink font-mono text-offset anchor-end" x="944" y="314">4 → 3<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    </g>
+    <g data-role="load" data-server="db-3">
+      <circle class="fill-violet" cx="592" cy="354" r="6"/>
+      <text class="la-label font-semibold" x="608" y="358.5">db-3</text>
+      <rect data-role="bar-before" class="fill-none stroke-violet stroke-1.5" x="660" y="346" width="120" height="16" rx="3" stroke-dasharray="4 3"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <rect data-role="bar-after" class="fill-violet" x="660" y="349" width="80" height="10" rx="2"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <text data-role="count" class="fill-ink font-mono text-offset anchor-end" x="944" y="358">6 → 4<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    </g>
+    <g data-role="load" data-server="db-4">
+      <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417" values="0;1"/>
+      <circle class="fill-amber" cx="592" cy="398" r="6"/>
+      <text class="la-label font-semibold" x="608" y="402.5">db-4</text>
+      <rect data-role="bar-before" class="fill-none stroke-amber stroke-1.5" x="660" y="390" width="0" height="16" rx="3" stroke-dasharray="4 3"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <rect data-role="bar-after" class="fill-amber" x="660" y="393" width="80" height="10" rx="2"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></rect>
+      <text data-role="count" class="fill-ink font-mono text-offset anchor-end" x="944" y="402">0 → 4<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+    </g>
+    <g data-role="even-share">
+      <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/>
+      <line class="stroke-ink-muted stroke-1.5" x1="740" y1="202" x2="740" y2="418" stroke-dasharray="3 4"/>
+      <text class="la-note anchor-middle" x="740" y="438">even share: 4</text>
+    </g>
+    <g data-role="bar-legend">
+      <animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/>
+      <rect class="fill-none stroke-ink-muted stroke-1.5" x="584" y="463" width="24" height="12" rx="3" stroke-dasharray="4 3"/>
+      <text class="la-note" x="616" y="473">before db-4 joined</text>
+      <rect class="fill-ink-muted" x="776" y="465" width="24" height="8" rx="2"/>
+      <text class="la-note" x="808" y="473">after</text>
+    </g>
+  </g>
+  <text data-role="caption" class="la-label" x="32" y="556">Three points per server, called virtual nodes. The 12 points cut the ring into 12 shorter arcs.<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083" values="1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="556">Egret walks clockwise to db-2#3, one of db-2's three points. Every player does the same, and the loads run from 4 to 6.<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2083;0.5417" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="556">Server db-4's three points split arcs of db-3, db-2, and db-1. Each takes only the players between the previous point and itself.<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5417;0.7917" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="556">The 4 moved players came from db-3, db-2, and db-1. The loads now run from 3 to 5, around the even share of 4.<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7917" values="0;1"/></text>
+</svg>
