@@ -33,7 +33,7 @@ type Job = {
   env?: Record<string, unknown>;
   outputs?: Record<string, string>;
   permissions?: Record<string, string>;
-  strategy?: { matrix?: { include?: unknown } };
+  strategy?: { matrix?: { include?: unknown; site?: unknown } };
   steps?: Step[];
 };
 type Workflow = {
@@ -64,7 +64,12 @@ function jobs(): Array<{ id: string; workflow: Workflow; job: Job }> {
 
 const workflow = (file: string): Workflow => parse(readFileSync(DIR + file, 'utf8')) as Workflow;
 const DEPLOY = workflow('deploy.yaml');
+const DOCKER = workflow('docker.yaml');
 const CD = workflow('cd.yaml');
+
+const TRACK_IDS = readdirSync(TRACKS, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
 
 const ENDPOINT = /^(\*\.)?[a-z0-9.-]+:[0-9]+$/;
 
@@ -214,12 +219,9 @@ describe('Deploy', () => {
   });
 
   test('ships every site to its own Pages project', () => {
-    const tracks = readdirSync(TRACKS, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name);
     const sites = [
       { site: 'home', dir: 'home', project: 'learning-animated-home' },
-      ...tracks.map((track) => ({
+      ...TRACK_IDS.map((track) => ({
         site: track,
         dir: `tracks/${track}`,
         project: `learning-animated-${track}`,
@@ -243,6 +245,15 @@ describe('Deploy', () => {
 
   test('sends Wrangler no metrics, which the allow-list would block', () =>
     expect(DEPLOY.jobs.deploy?.env?.WRANGLER_SEND_METRICS).toBe(false));
+});
+
+describe('Docker', () => {
+  test('builds an image for every site', () => {
+    const sites = ['home', ...TRACK_IDS];
+    const matrix = DOCKER.jobs.docker?.strategy?.matrix?.site;
+    expect(matrix).toEqual(expect.arrayContaining(sites));
+    expect(matrix).toHaveLength(sites.length);
+  });
 });
 
 describe('CD', () => {
