@@ -1,0 +1,812 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" data-loop="30s">
+  <title>Hash mod N, until N changes</title>
+  <desc>An animation in four steps. Twenty players of an online game sign up one at a time in order of player id, and a router sends each one to database server hash(player_id) mod 4, so each of db-0 to db-3 gets five players. The four newest players sit on four different servers, so a scan over their ids has to ask all four servers. Server db-4 is added and the rule becomes hash(player_id) mod 5. Sixteen players then move one at a time while a counter counts them, and the four whose hash mod 20 is 0, 1, 2, or 3 stay on their server. Each of the five servers ends with four players.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+    <marker id="head-new" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-amber" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="560"/>
+  <text class="la-title" x="32" y="44">Hash mod N, until N changes</text>
+  <text class="la-note" x="32" y="68">Hashing spreads players evenly, but every placement depends on N, so changing N moves most players.</text>
+  <g data-role="router">
+    <rect class="la-canvas stroke-1.5" x="310" y="84" width="380" height="64" rx="10"/>
+    <text class="fill-ink-muted font-sans text-offset anchor-middle" x="500" y="101">router</text>
+    <text data-role="rule" data-n="4" class="font-mono text-label fill-ink anchor-middle" x="500" y="121">server = hash(player_id) mod 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="1;0"/></text>
+    <text data-role="rule" data-n="5" class="font-mono text-label fill-ink anchor-middle" x="500" y="121">server = hash(player_id) mod <tspan class="fill-amber">5</tspan><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Adder: hash(412) = 47, 47 mod 4 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0167;0.0833" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Koala: hash(1042) = 66, 66 mod 4 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0833;0.0933" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Raven: hash(2046) = 88, 88 mod 4 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0933;0.1033" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Badger: hash(2981) = 82, 82 mod 4 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1033;0.1133" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Marten: hash(3560) = 52, 52 mod 4 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1133;0.1233" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Tapir: hash(4127) = 56, 56 mod 4 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1233;0.1333" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Dingo: hash(5214) = 64, 64 mod 4 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333;0.1433" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Petrel: hash(6120) = 70, 70 mod 4 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1433;0.1533" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Quail: hash(7038) = 43, 43 mod 4 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1533;0.1633" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Coyote: hash(7702) = 35, 35 mod 4 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1633;0.1733" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Egret: hash(7915) = 13, 13 mod 4 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1733;0.1833" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Jackal: hash(8240) = 29, 29 mod 4 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.1933" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Lemur: hash(8577) = 41, 41 mod 4 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1933;0.2033" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Newt: hash(8903) = 99, 99 mod 4 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2033;0.2133" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Otter: hash(9128) = 25, 25 mod 4 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2133;0.2233" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Stoat: hash(9406) = 14, 14 mod 4 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2233;0.2333" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Ferret: hash(9612) = 58, 58 mod 4 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.2433" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Gibbon: hash(9745) = 91, 91 mod 4 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2433;0.2533" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Heron: hash(9861) = 20, 20 mod 4 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2533;0.2633" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Iguana: hash(9980) = 37, 37 mod 4 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2633;0.2733" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">player_id 9600 to 9999: ask all 4 servers<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5000" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Dingo: 64 mod 4 = 0, 64 mod 5 = 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6167;0.6333" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Otter: 25 mod 4 = 1, 25 mod 5 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333;0.6500" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Koala: 66 mod 4 = 2, 66 mod 5 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6667" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Adder: 47 mod 4 = 3, 47 mod 5 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667;0.6833" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Raven: 88 mod 4 = 0, 88 mod 5 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6833;0.7000" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Jackal: 29 mod 4 = 1, 29 mod 5 = 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7167" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Petrel: 70 mod 4 = 2, 70 mod 5 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7333" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Gibbon: 91 mod 4 = 3, 91 mod 5 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333;0.7500" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Marten: 52 mod 4 = 0, 52 mod 5 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7667" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Egret: 13 mod 4 = 1, 13 mod 5 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667;0.7833" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Stoat: 14 mod 4 = 2, 14 mod 5 = 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833;0.8000" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Coyote: 35 mod 4 = 3, 35 mod 5 = 0<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8167" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Tapir: 56 mod 4 = 0, 56 mod 5 = 1<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167;0.8333" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Iguana: 37 mod 4 = 1, 37 mod 5 = 2<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333;0.8500" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Ferret: 58 mod 4 = 2, 58 mod 5 = 3<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.8667" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">Newt: 99 mod 4 = 3, 99 mod 5 = 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667;0.8833" values="0;1;0"/></text>
+    <text data-role="working" class="font-mono text-offset fill-amber anchor-middle" x="500" y="139">mod 4 and mod 5 agree only when hash mod 20 &lt; 4<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  </g>
+  <g data-role="server" data-server="0">
+    <path class="la-arrow" d="M 500 148 L 500 176 L 120 176 L 120 196" marker-end="url(#head)"/>
+    <rect data-role="box" data-server="0" class="la-card" x="32" y="200" width="176" height="236" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink anchor-middle" x="120" y="222">db-0</text>
+  </g>
+  <g data-role="server" data-server="1">
+    <path class="la-arrow" d="M 500 148 L 500 176 L 310 176 L 310 196" marker-end="url(#head)"/>
+    <rect data-role="box" data-server="1" class="la-card" x="222" y="200" width="176" height="236" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink anchor-middle" x="310" y="222">db-1</text>
+  </g>
+  <g data-role="server" data-server="2">
+    <path class="la-arrow" d="M 500 148 L 500 176 L 500 196" marker-end="url(#head)"/>
+    <rect data-role="box" data-server="2" class="la-card" x="412" y="200" width="176" height="236" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink anchor-middle" x="500" y="222">db-2</text>
+  </g>
+  <g data-role="server" data-server="3">
+    <path class="la-arrow" d="M 500 148 L 500 176 L 690 176 L 690 196" marker-end="url(#head)"/>
+    <rect data-role="box" data-server="3" class="la-card" x="602" y="200" width="176" height="236" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink anchor-middle" x="690" y="222">db-3</text>
+  </g>
+  <g data-role="server" data-server="4">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+    <path class="la-arrow" d="M 500 148 L 500 176 L 880 176 L 880 196" marker-end="url(#head)"/>
+    <rect data-role="box" data-server="4" class="la-card" x="792" y="200" width="176" height="236" rx="12"/>
+    <text class="font-mono text-label font-semibold fill-ink anchor-middle" x="880" y="222">db-4</text>
+  </g>
+  <text data-role="count" data-server="0" class="la-note anchor-middle" x="120" y="422">5 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-server="0" class="la-note anchor-middle" x="120" y="422">4 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <text data-role="count" data-server="1" class="la-note anchor-middle" x="310" y="422">5 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-server="1" class="la-note anchor-middle" x="310" y="422">4 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <text data-role="count" data-server="2" class="la-note anchor-middle" x="500" y="422">5 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-server="2" class="la-note anchor-middle" x="500" y="422">4 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <text data-role="count" data-server="3" class="la-note anchor-middle" x="690" y="422">5 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-server="3" class="la-note anchor-middle" x="690" y="422">4 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <text data-role="count" data-server="4" class="la-note anchor-middle" x="880" y="422">0 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6000" values="0;1;0"/></text>
+  <text data-role="count" data-server="4" class="la-note anchor-middle" x="880" y="422">4 players<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <g data-role="ask" data-server="0">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5000" values="0;1;0"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 500 148 L 500 176 L 120 176 L 120 196" marker-end="url(#head-new)"/>
+    <circle class="la-flow-dot" r="5">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/>
+      <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3333;0.3355;0.3651;0.3667;1.0000" values="500,148;500,148;500,176;120,176;120,196;120,196"/>
+    </circle>
+  </g>
+  <g data-role="ask" data-server="1">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5000" values="0;1;0"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 500 148 L 500 176 L 310 176 L 310 196" marker-end="url(#head-new)"/>
+    <circle class="la-flow-dot" r="5">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/>
+      <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3333;0.3373;0.3639;0.3667;1.0000" values="500,148;500,148;500,176;310,176;310,196;310,196"/>
+    </circle>
+  </g>
+  <g data-role="ask" data-server="2">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5000" values="0;1;0"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 500 148 L 500 176 L 500 196" marker-end="url(#head-new)"/>
+    <circle class="la-flow-dot" r="5">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/>
+      <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3333;0.3528;0.3667;1.0000" values="500,148;500,148;500,176;500,196;500,196"/>
+    </circle>
+  </g>
+  <g data-role="ask" data-server="3">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.5000" values="0;1;0"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 500 148 L 500 176 L 690 176 L 690 196" marker-end="url(#head-new)"/>
+    <circle class="la-flow-dot" r="5">
+      <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3333;0.3667" values="0;1;0"/>
+      <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3333;0.3373;0.3639;0.3667;1.0000" values="500,148;500,148;500,176;690,176;690,196;690,196"/>
+    </circle>
+  </g>
+  <g data-role="player" data-tag="Adder" data-id="412" data-hash="47" transform="translate(690 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0833;0.6667" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Adder</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#412</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">47</text>
+  </g>
+  <g data-role="player" data-tag="Adder" data-id="412" data-hash="47" transform="translate(500 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6833" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Adder</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#412</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">47</text>
+  </g>
+  <g data-role="player" data-tag="Koala" data-id="1042" data-hash="66" transform="translate(500 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.6500" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Koala</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#1042</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">66</text>
+  </g>
+  <g data-role="player" data-tag="Koala" data-id="1042" data-hash="66" transform="translate(310 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Koala</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#1042</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">66</text>
+  </g>
+  <g data-role="player" data-tag="Raven" data-id="2046" data-hash="88" transform="translate(120 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1100;0.6833" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Raven</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2046</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">88</text>
+  </g>
+  <g data-role="player" data-tag="Raven" data-id="2046" data-hash="88" transform="translate(690 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Raven</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2046</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">88</text>
+  </g>
+  <g data-role="player" data-tag="Badger" data-id="2981" data-hash="82" transform="translate(500 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1200" values="0;1"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Badger</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2981</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">82</text>
+    <rect data-role="stayed" class="fill-none stroke-emerald stroke-2.5" x="-80" y="-17" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></rect>
+  </g>
+  <g data-role="player" data-tag="Marten" data-id="3560" data-hash="52" transform="translate(120 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1300;0.7500" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Marten</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#3560</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">52</text>
+  </g>
+  <g data-role="player" data-tag="Marten" data-id="3560" data-hash="52" transform="translate(500 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Marten</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#3560</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">52</text>
+  </g>
+  <g data-role="player" data-tag="Tapir" data-id="4127" data-hash="56" transform="translate(120 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1400;0.8167" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Tapir</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#4127</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">56</text>
+  </g>
+  <g data-role="player" data-tag="Tapir" data-id="4127" data-hash="56" transform="translate(310 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Tapir</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#4127</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">56</text>
+  </g>
+  <g data-role="player" data-tag="Dingo" data-id="5214" data-hash="64" transform="translate(120 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.6167" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Dingo</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#5214</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">64</text>
+  </g>
+  <g data-role="player" data-tag="Dingo" data-id="5214" data-hash="64" transform="translate(880 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Dingo</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#5214</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">64</text>
+  </g>
+  <g data-role="player" data-tag="Petrel" data-id="6120" data-hash="70" transform="translate(500 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1600;0.7167" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Petrel</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#6120</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">70</text>
+  </g>
+  <g data-role="player" data-tag="Petrel" data-id="6120" data-hash="70" transform="translate(120 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Petrel</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#6120</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">70</text>
+  </g>
+  <g data-role="player" data-tag="Quail" data-id="7038" data-hash="43" transform="translate(690 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1700" values="0;1"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Quail</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7038</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">43</text>
+    <rect data-role="stayed" class="fill-none stroke-emerald stroke-2.5" x="-80" y="-17" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></rect>
+  </g>
+  <g data-role="player" data-tag="Coyote" data-id="7702" data-hash="35" transform="translate(690 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1800;0.8000" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Coyote</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7702</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">35</text>
+  </g>
+  <g data-role="player" data-tag="Coyote" data-id="7702" data-hash="35" transform="translate(120 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Coyote</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7702</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">35</text>
+  </g>
+  <g data-role="player" data-tag="Egret" data-id="7915" data-hash="13" transform="translate(310 249)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1900;0.7667" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Egret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7915</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">13</text>
+  </g>
+  <g data-role="player" data-tag="Egret" data-id="7915" data-hash="13" transform="translate(690 385)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Egret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7915</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">13</text>
+  </g>
+  <g data-role="player" data-tag="Jackal" data-id="8240" data-hash="29" transform="translate(310 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.7000" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Jackal</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8240</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">29</text>
+  </g>
+  <g data-role="player" data-tag="Jackal" data-id="8240" data-hash="29" transform="translate(880 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Jackal</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8240</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">29</text>
+  </g>
+  <g data-role="player" data-tag="Lemur" data-id="8577" data-hash="41" transform="translate(310 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2100" values="0;1"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Lemur</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8577</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">41</text>
+    <rect data-role="stayed" class="fill-none stroke-emerald stroke-2.5" x="-80" y="-17" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></rect>
+  </g>
+  <g data-role="player" data-tag="Newt" data-id="8903" data-hash="99" transform="translate(690 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2200;0.8667" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Newt</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8903</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">99</text>
+  </g>
+  <g data-role="player" data-tag="Newt" data-id="8903" data-hash="99" transform="translate(880 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Newt</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8903</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">99</text>
+  </g>
+  <g data-role="player" data-tag="Otter" data-id="9128" data-hash="25" transform="translate(310 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2300;0.6333" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Otter</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9128</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">25</text>
+  </g>
+  <g data-role="player" data-tag="Otter" data-id="9128" data-hash="25" transform="translate(120 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Otter</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9128</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">25</text>
+  </g>
+  <g data-role="player" data-tag="Stoat" data-id="9406" data-hash="14" transform="translate(500 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2400;0.7833" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Stoat</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9406</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">14</text>
+  </g>
+  <g data-role="player" data-tag="Stoat" data-id="9406" data-hash="14" transform="translate(880 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Stoat</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9406</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">14</text>
+  </g>
+  <g data-role="player" data-tag="Ferret" data-id="9612" data-hash="58" transform="translate(500 385)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.8500" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Ferret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9612</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">58</text>
+  </g>
+  <g data-role="player" data-tag="Ferret" data-id="9612" data-hash="58" transform="translate(690 317)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Ferret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9612</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">58</text>
+  </g>
+  <g data-role="player" data-tag="Gibbon" data-id="9745" data-hash="91" transform="translate(690 385)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2600;0.7333" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Gibbon</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9745</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">91</text>
+  </g>
+  <g data-role="player" data-tag="Gibbon" data-id="9745" data-hash="91" transform="translate(310 283)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Gibbon</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9745</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">91</text>
+  </g>
+  <g data-role="player" data-tag="Heron" data-id="9861" data-hash="20" transform="translate(120 385)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2700" values="0;1"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Heron</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9861</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">20</text>
+    <rect data-role="stayed" class="fill-none stroke-emerald stroke-2.5" x="-80" y="-17" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></rect>
+  </g>
+  <g data-role="player" data-tag="Iguana" data-id="9980" data-hash="37" transform="translate(310 385)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2800;0.8333" values="0;1;0"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Iguana</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9980</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">37</text>
+  </g>
+  <g data-role="player" data-tag="Iguana" data-id="9980" data-hash="37" transform="translate(500 351)">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500" values="0;1"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Iguana</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9980</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">37</text>
+  </g>
+  <rect data-role="hit" data-tag="Ferret" class="fill-none stroke-amber stroke-2.5" x="420" y="368" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5000" values="0;1;0"/></rect>
+  <rect data-role="hit" data-tag="Gibbon" class="fill-none stroke-amber stroke-2.5" x="610" y="368" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5000" values="0;1;0"/></rect>
+  <rect data-role="hit" data-tag="Heron" class="fill-none stroke-amber stroke-2.5" x="40" y="368" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5000" values="0;1;0"/></rect>
+  <rect data-role="hit" data-tag="Iguana" class="fill-none stroke-amber stroke-2.5" x="230" y="368" width="160" height="34" rx="8"><animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3667;0.5000" values="0;1;0"/></rect>
+  <g data-role="flight" data-tag="Adder" data-id="412" data-hash="47">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0167;0.0833" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0500;0.0741;0.0833;1.0000" values="500,176;500,176;690,176;690,249;690,249"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Adder</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#412</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">47</text>
+  </g>
+  <g data-role="flight" data-tag="Adder" data-id="412" data-hash="47">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667;0.6833" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6667;0.6833;1.0000" values="690,249;690,249;500,249;500,249"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Adder</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#412</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">47</text>
+  </g>
+  <g data-role="flight" data-tag="Koala" data-id="1042" data-hash="66">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0833;0.1000" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0833;0.1000;1.0000" values="500,176;500,176;500,249;500,249"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Koala</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#1042</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">66</text>
+  </g>
+  <g data-role="flight" data-tag="Koala" data-id="1042" data-hash="66">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6667" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6500;0.6667;1.0000" values="500,249;500,249;310,351;310,351"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Koala</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#1042</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">66</text>
+  </g>
+  <g data-role="flight" data-tag="Raven" data-id="2046" data-hash="88">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0933;0.1100" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0933;0.1073;0.1100;1.0000" values="500,176;500,176;120,176;120,249;120,249"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Raven</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2046</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">88</text>
+  </g>
+  <g data-role="flight" data-tag="Raven" data-id="2046" data-hash="88">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6833;0.7000" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6833;0.7000;1.0000" values="120,249;120,249;690,249;690,249"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Raven</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2046</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">88</text>
+  </g>
+  <g data-role="flight" data-tag="Badger" data-id="2981" data-hash="82">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1033;0.1200" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1033;0.1200;1.0000" values="500,176;500,176;500,283;500,283"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Badger</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#2981</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">82</text>
+  </g>
+  <g data-role="flight" data-tag="Marten" data-id="3560" data-hash="52">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1133;0.1300" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1133;0.1263;0.1300;1.0000" values="500,176;500,176;120,176;120,283;120,283"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Marten</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#3560</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">52</text>
+  </g>
+  <g data-role="flight" data-tag="Marten" data-id="3560" data-hash="52">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7667" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7500;0.7667;1.0000" values="120,283;120,283;500,317;500,317"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Marten</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#3560</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">52</text>
+  </g>
+  <g data-role="flight" data-tag="Tapir" data-id="4127" data-hash="56">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1233;0.1400" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1233;0.1355;0.1400;1.0000" values="500,176;500,176;120,176;120,317;120,317"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Tapir</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#4127</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">56</text>
+  </g>
+  <g data-role="flight" data-tag="Tapir" data-id="4127" data-hash="56">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167;0.8333" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8167;0.8333;1.0000" values="120,317;120,317;310,249;310,249"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Tapir</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#4127</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">56</text>
+  </g>
+  <g data-role="flight" data-tag="Dingo" data-id="5214" data-hash="64">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1333;0.1500" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1333;0.1447;0.1500;1.0000" values="500,176;500,176;120,176;120,351;120,351"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Dingo</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#5214</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">64</text>
+  </g>
+  <g data-role="flight" data-tag="Dingo" data-id="5214" data-hash="64">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6167;0.6333" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6167;0.6333;1.0000" values="120,351;120,351;880,249;880,249"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Dingo</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#5214</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">64</text>
+  </g>
+  <g data-role="flight" data-tag="Petrel" data-id="6120" data-hash="70">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1433;0.1600" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1433;0.1600;1.0000" values="500,176;500,176;500,317;500,317"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Petrel</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#6120</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">70</text>
+  </g>
+  <g data-role="flight" data-tag="Petrel" data-id="6120" data-hash="70">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7333" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7167;0.7333;1.0000" values="500,317;500,317;120,249;120,249"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Petrel</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#6120</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">70</text>
+  </g>
+  <g data-role="flight" data-tag="Quail" data-id="7038" data-hash="43">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1533;0.1700" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1533;0.1640;0.1700;1.0000" values="500,176;500,176;690,176;690,283;690,283"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Quail</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7038</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">43</text>
+  </g>
+  <g data-role="flight" data-tag="Coyote" data-id="7702" data-hash="35">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1633;0.1800" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1633;0.1729;0.1800;1.0000" values="500,176;500,176;690,176;690,317;690,317"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Coyote</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7702</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">35</text>
+  </g>
+  <g data-role="flight" data-tag="Coyote" data-id="7702" data-hash="35">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8167" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8000;0.8167;1.0000" values="690,317;690,317;120,283;120,283"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Coyote</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7702</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">35</text>
+  </g>
+  <g data-role="flight" data-tag="Egret" data-id="7915" data-hash="13">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1733;0.1900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1733;0.1854;0.1900;1.0000" values="500,176;500,176;310,176;310,249;310,249"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Egret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7915</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">13</text>
+  </g>
+  <g data-role="flight" data-tag="Egret" data-id="7915" data-hash="13">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667;0.7833" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7667;0.7833;1.0000" values="310,249;310,249;690,385;690,385"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Egret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#7915</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">13</text>
+  </g>
+  <g data-role="flight" data-tag="Jackal" data-id="8240" data-hash="29">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1833;0.2000" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1833;0.1940;0.2000;1.0000" values="500,176;500,176;310,176;310,283;310,283"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Jackal</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8240</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">29</text>
+  </g>
+  <g data-role="flight" data-tag="Jackal" data-id="8240" data-hash="29">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7167" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7000;0.7167;1.0000" values="310,283;310,283;880,283;880,283"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Jackal</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8240</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">29</text>
+  </g>
+  <g data-role="flight" data-tag="Lemur" data-id="8577" data-hash="41">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1933;0.2100" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.1933;0.2029;0.2100;1.0000" values="500,176;500,176;310,176;310,317;310,317"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Lemur</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8577</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">41</text>
+  </g>
+  <g data-role="flight" data-tag="Newt" data-id="8903" data-hash="99">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2033;0.2200" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2033;0.2120;0.2200;1.0000" values="500,176;500,176;690,176;690,351;690,351"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Newt</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8903</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">99</text>
+  </g>
+  <g data-role="flight" data-tag="Newt" data-id="8903" data-hash="99">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667;0.8833" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8667;0.8833;1.0000" values="690,351;690,351;880,351;880,351"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Newt</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#8903</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">99</text>
+  </g>
+  <g data-role="flight" data-tag="Otter" data-id="9128" data-hash="25">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2133;0.2300" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2133;0.2220;0.2300;1.0000" values="500,176;500,176;310,176;310,351;310,351"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Otter</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9128</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">25</text>
+  </g>
+  <g data-role="flight" data-tag="Otter" data-id="9128" data-hash="25">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333;0.6500" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6333;0.6500;1.0000" values="310,351;310,351;120,351;120,351"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Otter</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9128</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">25</text>
+  </g>
+  <g data-role="flight" data-tag="Stoat" data-id="9406" data-hash="14">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2233;0.2400" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2233;0.2400;1.0000" values="500,176;500,176;500,351;500,351"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Stoat</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9406</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">14</text>
+  </g>
+  <g data-role="flight" data-tag="Stoat" data-id="9406" data-hash="14">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833;0.8000" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7833;0.8000;1.0000" values="500,351;500,351;880,317;880,317"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Stoat</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9406</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">14</text>
+  </g>
+  <g data-role="flight" data-tag="Ferret" data-id="9612" data-hash="58">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2333;0.2500" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2333;0.2500;1.0000" values="500,176;500,176;500,385;500,385"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Ferret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9612</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">58</text>
+  </g>
+  <g data-role="flight" data-tag="Ferret" data-id="9612" data-hash="58">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.8667" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8500;0.8667;1.0000" values="500,385;500,385;690,317;690,317"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Ferret</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9612</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">58</text>
+  </g>
+  <g data-role="flight" data-tag="Gibbon" data-id="9745" data-hash="91">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2433;0.2600" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2433;0.2513;0.2600;1.0000" values="500,176;500,176;690,176;690,385;690,385"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Gibbon</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9745</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">91</text>
+  </g>
+  <g data-role="flight" data-tag="Gibbon" data-id="9745" data-hash="91">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333;0.7500" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7333;0.7500;1.0000" values="690,385;690,385;310,283;310,283"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Gibbon</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9745</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">91</text>
+  </g>
+  <g data-role="flight" data-tag="Heron" data-id="9861" data-hash="20">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2533;0.2700" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2533;0.2641;0.2700;1.0000" values="500,176;500,176;120,176;120,385;120,385"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Heron</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9861</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">20</text>
+  </g>
+  <g data-role="flight" data-tag="Iguana" data-id="9980" data-hash="37">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2633;0.2800" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2633;0.2713;0.2800;1.0000" values="500,176;500,176;310,176;310,385;310,385"/>
+    <rect class="la-cell" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Iguana</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9980</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">37</text>
+  </g>
+  <g data-role="flight" data-tag="Iguana" data-id="9980" data-hash="37">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333;0.8500" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="30s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.8333;0.8500;1.0000" values="310,385;310,385;500,351;500,351"/>
+    <rect class="la-cell-new" x="-76" y="-13" width="152" height="26" rx="5"/>
+    <text class="font-sans text-label fill-cell-ink" x="-66" y="4.5">Iguana</text>
+    <text class="font-mono text-offset fill-ink-muted anchor-end" x="30" y="4.5">#9980</text>
+    <text class="la-offset anchor-end" x="66" y="4.5">37</text>
+  </g>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">0 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000;0.6333" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">1 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6333;0.6500" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">2 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6667" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">3 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6667;0.6833" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">4 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6833;0.7000" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">5 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7167" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">6 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7167;0.7333" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">7 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7333;0.7500" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">8 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.7667" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">9 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7667;0.7833" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">10 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7833;0.8000" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">11 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000;0.8167" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">12 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8167;0.8333" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">13 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8333;0.8500" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">14 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8500;0.8667" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label fill-ink anchor-middle" x="500" y="462">15 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8667;0.8833" values="0;1;0"/></text>
+  <text data-role="moved" class="font-sans text-label font-semibold fill-amber anchor-middle" x="500" y="462">16 of 20 players moved<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8833" values="0;1"/></text>
+  <rect class="la-canvas" x="32" y="478" width="936" height="36" rx="8"/>
+  <text data-role="caption" class="la-label anchor-middle" x="500" y="501">Each player goes to server hash(player_id) mod 4, and each server ends up with five. Adder hashes to 47, and 47 mod 4 = 3.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="500" y="501">The four newest players sit on four different servers: no sign-up hot spot, but a scan over their ids asks every server.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.5000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="500" y="501">Server db-4 is added, and the rule becomes hash(player_id) mod 5.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label anchor-middle" x="500" y="501">16 of the 20 players move: only those whose hash mod 20 is below 4 stay where they were.<animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></text>
+  <g data-role="legend">
+    <animate attributeName="opacity" dur="30s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/>
+    <rect class="la-cell-new" x="32" y="529" width="26" height="14" rx="3"/>
+    <text class="la-note" x="66" y="540">moved to a new server</text>
+    <rect class="fill-none stroke-emerald stroke-2.5" x="236" y="529" width="26" height="14" rx="3"/>
+    <text class="la-note" x="270" y="540">stayed on its server</text>
+  </g>
+  <text class="la-note anchor-end" x="968" y="540">Each chip shows a tag, a #player_id, and a made-up two-digit hash.</text>
+</svg>
