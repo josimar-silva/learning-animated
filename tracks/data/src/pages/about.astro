@@ -1,0 +1,14 @@
+---
+import { footerProps } from '@learning-animated/site-kit/content';
+import AboutPage from '@learning-animated/site-kit/pages/AboutPage.astro';
+import { getCollection } from 'astro:content';
+
+import { Content } from '../content/about.md';
+import track from '../track.ts';
+
+const props = await footerProps(track, getCollection);
+---
+
+<AboutPage track={track} {...props}>
+  <Content />
+</AboutPage>

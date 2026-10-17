@@ -1,0 +1,11 @@
+---
+import { sectionPaths } from '@learning-animated/site-kit/content';
+import SectionPage from '@learning-animated/site-kit/pages/SectionPage.astro';
+import { getCollection } from 'astro:content';
+
+import track from '../../track.ts';
+
+export const getStaticPaths = () => sectionPaths(track, getCollection);
+---
+
+<SectionPage track={track} {...Astro.props} />

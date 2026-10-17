@@ -1,0 +1,11 @@
+---
+import { homeProps } from '@learning-animated/site-kit/content';
+import HomePage from '@learning-animated/site-kit/pages/HomePage.astro';
+import { getCollection } from 'astro:content';
+
+import track from '../track.ts';
+
+const props = await homeProps(track, getCollection);
+---
+
+<HomePage track={track} {...props} />

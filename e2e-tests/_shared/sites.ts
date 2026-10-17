@@ -6,6 +6,7 @@ export const SITES: readonly Site[] = [
   { id: 'kafka', dir: 'tracks/kafka', port: 4401 },
   { id: 'quarkus', dir: 'tracks/quarkus', port: 4402 },
   { id: 'java', dir: 'tracks/java', port: 4403 },
+  { id: 'data', dir: 'tracks/data', port: 4404 },
 ];
 
 export const TRACKS: readonly Site[] = SITES.filter((site) => site.id !== 'home');
