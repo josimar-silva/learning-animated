@@ -14,6 +14,7 @@ const WORKSPACES = [
   'tracks/kafka',
   'tracks/quarkus',
   'tracks/java',
+  'tracks/data',
   'home',
 ];
 const NESTED = new Set(['packages', 'tracks', 'home']);
@@ -78,7 +79,7 @@ test('every import stays in its workspace or names a declared dependency', () =>
 });
 
 test('no track depends on another track', () => {
-  const offenders = ['kafka', 'quarkus', 'java'].flatMap((id) =>
+  const offenders = ['kafka', 'quarkus', 'java', 'data'].flatMap((id) =>
     [...declared(`tracks/${id}`)]
       .filter(
         (dep) =>

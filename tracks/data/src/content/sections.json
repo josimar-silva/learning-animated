@@ -1,0 +1,20 @@
+[
+  {
+    "id": "indexes",
+    "number": 1,
+    "title": "B-tree indexes",
+    "description": "How a B-tree index finds a key, scans a range of keys, and makes room for a new one."
+  },
+  {
+    "id": "partitioning",
+    "number": 2,
+    "title": "Table partitioning",
+    "description": "How a partitioned table decides where each row goes, which partitions a query reads, and how old data leaves a whole partition at a time."
+  },
+  {
+    "id": "sharding",
+    "number": 3,
+    "title": "Sharding",
+    "description": "How rows spread across servers by key range, by hash, on a consistent-hashing ring, or through virtual buckets, and what each choice costs."
+  }
+]

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Learning Animated</title>
+  <desc id="logo-desc">A play triangle in front of three rows of cells on a dark panel. Each row stands for one of the first three tracks and ends in an amber tail cell.</desc>
+
+  <!-- Panel: reads on both light and dark GitHub themes -->
+  <rect x="24" y="24" width="352" height="352" rx="56" fill="#191426" stroke="#302a4d" stroke-width="2"/>
+
+  <!-- One row of cells for each of the first three tracks. The last cell in each
+       row is the one being written: the cell-new fill ringed in amber. -->
+  <g stroke-width="3">
+    <!-- Kafka -->
+    <rect x="153" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="93"  width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="93"  width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+    <!-- Quarkus -->
+    <rect x="153" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="177" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="177" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+    <!-- Java -->
+    <rect x="153" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="215" y="261" width="46" height="46" rx="10" fill="#2a2246" stroke="#7c6ac4"/>
+    <rect x="277" y="261" width="46" height="46" rx="10" fill="#4a3410" stroke="#f6a723"/>
+  </g>
+
+  <!-- Play triangle: every lesson is animated -->
+  <polygon points="81,180 81,220 115,200" fill="#ece9f7" stroke="#ece9f7" stroke-width="8" stroke-linejoin="round"/>
+</svg>
