@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" data-loop="20s">
+  <title>What a lookup answers</title>
+  <desc>Checkout looks up a PaymentGateway through Instance. Two classes implement it, CardGateway and SandboxGateway, and both are beans marked with @LookupIfProperty on payment.gateway. Started without the property, neither condition holds: no bean is left, isUnsatisfied() is true, and get() throws UnsatisfiedResolutionException. Restarted with card, only CardGateway is left, so isResolvable() is true and get() returns it. Then SandboxGateway loses its condition, and with card both beans are left: isAmbiguous() is true, and get() throws AmbiguousResolutionException.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="504" rx="16"/>
+  <text class="la-title" x="32" y="46">What a lookup answers</text>
+  <text class="la-note" x="32" y="70">What Instance&lt;PaymentGateway&gt; answers depends on how many beans pass their lookup conditions.</text>
+
+  <g data-role="checkout">
+    <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="92" width="340" height="96" rx="10"/>
+    <g class="font-mono">
+      <text class="text-label font-semibold fill-ink" x="40" y="116">CheckoutService</text>
+      <text data-role="injection" class="text-offset fill-ink" x="40" y="142">@Inject Instance&lt;PaymentGateway&gt; gateway;</text>
+      <text class="text-offset fill-ink-muted" x="40" y="166">gateway.get().charge(order);</text>
+    </g>
+  </g>
+  <g data-role="call" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250;0.4750;0.6500;0.8000" values="0;1;0;1;0;1"/>
+    <rect class="fill-none stroke-amber stroke-1.5" x="34" y="153" width="216" height="18" rx="4"/>
+  </g>
+  <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="204" width="340" height="92" rx="10"/>
+  <g data-role="start-run">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500;0.3250;0.3750;0.6500;0.7000" values="1;0;1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="24" y="204" width="340" height="92" rx="10"/>
+  </g>
+  <text class="font-sans text-label font-semibold fill-ink" x="40" y="228">start</text>
+  <g class="font-mono text-offset">
+    <text class="fill-ink-muted" x="40" y="248">java -jar quarkus-run.jar</text>
+    <text class="fill-ink-muted" x="40" y="278">payment.gateway</text>
+    <rect class="la-cell-tail" x="160" y="262" width="96" height="24" rx="4"/>
+    <g data-role="start-value" data-value="unset">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="1;0"/>
+      <text class="font-sans fill-ink-muted" x="268" y="278">not set</text>
+    </g>
+    <g data-role="start-value" data-value="card" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/>
+      <rect class="la-cell" x="160" y="262" width="96" height="24" rx="4"/>
+      <text class="fill-sky anchor-middle" x="208" y="278">card</text>
+    </g>
+  </g>
+  <line class="la-arrow" x1="364" y1="140" x2="388" y2="140"/>
+  <polygon class="fill-flow" points="396,140 388,136 388,144"/>
+  <line class="la-arrow" x1="364" y1="274" x2="388" y2="274"/>
+  <polygon class="fill-flow" points="396,274 388,270 388,278"/>
+
+  <rect class="la-card" x="396" y="92" width="540" height="204" rx="10"/>
+  <text class="font-sans text-label font-semibold fill-ink" x="412" y="116">beans in the CDI container</text>
+  <text class="font-sans text-offset fill-ink-muted" x="412" y="134">Both classes are beans in every setup. The lookup skips any whose condition fails.</text>
+  <g class="font-mono text-offset">
+    <g data-role="class" data-adapter="card">
+      <rect class="fill-stage stroke-grid stroke-1.5" x="412" y="146" width="246" height="104" rx="8"/>
+      <text class="fill-ink-muted" x="422" y="166">@ApplicationScoped</text>
+      <g data-role="condition" data-adapter="card">
+        <text class="fill-ink" x="422" y="182">@LookupIfProperty(</text>
+        <text class="fill-ink" x="436" y="198">name = &quot;payment.gateway&quot;,</text>
+        <text class="fill-ink" x="436" y="214">stringValue = &quot;card&quot;)</text>
+      </g>
+      <text class="fill-ink" x="422" y="236">class <tspan class="font-semibold fill-sky">CardGateway</tspan></text>
+    </g>
+    <g data-role="class" data-adapter="sandbox">
+      <rect class="fill-stage stroke-grid stroke-1.5" x="674" y="146" width="246" height="104" rx="8"/>
+      <text class="fill-ink-muted" x="684" y="166">@ApplicationScoped</text>
+      <g data-role="condition" data-adapter="sandbox">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="1;0"/>
+        <text class="fill-ink" x="684" y="182">@LookupIfProperty(</text>
+        <text class="fill-ink" x="698" y="198">name = &quot;payment.gateway&quot;,</text>
+        <text class="fill-ink" x="698" y="214">stringValue = &quot;sandbox&quot;)</text>
+      </g>
+      <g data-role="no-condition" data-adapter="sandbox" opacity="0">
+        <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/>
+        <rect class="fill-none stroke-amber stroke-1.5" x="684" y="170" width="226" height="50" rx="6" stroke-dasharray="5 4"/>
+        <text class="font-sans font-semibold fill-amber anchor-middle" x="797" y="199">no @LookupIfProperty</text>
+      </g>
+      <text class="fill-ink" x="684" y="236">class <tspan class="font-semibold fill-pink">SandboxGateway</tspan></text>
+    </g>
+  </g>
+  <g data-role="check" data-adapter="card" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500;0.1500;0.3750;0.4750;0.7000;0.8000" values="0;1;0;1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-1.5" x="418" y="170" width="234" height="50" rx="6"/>
+  </g>
+  <g data-role="check" data-adapter="sandbox" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500;0.1500;0.3750;0.4750" values="0;1;0;1;0"/>
+    <rect class="fill-none stroke-amber stroke-1.5" x="680" y="170" width="234" height="50" rx="6"/>
+  </g>
+  <g data-role="kept" data-adapter="card" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.6500;0.8000" values="0;1;0;1"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="408" y="142" width="254" height="112" rx="10"/>
+    <text class="font-sans text-offset font-semibold fill-amber anchor-middle" x="535" y="274">kept: condition holds</text>
+  </g>
+  <g data-role="skipped" data-adapter="card" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250" values="0;1;0"/>
+    <text class="font-sans text-offset fill-ink-muted anchor-middle" x="535" y="274">skipped: condition fails</text>
+  </g>
+  <g data-role="kept" data-adapter="sandbox" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/>
+    <rect class="fill-none stroke-amber stroke-2.5" x="670" y="142" width="254" height="112" rx="10"/>
+    <text class="font-sans text-offset font-semibold fill-amber anchor-middle" x="797" y="274">kept: no condition</text>
+  </g>
+  <g data-role="skipped" data-adapter="sandbox" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250;0.4750;0.6500" values="0;1;0;1;0"/>
+    <text class="font-sans text-offset fill-ink-muted anchor-middle" x="797" y="274">skipped: condition fails</text>
+  </g>
+
+  <g data-role="idle" data-outcome="unsatisfied">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250" values="1;0;1"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink-muted" x="172" y="336">no bean left</text>
+      <text class="text-offset fill-ink-muted" x="172" y="358"><tspan class="font-mono">isUnsatisfied()</tspan> is true</text>
+      <text class="text-offset fill-ink-muted" x="172" y="380"><tspan class="font-mono">get()</tspan> throws</text>
+      <text class="text-offset font-mono fill-ink-muted" x="172" y="400">UnsatisfiedResolutionException</text>
+    </g>
+  </g>
+  <g data-role="answer" data-outcome="unsatisfied" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250" values="0;1;0"/>
+    <rect class="fill-stage stroke-amber stroke-2.5" x="24" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink" x="172" y="336">no bean left</text>
+      <text class="text-offset fill-ink" x="172" y="358"><tspan class="font-mono">isUnsatisfied()</tspan> is true</text>
+      <text class="text-offset fill-ink" x="172" y="380"><tspan class="font-mono">get()</tspan> throws</text>
+      <text class="text-offset font-mono font-semibold fill-red" x="172" y="400">UnsatisfiedResolutionException</text>
+    </g>
+  </g>
+  <g data-role="idle" data-outcome="resolvable">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.6500" values="1;0;1"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="332" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink-muted" x="480" y="336">one bean left</text>
+      <text class="text-offset fill-ink-muted" x="480" y="358"><tspan class="font-mono">isResolvable()</tspan> is true</text>
+      <text class="text-offset fill-ink-muted" x="480" y="380"><tspan class="font-mono">get()</tspan> returns</text>
+      <text class="text-offset font-sans fill-ink-muted" x="480" y="400">the remaining bean</text>
+    </g>
+  </g>
+  <g data-role="answer" data-outcome="resolvable" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.6500" values="0;1;0"/>
+    <rect class="fill-stage stroke-amber stroke-2.5" x="332" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink" x="480" y="336">one bean left</text>
+      <text class="text-offset fill-ink" x="480" y="358"><tspan class="font-mono">isResolvable()</tspan> is true</text>
+      <text class="text-offset fill-ink" x="480" y="380"><tspan class="font-mono">get()</tspan> returns</text>
+      <text class="text-offset font-sans font-semibold fill-emerald" x="480" y="400">the remaining bean</text>
+    </g>
+  </g>
+  <g data-role="idle" data-outcome="ambiguous">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="1;0"/>
+    <rect class="fill-stage stroke-grid stroke-1.5" x="640" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink-muted" x="788" y="336">two beans left</text>
+      <text class="text-offset fill-ink-muted" x="788" y="358"><tspan class="font-mono">isAmbiguous()</tspan> is true</text>
+      <text class="text-offset fill-ink-muted" x="788" y="380"><tspan class="font-mono">get()</tspan> throws</text>
+      <text class="text-offset font-mono fill-ink-muted" x="788" y="400">AmbiguousResolutionException</text>
+    </g>
+  </g>
+  <g data-role="answer" data-outcome="ambiguous" opacity="0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/>
+    <rect class="fill-stage stroke-amber stroke-2.5" x="640" y="312" width="296" height="100" rx="10"/>
+    <g class="font-sans anchor-middle">
+      <text class="text-label font-semibold fill-ink" x="788" y="336">two beans left</text>
+      <text class="text-offset fill-ink" x="788" y="358"><tspan class="font-mono">isAmbiguous()</tspan> is true</text>
+      <text class="text-offset fill-ink" x="788" y="380"><tspan class="font-mono">get()</tspan> throws</text>
+      <text class="text-offset font-mono font-semibold fill-red" x="788" y="400">AmbiguousResolutionException</text>
+    </g>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="24" y="426" width="912" height="40" rx="8"/>
+  <g class="font-sans text-label fill-ink anchor-middle">
+    <text data-role="caption" x="480" y="451">The application starts without payment.gateway, and the lookup checks each adapter's condition against it.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500" values="1;0"/></text>
+    <text data-role="caption" x="480" y="451" opacity="0">Neither condition holds, so no bean is left: isUnsatisfied() is true and get() throws UnsatisfiedResolutionException.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500;0.3250" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="451" opacity="0">Restarted with payment.gateway=card, the lookup checks both conditions again.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4750" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="451" opacity="0">Only CardGateway's condition holds, so one bean is left: isResolvable() is true and get() returns CardGateway.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.6500" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="451" opacity="0">Next, SandboxGateway loses its @LookupIfProperty, so no condition can skip it. The new build starts with card.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.8000" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="451" opacity="0">CardGateway passes too, so two beans are left: isAmbiguous() is true and get() throws AmbiguousResolutionException.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  </g>
+
+  <text class="font-sans text-offset fill-ink-muted" x="32" y="494">Sources: quarkus.io/guides/cdi-reference (choosing beans for programmatic lookup) and the Jakarta CDI 4.1 spec (the Instance interface).</text>
+</svg>
