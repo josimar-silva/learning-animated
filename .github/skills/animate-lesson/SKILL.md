@@ -9,7 +9,7 @@ A lesson is one folder, `tracks/<track>/src/content/animations/<section>/<id>/`,
 
 ## Rules
 
-- Recast work-derived lessons in the track's domain: concert ticketing for Quarkus (checkout holds seats in the database, charges a payment provider, then emails the tickets) and the boarding-pass decoder for Java string parsing. Use no employer, product, service, topic, class, payload, or partner names. Rewrite any code the SVG shows instead of copying it.
+- Recast work-derived lessons in the track's domain: concert ticketing for Quarkus (checkout holds seats in the database, charges a payment provider, then emails the tickets), the boarding-pass decoder for Java string parsing, and an online multiplayer game for Data (players, their matches, and the database servers that hold them). Use no employer, product, service, topic, class, payload, or partner names. Rewrite any code the SVG shows instead of copying it.
 - Style only with LA-STYLE utilities and `la-*` components. `packages/design/signature.md` lists them, with the role recipes. Use no other CSS, no `style` attributes, no raw colors, and no `fill-opacity` or `stroke-opacity`.
 - Animate with SMIL only. When the lesson has steps, give the root `data-loop="<seconds>s"`, equal to the story's `dur`.
 - Give the root `role="img"`, a `<title>`, and a `<desc>` that says in plain sentences what the animation shows.
