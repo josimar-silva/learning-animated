@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## Project
 
-`learning-animated` hosts animated learning sites, one per track, plus a home page at learning-animated.com. The first tracks are Kafka (a companion to the book _Kafka: The Definitive Guide_), Quarkus, and Java, and more can follow. Every lesson is a looping SMIL SVG, and that SVG is also the canonical file for embeds.
+`learning-animated` hosts animated learning sites, one per track, plus a home page at learning-animated.com. The first tracks are Kafka (a companion to the book _Kafka: The Definitive Guide_), Quarkus, Java, and Data (database indexes, partitioning, and sharding), and more can follow. Every lesson is a looping SMIL SVG, and that SVG is also the canonical file for embeds.
 
 ## Layout
 
@@ -60,7 +60,7 @@ Before you create anything under `tracks/*/src/content/animations/`, load the an
     just format                  # apply lint fixes and formatting
     just style                   # re-embed the LA-STYLE block into every SVG
     just style-check             # fail if an SVG's LA-STYLE block drifted
-    just dev <site>              # dev server for home, kafka, quarkus, or java
+    just dev <site>              # dev server for home, kafka, quarkus, java, or data
     just build <site>            # build one site into its dist/
     just build-all               # build every site
     just preview <site>          # serve a built site with its production headers

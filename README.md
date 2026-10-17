@@ -69,7 +69,7 @@
 
 ## 📝 Introduction
 
-Learning Animated is a family of animated learning sites, one per track, plus a home page at learning-animated.com. The first tracks are Kafka (an unofficial companion to the book _Kafka: The Definitive Guide_), Quarkus, and Java, and more can follow.
+Learning Animated is a family of animated learning sites, one per track, plus a home page at learning-animated.com. The first tracks are Kafka (an unofficial companion to the book _Kafka: The Definitive Guide_), Quarkus, Java, and Data (database indexes, partitioning, and sharding), and more can follow.
 
 Every lesson is a looping SVG animated with SMIL, and blog posts, talks, and pull requests embed that same file.
 
@@ -83,6 +83,7 @@ Every track gets its own site on a subdomain of learning-animated.com, and the h
 | Kafka   | kafka.learning-animated.com   | Live at [kafka-animated.josimar-silva.com](https://kafka-animated.josimar-silva.com/) until the cutover |
 | Quarkus | quarkus.learning-animated.com | Not launched                                                                                            |
 | Java    | java.learning-animated.com    | Not launched                                                                                            |
+| Data    | data.learning-animated.com    | Not launched                                                                                            |
 
 ## 🏁 Getting Started
 
@@ -92,7 +93,7 @@ Requires [Node.js](https://nodejs.org/) 24+ and [just](https://just.systems/).
 just install    # install dependencies
 just test       # run every test suite
 just check      # lint, check formatting, and type-check
-just dev kafka  # run one site's dev server: home, kafka, quarkus, or java
+just dev kafka  # run one site's dev server: home, kafka, quarkus, java, or data
 just build-all  # build every site into its own dist/
 ```
 
@@ -117,7 +118,7 @@ This project uses `just` as its command runner. The npm scripts in `package.json
 - `just style-check`: Fails if the `LA-STYLE` block in any of those SVGs has drifted from `theme.css`.
 - `just gen <file>`: Runs an `<id>.gen.ts` generator and writes the SVG it describes beside it.
 - `just port-kafka <chapter>`: Ports one chapter from the original Kafka repository (its path in `KAFKA`) into `tracks/kafka`, restyling each SVG onto `LA-STYLE` and writing its `index.md`. Removed after the Kafka cutover.
-- `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, or `java`.
+- `just dev <site>`: Runs one site's dev server, where `<site>` is `home`, `kafka`, `quarkus`, `java`, or `data`.
 - `just build <site>`: Builds one site into its `dist/` folder.
 - `just preview <site>`: Serves a built site with its production headers.
 - `just build-all`: Builds every site.
