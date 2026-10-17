@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" data-loop="20s">
+  <title>Consumer and producer interceptors: consumer</title>
+  <desc>Offsets 44 and 45 of ticket-orders pass through an IncomingInterceptor on their way to charge(order). For offset 44, afterMessageReceive runs first, then charge() charges order 42 and returns. The connector acks the record, and only then does onMessageAck run. For offset 45, afterMessageReceive runs first again, then charge() throws because CardGateway answers 503. The connector nacks the record and writes it to ticket-orders-dlq, and then onMessageNack runs with the exception. An application log lists each call in the order it ran.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="560"/>
+  <text class="la-title" x="28" y="40">Consumer: an IncomingInterceptor around charge(order)</text>
+  <text class="la-note" x="28" y="62">One IncomingInterceptor wraps every message on the ticket-orders channel, which uses failure-strategy=dead-letter-queue.</text>
+
+  <g data-role="connector">
+    <rect class="fill-surface stroke-grid stroke-1.5" x="24" y="82" width="216" height="184" rx="10"/>
+    <text class="font-sans text-label font-semibold fill-ink" x="40" y="106">Kafka connector</text>
+    <text class="font-mono text-offset fill-ink-muted" x="40" y="124">ticket-orders, partition 0</text>
+    <text class="font-mono text-offset fill-ink-muted" x="40" y="146">X-Correlation-Id</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-middle" x="196" y="146">offset</text>
+    <text class="font-mono text-offset fill-ink" x="40" y="174">9b2e</text>
+    <rect class="la-cell" x="176" y="156" width="40" height="28" rx="5"/>
+    <text class="la-offset anchor-middle" x="196" y="174">44</text>
+    <text class="font-mono text-offset fill-ink" x="40" y="214">5d07</text>
+    <rect class="la-cell" x="176" y="196" width="40" height="28" rx="5"/>
+    <text class="la-offset anchor-middle" x="196" y="214">45</text>
+    <text class="font-sans text-offset fill-ink-muted" x="40" y="242">dead letters go to</text>
+    <text class="font-mono text-offset fill-ink-muted" x="40" y="258">ticket-orders-dlq</text>
+  </g>
+  <text data-role="status" data-offset="44" class="font-sans text-offset font-semibold fill-emerald anchor-middle" x="124" y="174" opacity="0">acked<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.9750" values="0;1;0"/></text>
+  <text data-role="status" data-offset="45" class="font-sans text-offset font-semibold fill-red anchor-middle" x="124" y="214" opacity="0">DLQ<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7500;0.9750" values="0;1;0"/></text>
+
+  <g data-role="interceptor">
+    <rect class="fill-surface stroke-violet stroke-1.5" x="272" y="82" width="400" height="184" rx="10"/>
+    <text class="font-mono text-label font-semibold fill-violet" x="288" y="106">IncomingInterceptor</text>
+    <text class="font-mono text-offset fill-ink-muted" x="288" y="124">@Identifier("ticket-orders")</text>
+    <g data-role="row" data-callback="afterMessageReceive">
+      <rect class="fill-stage stroke-grid" x="288" y="184" width="200" height="22" rx="5"/>
+      <text class="font-mono text-offset fill-ink" x="300" y="199">afterMessageReceive</text>
+    </g>
+    <g data-role="row" data-callback="onMessageAck">
+      <rect class="fill-stage stroke-grid" x="288" y="210" width="200" height="22" rx="5"/>
+      <text class="font-mono text-offset fill-ink" x="300" y="225">onMessageAck</text>
+    </g>
+    <g data-role="row" data-callback="onMessageNack">
+      <rect class="fill-stage stroke-grid" x="288" y="236" width="200" height="22" rx="5"/>
+      <text class="font-mono text-offset fill-ink" x="300" y="251">onMessageNack</text>
+    </g>
+  </g>
+  <rect data-role="callback" data-callback="afterMessageReceive" data-offset="44" class="fill-none stroke-amber stroke-2.5" x="288" y="184" width="200" height="22" rx="5" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2000" values="0;1;0"/></rect>
+  <rect data-role="callback" data-callback="onMessageAck" data-offset="44" class="fill-none stroke-amber stroke-2.5" x="288" y="210" width="200" height="22" rx="5" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.4750" values="0;1;0"/></rect>
+  <rect data-role="callback" data-callback="afterMessageReceive" data-offset="45" class="fill-none stroke-amber stroke-2.5" x="288" y="184" width="200" height="22" rx="5" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6250" values="0;1;0"/></rect>
+  <rect data-role="callback" data-callback="onMessageNack" data-offset="45" class="fill-none stroke-amber stroke-2.5" x="288" y="236" width="200" height="22" rx="5" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.8750" values="0;1;0"/></rect>
+  <text data-role="failure" class="font-sans text-offset font-semibold fill-red anchor-middle" x="578" y="251" opacity="0">CardGateway 503<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.9750" values="0;1;0"/></text>
+
+  <g data-role="consumer-method">
+    <rect class="fill-surface stroke-sky stroke-1.5" x="704" y="82" width="232" height="184" rx="10"/>
+    <text class="font-mono text-label font-semibold fill-sky" x="720" y="106">charge(order)</text>
+    <text class="font-mono text-offset fill-ink-muted" x="720" y="124">@Incoming("ticket-orders")</text>
+    <rect class="fill-stage stroke-grid" x="720" y="136" width="200" height="114" rx="8"/>
+  </g>
+  <rect data-role="method-run" data-offset="44" class="fill-none stroke-amber stroke-2.5" x="720" y="136" width="200" height="114" rx="8" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3250" values="0;1;0"/></rect>
+  <rect data-role="method-run" data-offset="45" class="fill-none stroke-amber stroke-2.5" x="720" y="136" width="200" height="114" rx="8" opacity="0"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.7000" values="0;1;0"/></rect>
+  <g class="font-sans text-label anchor-middle">
+    <text class="fill-ink-muted" x="820" y="204">waiting for a record<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.4750;0.6500;0.9750" values="1;0;1;0;1"/></text>
+    <text class="fill-ink" x="820" y="204" opacity="0">charging order 42<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3250" values="0;1;0"/></text>
+    <text data-role="outcome" data-offset="44" class="font-semibold fill-emerald" x="820" y="204" opacity="0">returns<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4750" values="0;1;0"/></text>
+    <text class="fill-ink" x="820" y="204" opacity="0">charging order 43<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.7000" values="0;1;0"/></text>
+    <g data-role="outcome" data-offset="45" class="fill-red" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.9750" values="0;1;0"/>
+      <text x="820" y="196">CardGateway 503</text>
+      <text class="font-semibold" x="820" y="216">throws</text>
+    </g>
+  </g>
+
+  <line class="la-arrow" x1="240" y1="150" x2="264" y2="150"/>
+  <polygon class="fill-flow" points="272,150 264,146 264,154"/>
+  <line class="la-arrow" x1="672" y1="150" x2="696" y2="150"/>
+  <polygon class="fill-flow" points="704,150 696,146 696,154"/>
+  <path class="la-arrow" d="M 820 266 V 282 H 132 V 274" stroke-dasharray="4 4"/>
+  <polygon class="fill-flow" points="132,266 128,274 136,274"/>
+
+  <rect class="la-canvas" x="24" y="300" width="912" height="174" rx="10"/>
+  <text class="la-note" x="40" y="322">application log</text>
+  <g class="font-mono text-offset">
+    <g data-role="log-entry" data-call="afterMessageReceive" data-offset="44" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.9750" values="0;1;0"/>
+      <text class="fill-violet" x="40" y="346">IncomingInterceptor</text>
+      <text class="fill-ink" x="208" y="346">afterMessageReceive</text>
+      <text class="fill-ink-muted" x="376" y="346">offset 44, X-Correlation-Id 9b2e</text>
+    </g>
+    <g data-role="log-entry" data-call="charge" data-offset="44" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.9750" values="0;1;0"/>
+      <text class="fill-sky" x="40" y="366">charge(order)</text>
+      <text class="fill-ink" x="208" y="366">charged order 42</text>
+    </g>
+    <g data-role="log-entry" data-call="onMessageAck" data-offset="44" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.9750" values="0;1;0"/>
+      <text class="fill-violet" x="40" y="386">IncomingInterceptor</text>
+      <text class="fill-ink" x="208" y="386">onMessageAck</text>
+      <text class="fill-ink-muted" x="376" y="386">offset 44</text>
+    </g>
+    <g data-role="log-entry" data-call="afterMessageReceive" data-offset="45" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.9750" values="0;1;0"/>
+      <text class="fill-violet" x="40" y="406">IncomingInterceptor</text>
+      <text class="fill-ink" x="208" y="406">afterMessageReceive</text>
+      <text class="fill-ink-muted" x="376" y="406">offset 45, X-Correlation-Id 5d07</text>
+    </g>
+    <g data-role="log-entry" data-call="charge" data-offset="45" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.9750" values="0;1;0"/>
+      <text class="fill-sky" x="40" y="426">charge(order)</text>
+      <text class="fill-red" x="208" y="426">CardGateway 503, throws</text>
+    </g>
+    <g data-role="log-entry" data-call="onMessageNack" data-offset="45" opacity="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7750;0.9750" values="0;1;0"/>
+      <text class="fill-violet" x="40" y="446">IncomingInterceptor</text>
+      <text class="fill-ink" x="208" y="446">onMessageNack</text>
+      <text class="fill-ink-muted" x="376" y="446">offset 45, CardGateway 503</text>
+    </g>
+  </g>
+
+  <rect class="la-canvas" x="24" y="484" width="912" height="36" rx="8"/>
+  <g class="font-sans text-label fill-ink anchor-middle">
+    <text data-role="caption" x="480" y="507">The connector polls offset 44 from ticket-orders. The record carries X-Correlation-Id 9b2e.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">afterMessageReceive gets the message before charge() does. This one logs the offset and the correlation id.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000;0.2250" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">charge() receives the message that afterMessageReceive returned, and charges order 42.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3250" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">charge() returns, so the message is acked. onMessageAck runs once the connector has handled the ack.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.4750" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">Offset 45 takes the same path: afterMessageReceive first, then charge().<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.7000" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">CardGateway answers 503 and charge() throws. 45 is nacked and goes to ticket-orders-dlq, then onMessageNack runs.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.8750" values="0;1;0"/></text>
+    <text data-role="caption" x="480" y="507" opacity="0">Each record gets afterMessageReceive before charge(), then either onMessageAck or onMessageNack.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8750" values="0;1"/></text>
+  </g>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="544">Sources: smallrye.io/smallrye-reactive-messaging (intercepting incoming and outgoing messages, Kafka failure management).</text>
+
+  <g data-role="record" data-offset="44" transform="translate(196 170)">
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0500;0.0625;0.1000;0.2000;0.2250;1.0000" values="196,170;196,170;256,150;472,150;472,150;820,150;820,150"/>
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="1;0"/>
+    <rect class="la-cell-new" x="-16" y="-11" width="32" height="22" rx="4"/>
+    <text class="la-offset anchor-middle" x="0" y="4">44</text>
+  </g>
+  <g data-role="record" data-offset="45" transform="translate(196 210)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5000;0.5125;0.5500;0.6250;0.6500;1.0000" values="196,210;196,210;256,150;472,150;472,150;820,150;820,150"/>
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.7000" values="0;1;0"/>
+    <rect class="la-cell-new" x="-16" y="-11" width="32" height="22" rx="4"/>
+    <text class="la-offset anchor-middle" x="0" y="4">45</text>
+  </g>
+  <g data-role="ack" data-offset="44" transform="translate(820 282)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3250;0.3750;1.0000" values="820,282;820,282;132,282;132,282"/>
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3750" values="0;1;0"/>
+    <rect class="fill-emerald" x="-22" y="-9" width="44" height="18" rx="9"/>
+    <text class="font-sans text-offset font-semibold fill-surface anchor-middle" x="0" y="4">ack</text>
+  </g>
+  <g data-role="nack" data-offset="45" transform="translate(820 282)" opacity="0">
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7000;0.7500;1.0000" values="820,282;820,282;132,282;132,282"/>
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7000;0.7500" values="0;1;0"/>
+    <rect class="fill-red" x="-24" y="-9" width="48" height="18" rx="9"/>
+    <text class="font-sans text-offset font-semibold fill-surface anchor-middle" x="0" y="4">nack</text>
+  </g>
+</svg>
