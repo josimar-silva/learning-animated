@@ -2,13 +2,20 @@
 
 Hey there!!! We are happy that you would like to contribute to make this project great!
 
-The section below has everything you need to start contributing.
+The sections below have everything you need to start contributing.
 
 All contributions to this project are released under its licenses: lessons and artwork under [CC BY-NC 4.0](LICENSE-CC-BY-NC), and everything else under the [PolyForm Noncommercial License 1.0.0](LICENSE).
 
 This project is released with a Contributor [Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 Happy coding :-).
+
+### Finding your way around
+
+- [Architecture](docs/architecture.md) explains how the packages, the tracks, and the sites fit together.
+- [Testing](docs/testing.md) covers the test suites, the checks CI runs, and the browser setup for the end-to-end suite.
+- The [aesthetic signature](packages/design/signature.md) sets the look every animation shares.
+- The [animate-lesson skill](.github/skills/animate-lesson/SKILL.md) walks through adding a lesson.
 
 ### Submitting a pull request
 

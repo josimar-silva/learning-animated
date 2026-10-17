@@ -25,3 +25,5 @@ These are the general steps to release a new version:
 Only releases deploy: pull requests and pushes to `main` never do. To deploy a
 release again, run the Deploy workflow by hand on its tag. A manual run on a ref
 whose version is still a SNAPSHOT skips the deploy and leaves a notice saying why.
+Until the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets are set,
+Deploy builds every site and skips the deploy with a warning.
