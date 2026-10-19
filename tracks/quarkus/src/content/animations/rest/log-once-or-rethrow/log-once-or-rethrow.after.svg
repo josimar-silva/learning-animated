@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" data-loop="12s">
+  <title>Log once or rethrow: after</title>
+  <desc>The same checkout request meets the same database timeout. The repository wraps the exception in SeatHoldFailed with the seats it was holding, the service wraps that in CheckoutFailed with the order, and the endpoint lets it pass. Only the exception mapper logs: one entry with the whole cause chain and one stack trace, then a 503 to the client.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+
+  <rect class="la-canvas" x="8" y="8" width="944" height="544" rx="16"/>
+  <text class="la-title" x="32" y="48">After: rethrow with context, log once in the mapper</text>
+  <text class="la-note" x="32" y="72">POST /checkout holds two seats, and the seat query times out. Count the stack traces.</text>
+
+  <g class="text-offset anchor-middle">
+    <g data-role="client">
+      <rect class="fill-surface stroke-slate stroke-1.5" x="32" y="92" width="112" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="88" y="113">client</text>
+      <text class="font-mono fill-ink" x="88" y="132">POST /checkout</text>
+    </g>
+    <g data-role="layer" data-layer="mapper">
+      <rect class="la-card" x="160" y="92" width="150" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="235" y="113">exception mapper</text>
+      <text class="font-mono fill-ink" x="235" y="132">ExceptionMappers</text>
+    </g>
+    <g data-role="layer" data-layer="endpoint">
+      <rect class="la-card" x="326" y="92" width="150" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="401" y="113">endpoint</text>
+      <text class="font-mono fill-ink" x="401" y="132">CheckoutResource</text>
+    </g>
+    <g data-role="layer" data-layer="service">
+      <rect class="la-card" x="492" y="92" width="150" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="567" y="113">service</text>
+      <text class="font-mono fill-ink" x="567" y="132">CheckoutService</text>
+    </g>
+    <g data-role="layer" data-layer="repository">
+      <rect class="la-card" x="658" y="92" width="150" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="733" y="113">repository</text>
+      <text class="font-mono fill-ink" x="733" y="132">SeatRepository</text>
+    </g>
+    <g data-role="database">
+      <rect class="la-cell" x="824" y="92" width="96" height="52" rx="8"/>
+      <text class="font-sans fill-ink-muted" x="872" y="113">database</text>
+      <text class="font-mono fill-ink" x="872" y="132">seats</text>
+    </g>
+  </g>
+
+  <path class="fill-none stroke-grid stroke-1.5" d="M 88 166 H 872" stroke-dasharray="2 6" stroke-linecap="round"/>
+
+  <g data-role="request" transform="translate(88 166)">
+    <animateTransform attributeName="transform" type="translate" dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.125;1" values="88,166;872,166;872,166"/>
+    <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.125" values="1;0"/>
+    <circle class="la-flow-dot" r="6"/>
+  </g>
+
+  <g class="font-sans text-offset anchor-middle">
+    <g data-role="failure" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.125;0.9583" values="0;1;0"/>
+      <rect class="fill-none stroke-red stroke-2.5" x="824" y="92" width="96" height="52" rx="8"/>
+      <text class="fill-red" x="872" y="198">times out</text>
+    </g>
+    <g data-role="handling" data-layer="repository" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1667;0.9583" values="0;1;0"/>
+      <text class="fill-emerald" x="733" y="198">+ seats A12, A13</text>
+    </g>
+    <g data-role="handling" data-layer="service" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25;0.9583" values="0;1;0"/>
+      <text class="fill-emerald" x="567" y="198">+ order 42</text>
+    </g>
+    <g data-role="handling" data-layer="endpoint" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.3333;0.9583" values="0;1;0"/>
+      <text class="fill-ink-muted" x="401" y="198">no catch</text>
+    </g>
+    <g data-role="handling" data-layer="mapper" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4167;0.9583" values="0;1;0"/>
+      <text class="fill-emerald" x="235" y="198">logs once, 503</text>
+    </g>
+    <g data-role="response" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4583;0.9583" values="0;1;0"/>
+      <text class="fill-ink" x="88" y="198">gets 503</text>
+    </g>
+  </g>
+
+  <g data-role="exception" opacity="0" transform="translate(872 166)">
+    <animateTransform attributeName="transform" type="translate" dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.125;0.1667;0.2083;0.25;0.2917;0.3333;0.375;0.4167;1" values="872,166;872,166;733,166;733,166;567,166;567,166;401,166;401,166;235,166;235,166"/>
+    <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.125;0.4167" values="0;1;0"/>
+    <circle class="fill-red" r="7"/>
+    <g class="font-mono text-offset fill-red anchor-end halo">
+      <text data-role="exception-name" x="-14" y="4">QueryTimeoutException<animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1667" values="1;0"/></text>
+      <text data-role="exception-name" x="-14" y="4" opacity="0">SeatHoldFailed<animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.1667;0.25" values="0;1;0"/></text>
+      <text data-role="exception-name" x="-14" y="4" opacity="0">CheckoutFailed<animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.25" values="0;1"/></text>
+    </g>
+  </g>
+
+  <g data-role="reply" opacity="0" transform="translate(235 166)">
+    <animateTransform attributeName="transform" type="translate" dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.4167;0.4583;1" values="235,166;235,166;88,166;88,166"/>
+    <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4167;0.4583" values="0;1;0"/>
+    <circle class="fill-flow-strong" r="6"/>
+  </g>
+
+  <rect class="fill-stage stroke-grid stroke-1.5" x="32" y="224" width="888" height="312" rx="10"/>
+  <text class="la-note" x="48" y="250">application log</text>
+  <path class="fill-none stroke-grid stroke-1.5" d="M 704 236 V 524"/>
+
+  <g class="font-mono text-offset">
+    <g data-role="log-entry" data-layer="mapper" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4167;0.9583" values="0;1;0"/>
+      <text class="font-bold fill-red" x="48" y="282">ERROR</text>
+      <text class="fill-ink" x="100" y="282">ExceptionMappers</text>
+      <text class="fill-ink-muted" x="236" y="282">checkout failed, sent 503</text>
+      <text class="fill-ink-muted" x="100" y="300">CheckoutFailed: order 42</text>
+      <text class="fill-ink-muted" x="100" y="318">Caused by: SeatHoldFailed: seats A12, A13</text>
+      <text class="fill-ink-muted" x="100" y="336">Caused by: QueryTimeoutException: query timed out</text>
+      <g data-role="stack-trace" class="fill-slate">
+        <rect x="100" y="346" width="300" height="3" rx="1.5"/>
+        <rect x="100" y="353" width="262" height="3" rx="1.5"/>
+        <rect x="100" y="360" width="318" height="3" rx="1.5"/>
+        <rect x="100" y="367" width="226" height="3" rx="1.5"/>
+      </g>
+    </g>
+  </g>
+
+  <text class="la-note anchor-middle" x="812" y="276">stack traces in the log</text>
+  <g class="font-mono font-bold anchor-middle" font-size="72">
+    <g data-role="count" data-count="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4167;0.9583" values="1;0;1"/>
+      <text class="fill-ink-muted" x="812" y="366">0</text>
+    </g>
+    <g data-role="count" data-count="1" opacity="0">
+      <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.4167;0.9583" values="0;1;0"/>
+      <text class="fill-emerald" x="812" y="366">1</text>
+    </g>
+  </g>
+  <g data-role="verdict" class="font-sans text-label anchor-middle" opacity="0">
+    <animate attributeName="opacity" dur="12s" repeatCount="indefinite" calcMode="discrete" keyTimes="0;0.5;0.9583" values="0;1;0"/>
+    <text class="fill-ink" x="812" y="414">one failure,</text>
+    <text class="font-semibold fill-emerald" x="812" y="434">logged once</text>
+  </g>
+</svg>
