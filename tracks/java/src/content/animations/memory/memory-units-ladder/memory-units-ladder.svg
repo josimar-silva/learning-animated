@@ -1,0 +1,308 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 528" role="img" data-loop="20s">
+  <title>The 1024 ladder of memory units</title>
+  <desc>Two ladders of memory units stand on one byte. First the binary rungs light up from the bottom, KiB, MiB, GiB, and TiB, each 1024 times the rung below, and each shows its power of two and its exact byte count. Next the decimal rungs appear beside them, kB, MB, GB, and TB, each 1000 times the rung below. Then a bar beside each pair grows to show how much more the binary unit holds: 2.4% at kilo, 4.9% at mega, 7.4% at giga, and 10.0% at tera. Last, the two tera rungs light up together, because a 1 TB disk holds only about 0.91 TiB.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <rect class="fill-stage" width="960" height="528"/>
+  <text class="la-title" x="28" y="40">The 1024 ladder of memory units</text>
+  <text class="la-note" x="28" y="64">Binary units climb by 1024 and decimal units by 1000, so the binary unit pulls further ahead at every rung.</text>
+  <rect class="la-canvas stroke-1.5" x="24" y="84" width="912" height="342" rx="12"/>
+  <text class="la-label font-semibold" x="40" y="108">two ladders from one byte</text>
+  <g data-role="header" data-column="binary">
+    <text class="font-sans text-label font-semibold fill-amber" x="122" y="132">binary (IEC)</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="334" y="132">bytes</text>
+  </g>
+  <g data-role="header" data-column="decimal">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <text class="font-sans text-label font-semibold fill-sky" x="378" y="132">decimal (SI)</text>
+    <text class="font-sans text-offset fill-ink-muted anchor-end" x="590" y="132">bytes</text>
+  </g>
+  <g data-role="header" data-column="gap">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+    <text class="font-sans text-label font-semibold fill-ink" x="684" y="132">binary over decimal</text>
+  </g>
+  <g data-role="rung" data-level="0">
+    <rect class="la-cell" x="108" y="362" width="496" height="44" rx="8"><animate attributeName="width" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="240;496"/></rect>
+    <rect data-role="rung-lit" data-ladder="binary" data-level="0" class="la-cell-new" x="108" y="362" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.0750" values="0;1;0"/></rect>
+    <rect data-role="rung-lit" data-ladder="decimal" data-level="0" class="fill-cell stroke-sky stroke-2.5" x="108" y="362" width="496" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.3250" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-ink" x="122" y="381" font-size="15">B</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="122" y="397">byte (8 bits)</text>
+    <g data-role="values" data-ladder="binary" data-level="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="334" y="381">1</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="334" y="397">2<tspan dy="-5" font-size="9">0</tspan></text>
+    </g>
+    <g data-role="values" data-ladder="decimal" data-level="0">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="590" y="381">1</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="590" y="397">10<tspan dy="-5" font-size="9">0</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="binary" data-level="1">
+    <rect class="la-cell" x="108" y="308" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="binary" data-level="1" class="la-cell-new" x="108" y="308" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.1250" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-amber" x="122" y="327" font-size="15">KiB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="122" y="343">kibibyte</text>
+    <g data-role="values" data-ladder="binary" data-level="1">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="334" y="327">1,024</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="334" y="343">2<tspan dy="-5" font-size="9">10</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="binary" data-level="2">
+    <rect class="la-cell" x="108" y="254" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="binary" data-level="2" class="la-cell-new" x="108" y="254" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250;0.1750" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-amber" x="122" y="273" font-size="15">MiB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="122" y="289">mebibyte</text>
+    <g data-role="values" data-ladder="binary" data-level="2">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="334" y="273">1,048,576</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="334" y="289">2<tspan dy="-5" font-size="9">20</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="binary" data-level="3">
+    <rect class="la-cell" x="108" y="200" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="binary" data-level="3" class="la-cell-new" x="108" y="200" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2250" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-amber" x="122" y="219" font-size="15">GiB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="122" y="235">gibibyte</text>
+    <g data-role="values" data-ladder="binary" data-level="3">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="334" y="219">1,073,741,824</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="334" y="235">2<tspan dy="-5" font-size="9">30</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="binary" data-level="4">
+    <rect class="la-cell" x="108" y="146" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="binary" data-level="4" class="la-cell-new" x="108" y="146" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3000;0.8000" values="0;1;0;1"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-amber" x="122" y="165" font-size="15">TiB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="122" y="181">tebibyte</text>
+    <g data-role="values" data-ladder="binary" data-level="4">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="334" y="165">1,099,511,627,776</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="334" y="181">2<tspan dy="-5" font-size="9">40</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="decimal" data-level="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <rect class="la-cell" x="364" y="308" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="decimal" data-level="1" class="fill-cell stroke-sky stroke-2.5" x="364" y="308" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3750" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-sky" x="378" y="327" font-size="15">kB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="378" y="343">kilobyte</text>
+    <g data-role="values" data-ladder="decimal" data-level="1">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="590" y="327">1,000</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="590" y="343">10<tspan dy="-5" font-size="9">3</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="decimal" data-level="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <rect class="la-cell" x="364" y="254" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="decimal" data-level="2" class="fill-cell stroke-sky stroke-2.5" x="364" y="254" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4250" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-sky" x="378" y="273" font-size="15">MB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="378" y="289">megabyte</text>
+    <g data-role="values" data-ladder="decimal" data-level="2">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="590" y="273">1,000,000</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="590" y="289">10<tspan dy="-5" font-size="9">6</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="decimal" data-level="3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <rect class="la-cell" x="364" y="200" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="decimal" data-level="3" class="fill-cell stroke-sky stroke-2.5" x="364" y="200" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4750" values="0;1;0"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-sky" x="378" y="219" font-size="15">GB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="378" y="235">gigabyte</text>
+    <g data-role="values" data-ladder="decimal" data-level="3">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="590" y="219">1,000,000,000</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="590" y="235">10<tspan dy="-5" font-size="9">9</tspan></text>
+    </g>
+  </g>
+  <g data-role="rung" data-ladder="decimal" data-level="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="0;1"/>
+    <rect class="la-cell" x="364" y="146" width="240" height="44" rx="8"/>
+    <rect data-role="rung-lit" data-ladder="decimal" data-level="4" class="fill-cell stroke-sky stroke-2.5" x="364" y="146" width="240" height="44" rx="8"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500;0.8000" values="0;1;0;1"/></rect>
+    <text data-role="symbol" class="font-mono font-bold fill-sky" x="378" y="165" font-size="15">TB</text>
+    <text data-role="name" class="font-sans text-offset fill-ink-muted" x="378" y="181">terabyte</text>
+    <g data-role="values" data-ladder="decimal" data-level="4">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750" values="0;1"/>
+      <text data-role="count" class="font-mono text-label fill-ink anchor-end" x="590" y="165">1,000,000,000,000</text>
+      <text data-role="power" class="font-mono text-offset fill-ink-muted anchor-end" x="590" y="181">10<tspan dy="-5" font-size="9">12</tspan></text>
+    </g>
+  </g>
+  <g data-role="times" data-ladder="binary" data-level="1">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="72" y="361">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-amber anchor-middle" x="72" y="361">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0750;0.1250" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="binary" data-level="2">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="72" y="307">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-amber anchor-middle" x="72" y="307">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1250;0.1750" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="binary" data-level="3">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="72" y="253">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-amber anchor-middle" x="72" y="253">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1750;0.2250" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="binary" data-level="4">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="72" y="199">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.8000" values="0;1;0"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-amber anchor-middle" x="72" y="199">× 1024<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.3000;0.8000" values="0;1;0;1"/></text>
+  </g>
+  <g data-role="times" data-ladder="decimal" data-level="1">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="640" y="361">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-sky anchor-middle" x="640" y="361">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3250;0.3750" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="decimal" data-level="2">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="640" y="307">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-sky anchor-middle" x="640" y="307">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3750;0.4250" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="decimal" data-level="3">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="640" y="253">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750" values="0;1"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-sky anchor-middle" x="640" y="253">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4250;0.4750" values="0;1;0"/></text>
+  </g>
+  <g data-role="times" data-ladder="decimal" data-level="4">
+    <text data-state="muted" class="font-mono text-offset fill-ink-muted anchor-middle" x="640" y="199">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.8000" values="0;1;0"/></text>
+    <text data-state="lit" class="font-mono text-offset font-bold fill-sky anchor-middle" x="640" y="199">× 1000<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4750;0.5500;0.8000" values="0;1;0;1"/></text>
+  </g>
+  <g data-role="gap" data-level="1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+    <rect class="fill-stage stroke-grid" x="684" y="324" height="12" rx="3" width="180"/>
+    <rect data-role="gap-bar" class="fill-amber" x="684" y="324" height="12" rx="3" width="0">
+      <animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.5750;0.5950;1.0000" values="0;0;43.2;43.2"/>
+    </rect>
+    <text data-role="gap-label" class="font-mono text-offset font-semibold fill-amber anchor-end" x="920" y="334">+2.4%<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5750" values="0;1"/></text>
+  </g>
+  <g data-role="gap" data-level="2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+    <rect class="fill-stage stroke-grid" x="684" y="270" height="12" rx="3" width="180"/>
+    <rect data-role="gap-bar" class="fill-amber" x="684" y="270" height="12" rx="3" width="0">
+      <animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.6250;0.6450;1.0000" values="0;0;87.4;87.4"/>
+    </rect>
+    <text data-role="gap-label" class="font-mono text-offset font-semibold fill-amber anchor-end" x="920" y="280">+4.9%<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6250" values="0;1"/></text>
+  </g>
+  <g data-role="gap" data-level="3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+    <rect class="fill-stage stroke-grid" x="684" y="216" height="12" rx="3" width="180"/>
+    <rect data-role="gap-bar" class="fill-amber" x="684" y="216" height="12" rx="3" width="0">
+      <animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.6750;0.6950;1.0000" values="0;0;132.7;132.7"/>
+    </rect>
+    <text data-role="gap-label" class="font-mono text-offset font-semibold fill-amber anchor-end" x="920" y="226">+7.4%<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6750" values="0;1"/></text>
+  </g>
+  <g data-role="gap" data-level="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/>
+    <rect class="fill-stage stroke-grid" x="684" y="162" height="12" rx="3" width="180"/>
+    <rect data-role="gap-bar" class="fill-amber" x="684" y="162" height="12" rx="3" width="0">
+      <animate attributeName="width" dur="20s" repeatCount="indefinite" keyTimes="0.0000;0.7250;0.7450;1.0000" values="0;0;179.1;179.1"/>
+    </rect>
+    <text data-role="gap-label" class="font-mono text-offset font-semibold fill-amber anchor-end" x="920" y="172">+10.0%<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7250" values="0;1"/></text>
+  </g>
+  <rect class="la-canvas" x="24" y="442" width="912" height="36" rx="8"/>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="465">Binary units climb by 1024, the power of two closest to 1000: 1 KiB is 1024 bytes, and 1 MiB is 1024 KiB.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000" values="1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="465">The decimal units beside them climb by 1000: 1 kB is 1000 bytes, and 1 MB is 1000 kB.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3000;0.5500" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="465">1024 is only 2.4% more than 1000, but the gap compounds at every rung, to about 10% at tera.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.8000" values="0;1;0"/></text>
+  <text data-role="caption" class="font-sans text-label fill-ink anchor-middle" x="480" y="465">So a disk sold as 1 TB holds a trillion bytes, which is about 0.91 TiB.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8000" values="0;1"/></text>
+  <text class="font-sans text-offset fill-ink-muted" x="28" y="508">Source: NIST, Prefixes for binary multiples: the IEC names and symbols, beside the SI prefixes they derive from.</text>
+</svg>
