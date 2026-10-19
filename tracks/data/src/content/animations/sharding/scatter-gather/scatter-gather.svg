@@ -1,0 +1,955 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 564" role="img" data-loop="20s">
+  <title>Queries without the shard key</title>
+  <desc>An animation in four steps. Players are sharded by player id across four database servers, db-0 to db-3: hash(player_id) mod 4 places five players on each, and a router in front of them applies the same rule. Loading Lemur's profile names player 8577, so the router sends the query to db-1 alone, and db-1 answers with one row. The global top 3 by rating names no player, so the router asks all four servers at once, and each returns its own top 3. The router merges the answers as they arrive, but db-2 is busy and answers last. It holds Ferret, the best rating of all, so the leaderboard of Ferret, Newt, and Lemur is done only when that answer arrives.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path class="fill-flow" d="M 0 0 L 9 4.5 L 0 9 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="564"/>
+  <text class="la-title" x="32" y="44">Queries without the shard key</text>
+  <text class="la-note" x="32" y="68">A query that names the shard key goes to one server. Any other query asks every server and waits for the slowest.</text>
+  <path class="la-arrow" d="M 332 160 H 356" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 638 160 H 662" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 500 228 V 268 H 140 V 306" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 500 228 V 268 H 380 V 306" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 500 228 V 268 H 620 V 306" marker-end="url(#head)"/>
+  <path class="la-arrow" d="M 500 228 V 268 H 860 V 306" marker-end="url(#head)"/>
+  <rect class="la-canvas stroke-1.5" x="32" y="92" width="300" height="136" rx="10"/>
+  <text class="fill-ink-muted font-sans text-offset" x="48" y="116">query</text>
+  <g data-role="router">
+    <rect class="la-card" x="362" y="92" width="276" height="136" rx="12"/>
+    <text class="la-label font-semibold" x="378" y="116">router</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-end" x="622" y="116">shard key: player_id</text>
+  </g>
+  <rect class="la-canvas stroke-1.5" x="668" y="92" width="300" height="136" rx="10"/>
+  <text class="fill-ink-muted font-sans text-offset" x="684" y="116">result</text>
+  <text class="fill-ink-muted font-mono text-offset anchor-middle" x="719" y="138">player_id</text>
+  <text class="fill-ink-muted font-mono text-offset anchor-middle" x="788" y="138">tag</text>
+  <text class="fill-ink-muted font-mono text-offset anchor-middle" x="844" y="138">rating</text>
+  <g data-role="server" data-server="db-0">
+    <rect class="la-card" x="32" y="312" width="216" height="196" rx="12"/>
+    <text data-role="server-name" class="la-label font-semibold" x="48" y="336">db-0</text>
+    <text data-role="players" class="fill-ink-muted font-sans text-offset anchor-end" x="232" y="336">5 players</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="84" y="362">player_id</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="153" y="362">tag</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="209" y="362">rating</text>
+    <g data-role="player" data-row="1" data-player="2046" data-tag="Raven">
+      <g data-field="player_id">
+        <rect class="la-cell" x="49" y="372" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="84" y="386">2046</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="125" y="372" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="153" y="386">Raven</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="187" y="372" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="209" y="386">8920</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="2" data-player="4127" data-tag="Tapir">
+      <g data-field="player_id">
+        <rect class="la-cell" x="49" y="398" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="84" y="412">4127</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="125" y="398" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="153" y="412">Tapir</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="187" y="398" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="209" y="412">8410</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="3" data-player="5214" data-tag="Dingo">
+      <g data-field="player_id">
+        <rect class="la-cell" x="49" y="424" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="84" y="438">5214</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="125" y="424" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="153" y="438">Dingo</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="187" y="424" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="209" y="438">7650</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="4" data-player="9861" data-tag="Heron">
+      <g data-field="player_id">
+        <rect class="la-cell" x="49" y="450" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="84" y="464">9861</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="125" y="450" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="153" y="464">Heron</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="187" y="450" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="209" y="464">6980</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="5" data-player="3560" data-tag="Marten">
+      <g data-field="player_id">
+        <rect class="la-cell" x="49" y="476" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="84" y="490">3560</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="125" y="476" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="153" y="490">Marten</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="187" y="476" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="209" y="490">5230</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="server" data-server="db-1">
+    <rect class="la-card" x="272" y="312" width="216" height="196" rx="12"/>
+    <text data-role="server-name" class="la-label font-semibold" x="288" y="336">db-1</text>
+    <text data-role="players" class="fill-ink-muted font-sans text-offset anchor-end" x="472" y="336">5 players</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="324" y="362">player_id</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="393" y="362">tag</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="449" y="362">rating</text>
+    <g data-role="player" data-row="1" data-player="8577" data-tag="Lemur">
+      <g data-field="player_id">
+        <rect class="la-cell" x="289" y="372" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="324" y="386">8577</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="365" y="372" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="393" y="386">Lemur</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="427" y="372" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="449" y="386">9310</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="2" data-player="9128" data-tag="Otter">
+      <g data-field="player_id">
+        <rect class="la-cell" x="289" y="398" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="324" y="412">9128</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="365" y="398" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="393" y="412">Otter</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="427" y="398" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="449" y="412">8770</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="3" data-player="7915" data-tag="Egret">
+      <g data-field="player_id">
+        <rect class="la-cell" x="289" y="424" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="324" y="438">7915</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="365" y="424" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="393" y="438">Egret</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="427" y="424" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="449" y="438">8150</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="4" data-player="8240" data-tag="Jackal">
+      <g data-field="player_id">
+        <rect class="la-cell" x="289" y="450" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="324" y="464">8240</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="365" y="450" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="393" y="464">Jackal</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="427" y="450" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="449" y="464">7020</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="5" data-player="9980" data-tag="Iguana">
+      <g data-field="player_id">
+        <rect class="la-cell" x="289" y="476" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="324" y="490">9980</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="365" y="476" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="393" y="490">Iguana</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="427" y="476" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="449" y="490">4610</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="server" data-server="db-2">
+    <rect class="la-card" x="512" y="312" width="216" height="196" rx="12"/>
+    <text data-role="server-name" class="la-label font-semibold" x="528" y="336">db-2</text>
+    <g data-role="busy" data-server="db-2">
+      <rect class="fill-surface stroke-amber stroke-1.5" x="568" y="323" width="40" height="18" rx="9"/>
+      <text class="fill-ink font-sans text-offset anchor-middle" x="588" y="336">busy</text>
+    </g>
+    <text data-role="players" class="fill-ink-muted font-sans text-offset anchor-end" x="712" y="336">5 players</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="564" y="362">player_id</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="633" y="362">tag</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="689" y="362">rating</text>
+    <g data-role="player" data-row="1" data-player="9612" data-tag="Ferret">
+      <g data-field="player_id">
+        <rect class="la-cell" x="529" y="372" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="564" y="386">9612</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="605" y="372" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="633" y="386">Ferret</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="667" y="372" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="689" y="386">9870</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="2" data-player="1042" data-tag="Koala">
+      <g data-field="player_id">
+        <rect class="la-cell" x="529" y="398" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="564" y="412">1042</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="605" y="398" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="633" y="412">Koala</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="667" y="398" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="689" y="412">8640</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="3" data-player="6120" data-tag="Petrel">
+      <g data-field="player_id">
+        <rect class="la-cell" x="529" y="424" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="564" y="438">6120</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="605" y="424" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="633" y="438">Petrel</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="667" y="424" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="689" y="438">7890</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="4" data-player="2981" data-tag="Badger">
+      <g data-field="player_id">
+        <rect class="la-cell" x="529" y="450" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="564" y="464">2981</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="605" y="450" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="633" y="464">Badger</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="667" y="450" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="689" y="464">6450</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="5" data-player="9406" data-tag="Stoat">
+      <g data-field="player_id">
+        <rect class="la-cell" x="529" y="476" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="564" y="490">9406</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="605" y="476" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="633" y="490">Stoat</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="667" y="476" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="689" y="490">5870</text>
+      </g>
+    </g>
+  </g>
+  <g data-role="server" data-server="db-3">
+    <rect class="la-card" x="752" y="312" width="216" height="196" rx="12"/>
+    <text data-role="server-name" class="la-label font-semibold" x="768" y="336">db-3</text>
+    <text data-role="players" class="fill-ink-muted font-sans text-offset anchor-end" x="952" y="336">5 players</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="804" y="362">player_id</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="873" y="362">tag</text>
+    <text class="fill-ink-muted font-mono text-offset anchor-middle" x="929" y="362">rating</text>
+    <g data-role="player" data-row="1" data-player="8903" data-tag="Newt">
+      <g data-field="player_id">
+        <rect class="la-cell" x="769" y="372" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="804" y="386">8903</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="845" y="372" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="873" y="386">Newt</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="907" y="372" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="929" y="386">9540</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="2" data-player="9745" data-tag="Gibbon">
+      <g data-field="player_id">
+        <rect class="la-cell" x="769" y="398" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="804" y="412">9745</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="845" y="398" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="873" y="412">Gibbon</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="907" y="398" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="929" y="412">8330</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="3" data-player="7038" data-tag="Quail">
+      <g data-field="player_id">
+        <rect class="la-cell" x="769" y="424" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="804" y="438">7038</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="845" y="424" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="873" y="438">Quail</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="907" y="424" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="929" y="438">7410</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="4" data-player="412" data-tag="Adder">
+      <g data-field="player_id">
+        <rect class="la-cell" x="769" y="450" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="804" y="464">412</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="845" y="450" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="873" y="464">Adder</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="907" y="450" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="929" y="464">6720</text>
+      </g>
+    </g>
+    <g data-role="player" data-row="5" data-player="7702" data-tag="Coyote">
+      <g data-field="player_id">
+        <rect class="la-cell" x="769" y="476" width="70" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="804" y="490">7702</text>
+      </g>
+      <g data-field="tag">
+        <rect class="la-cell" x="845" y="476" width="56" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="873" y="490">Coyote</text>
+      </g>
+      <g data-field="rating">
+        <rect class="la-cell" x="907" y="476" width="44" height="20" rx="4"/>
+        <text class="la-offset anchor-middle" x="929" y="490">5560</text>
+      </g>
+    </g>
+  </g>
+  <rect data-role="shard-key" class="fill-none stroke-amber stroke-1.5" x="502" y="102" width="127" height="20" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></rect>
+  <rect data-role="shard-key" data-server="db-0" class="fill-none stroke-amber stroke-1.5" x="46" y="348" width="76" height="151" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></rect>
+  <rect data-role="shard-key" data-server="db-1" class="fill-none stroke-amber stroke-1.5" x="286" y="348" width="76" height="151" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></rect>
+  <rect data-role="shard-key" data-server="db-2" class="fill-none stroke-amber stroke-1.5" x="526" y="348" width="76" height="151" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></rect>
+  <rect data-role="shard-key" data-server="db-3" class="fill-none stroke-amber stroke-1.5" x="766" y="348" width="76" height="151" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></rect>
+  <g data-role="match" data-query="profile" data-server="db-1" data-row="1" data-tag="Lemur">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2900;0.5000" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="289" y="372" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="324" y="386">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="365" y="372" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="393" y="386">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="427" y="372" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="449" y="386">9310</text>
+    </g>
+  </g>
+  <rect data-role="working" data-query="profile" data-server="db-1" class="fill-none stroke-amber stroke-2.5" x="272" y="312" width="216" height="196" rx="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2900;0.3150" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="profile" data-server="db-1" data-row="1" class="la-read-marker" x="284" y="369" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2900;0.3150" values="0;1;0"/></rect>
+  <g data-role="match" data-query="leaderboard" data-server="db-0" data-row="1" data-tag="Raven">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="49" y="372" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="84" y="386">2046</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="125" y="372" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="153" y="386">Raven</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="187" y="372" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="209" y="386">8920</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-0" data-row="2" data-tag="Tapir">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6100" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="49" y="398" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="84" y="412">4127</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="125" y="398" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="153" y="412">Tapir</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="187" y="398" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="209" y="412">8410</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-0" data-row="3" data-tag="Dingo">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6300" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="49" y="424" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="84" y="438">5214</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="125" y="424" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="153" y="438">Dingo</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="187" y="424" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="209" y="438">7650</text>
+    </g>
+  </g>
+  <rect data-role="working" data-query="leaderboard" data-server="db-0" class="fill-none stroke-amber stroke-2.5" x="32" y="312" width="216" height="196" rx="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6500" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-0" data-row="1" class="la-read-marker" x="44" y="369" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6100" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-0" data-row="2" class="la-read-marker" x="44" y="395" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6100;0.6300" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-0" data-row="3" class="la-read-marker" x="44" y="421" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6300;0.6500" values="0;1;0"/></rect>
+  <g data-role="match" data-query="leaderboard" data-server="db-1" data-row="1" data-tag="Lemur">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="289" y="372" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="324" y="386">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="365" y="372" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="393" y="386">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="427" y="372" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="449" y="386">9310</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-1" data-row="2" data-tag="Otter">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6150" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="289" y="398" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="324" y="412">9128</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="365" y="398" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="393" y="412">Otter</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="427" y="398" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="449" y="412">8770</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-1" data-row="3" data-tag="Egret">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6400" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="289" y="424" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="324" y="438">7915</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="365" y="424" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="393" y="438">Egret</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="427" y="424" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="449" y="438">8150</text>
+    </g>
+  </g>
+  <rect data-role="working" data-query="leaderboard" data-server="db-1" class="fill-none stroke-amber stroke-2.5" x="272" y="312" width="216" height="196" rx="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6650" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-1" data-row="1" class="la-read-marker" x="284" y="369" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6150" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-1" data-row="2" class="la-read-marker" x="284" y="395" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6150;0.6400" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-1" data-row="3" class="la-read-marker" x="284" y="421" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6400;0.6650" values="0;1;0"/></rect>
+  <g data-role="match" data-query="leaderboard" data-server="db-2" data-row="1" data-tag="Ferret">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="529" y="372" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="564" y="386">9612</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="605" y="372" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="633" y="386">Ferret</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="667" y="372" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="689" y="386">9870</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-2" data-row="2" data-tag="Koala">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="529" y="398" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="564" y="412">1042</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="605" y="398" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="633" y="412">Koala</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="667" y="398" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="689" y="412">8640</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-2" data-row="3" data-tag="Petrel">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7100" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="529" y="424" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="564" y="438">6120</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="605" y="424" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="633" y="438">Petrel</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="667" y="424" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="689" y="438">7890</text>
+    </g>
+  </g>
+  <rect data-role="working" data-query="leaderboard" data-server="db-2" class="fill-none stroke-amber stroke-2.5" x="512" y="312" width="216" height="196" rx="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.7700" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-2" data-row="1" class="la-read-marker" x="524" y="369" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6500" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-2" data-row="2" class="la-read-marker" x="524" y="395" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.7100" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-2" data-row="3" class="la-read-marker" x="524" y="421" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7100;0.7700" values="0;1;0"/></rect>
+  <g data-role="match" data-query="leaderboard" data-server="db-3" data-row="1" data-tag="Newt">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="769" y="372" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="804" y="386">8903</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="845" y="372" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="873" y="386">Newt</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="907" y="372" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="929" y="386">9540</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-3" data-row="2" data-tag="Gibbon">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="769" y="398" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="804" y="412">9745</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="845" y="398" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="873" y="412">Gibbon</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="907" y="398" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="929" y="412">8330</text>
+    </g>
+  </g>
+  <g data-role="match" data-query="leaderboard" data-server="db-3" data-row="3" data-tag="Quail">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell-new" x="769" y="424" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="804" y="438">7038</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell-new" x="845" y="424" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="873" y="438">Quail</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell-new" x="907" y="424" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="929" y="438">7410</text>
+    </g>
+  </g>
+  <rect data-role="working" data-query="leaderboard" data-server="db-3" class="fill-none stroke-amber stroke-2.5" x="752" y="312" width="216" height="196" rx="12"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6800" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-3" data-row="1" class="la-read-marker" x="764" y="369" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5900;0.6200" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-3" data-row="2" class="la-read-marker" x="764" y="395" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6200;0.6500" values="0;1;0"/></rect>
+  <rect data-role="read" data-query="leaderboard" data-server="db-3" data-row="3" class="la-read-marker" x="764" y="421" width="192" height="26" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6800" values="0;1;0"/></rect>
+  <g data-role="query" data-query="profile">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.5000" values="0;1;0"/>
+    <text class="la-label font-semibold" x="48" y="148">Lemur's profile</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="178">SELECT * FROM players</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="198">WHERE player_id = 8577</text>
+  </g>
+  <text data-role="lookup" data-query="profile" class="la-label" x="378" y="154">hash(8577) mod 4 = 1: ask db-1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.5000" values="0;1;0"/></text>
+  <text data-role="waiting" data-query="profile" class="fill-ink-muted font-sans text-offset" x="378" y="184">waiting for db-1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.3550" values="0;1;0"/></text>
+  <g data-role="result-row" data-query="profile" data-server="db-1" data-player="8577">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3550;0.5000" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="146" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="160">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="146" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="160">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="146" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="160">9310</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="160">from db-1</text>
+  </g>
+  <text data-role="done" data-query="profile" class="fill-emerald font-sans text-offset font-semibold anchor-end" x="952" y="116">done<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3550;0.5000" values="0;1;0"/></text>
+  <g data-role="query" data-query="leaderboard">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+    <text class="la-label font-semibold" x="48" y="148">Global top 3 by rating</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="178">SELECT * FROM players</text>
+    <text class="fill-ink font-mono text-offset" x="48" y="198">ORDER BY rating DESC LIMIT 3</text>
+  </g>
+  <text data-role="lookup" data-query="leaderboard" class="la-label" x="378" y="154">no player_id: ask every server<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5250" values="0;1"/></text>
+  <text data-role="waiting" data-query="leaderboard" class="fill-ink-muted font-sans text-offset" x="378" y="184">waiting for db-0, db-1, db-2, db-3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.6900" values="0;1;0"/></text>
+  <text data-role="waiting" data-query="leaderboard" class="fill-ink-muted font-sans text-offset" x="378" y="184">waiting for db-1, db-2, db-3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900;0.7050" values="0;1;0"/></text>
+  <text data-role="waiting" data-query="leaderboard" class="fill-ink-muted font-sans text-offset" x="378" y="184">waiting for db-2, db-3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7050;0.7200" values="0;1;0"/></text>
+  <text data-role="waiting" data-query="leaderboard" class="fill-ink-muted font-sans text-offset" x="378" y="184">waiting for db-2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7200;0.8100" values="0;1;0"/></text>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-0" data-player="2046">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900;0.7050" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="146" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="160">2046</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="146" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="160">Raven</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="146" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="160">8920</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="160">from db-0</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-0" data-player="4127">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900;0.7050" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="172" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="186">4127</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="172" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="186">Tapir</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="172" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="186">8410</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="186">from db-0</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-0" data-player="5214">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900;0.7050" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="198" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="212">5214</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="198" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="212">Dingo</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="198" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="212">7650</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="212">from db-0</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-1" data-player="8577">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7050;0.7200" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="146" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="160">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="146" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="160">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="146" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="160">9310</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="160">from db-1</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-0" data-player="2046">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7050;0.7200" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="172" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="186">2046</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="172" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="186">Raven</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="172" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="186">8920</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="186">from db-0</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-1" data-player="9128">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7050;0.7200" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="198" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="212">9128</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="198" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="212">Otter</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="198" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="212">8770</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="212">from db-1</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-3" data-player="8903">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7200;0.8100" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="146" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="160">8903</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="146" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="160">Newt</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="146" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="160">9540</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="160">from db-3</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-1" data-player="8577">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7200;0.8100" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="172" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="186">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="172" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="186">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="172" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="186">9310</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="186">from db-1</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-0" data-player="2046">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7200;0.8100" values="0;1;0"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="198" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="212">2046</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="198" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="212">Raven</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="198" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="212">8920</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="212">from db-0</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-2" data-player="9612">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8100" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="146" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="160">9612</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="146" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="160">Ferret</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="146" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="160">9870</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="160">from db-2</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-3" data-player="8903">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8100" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="172" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="186">8903</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="172" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="186">Newt</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="172" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="186">9540</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="186">from db-3</text>
+  </g>
+  <g data-role="result-row" data-query="leaderboard" data-server="db-1" data-player="8577">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8100" values="0;1"/>
+    <g data-field="player_id">
+      <rect class="la-cell" x="684" y="198" width="70" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="719" y="212">8577</text>
+    </g>
+    <g data-field="tag">
+      <rect class="la-cell" x="760" y="198" width="56" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="788" y="212">Lemur</text>
+    </g>
+    <g data-field="rating">
+      <rect class="la-cell" x="822" y="198" width="44" height="20" rx="4"/>
+      <text class="la-offset anchor-middle" x="844" y="212">9310</text>
+    </g>
+    <text class="fill-ink-muted font-sans text-offset" x="878" y="212">from db-1</text>
+  </g>
+  <text data-role="partial" data-query="leaderboard" class="fill-ink-muted font-sans text-offset anchor-end" x="952" y="116">so far<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900;0.8100" values="0;1;0"/></text>
+  <text data-role="done" data-query="leaderboard" class="fill-emerald font-sans text-offset font-semibold anchor-end" x="952" y="116">done<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.8100" values="0;1"/></text>
+  <circle data-role="request" data-query="profile" data-server="db-1" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2500;0.2900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.2500;0.2600;0.2800;0.2900;1.0000" values="500,228;500,228;500,268;380,268;380,304;380,304"/>
+  </circle>
+  <g data-role="answer" data-query="profile" data-server="db-1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3150;0.3550" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.3150;0.3250;0.3450;0.3550;1.0000" values="380,298;380,298;380,268;500,268;500,240;500,240"/>
+    <rect class="fill-surface stroke-emerald stroke-1.5" x="-28" y="-9" width="56" height="18" rx="9"/>
+    <text class="fill-emerald font-sans text-offset font-semibold anchor-middle" x="0" y="4">1 row</text>
+  </g>
+  <circle data-role="request" data-query="leaderboard" data-server="db-0" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5500;0.5600;0.5800;0.5900;1.0000" values="500,228;500,228;500,268;140,268;140,304;140,304"/>
+  </circle>
+  <g data-role="answer" data-query="leaderboard" data-server="db-0">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6500;0.6900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6500;0.6600;0.6800;0.6900;1.0000" values="140,298;140,298;140,268;500,268;500,240;500,240"/>
+    <rect class="fill-surface stroke-emerald stroke-1.5" x="-28" y="-9" width="56" height="18" rx="9"/>
+    <text class="fill-emerald font-sans text-offset font-semibold anchor-middle" x="0" y="4">3 rows</text>
+  </g>
+  <circle data-role="request" data-query="leaderboard" data-server="db-1" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5500;0.5600;0.5800;0.5900;1.0000" values="500,228;500,228;500,268;380,268;380,304;380,304"/>
+  </circle>
+  <g data-role="answer" data-query="leaderboard" data-server="db-1">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6650;0.7050" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6650;0.6750;0.6950;0.7050;1.0000" values="380,298;380,298;380,268;500,268;500,240;500,240"/>
+    <rect class="fill-surface stroke-emerald stroke-1.5" x="-28" y="-9" width="56" height="18" rx="9"/>
+    <text class="fill-emerald font-sans text-offset font-semibold anchor-middle" x="0" y="4">3 rows</text>
+  </g>
+  <circle data-role="request" data-query="leaderboard" data-server="db-2" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5500;0.5600;0.5800;0.5900;1.0000" values="500,228;500,228;500,268;620,268;620,304;620,304"/>
+  </circle>
+  <g data-role="answer" data-query="leaderboard" data-server="db-2">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.7700;0.8100" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.7700;0.7800;0.8000;0.8100;1.0000" values="620,298;620,298;620,268;500,268;500,240;500,240"/>
+    <rect class="fill-surface stroke-emerald stroke-1.5" x="-28" y="-9" width="56" height="18" rx="9"/>
+    <text class="fill-emerald font-sans text-offset font-semibold anchor-middle" x="0" y="4">3 rows</text>
+  </g>
+  <circle data-role="request" data-query="leaderboard" data-server="db-3" class="la-flow-dot" r="5">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500;0.5900" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5500;0.5600;0.5800;0.5900;1.0000" values="500,228;500,228;500,268;860,268;860,304;860,304"/>
+  </circle>
+  <g data-role="answer" data-query="leaderboard" data-server="db-3">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6800;0.7200" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.6800;0.6900;0.7100;0.7200;1.0000" values="860,298;860,298;860,268;500,268;500,240;500,240"/>
+    <rect class="fill-surface stroke-emerald stroke-1.5" x="-28" y="-9" width="56" height="18" rx="9"/>
+    <text class="fill-emerald font-sans text-offset font-semibold anchor-middle" x="0" y="4">3 rows</text>
+  </g>
+  <text data-role="caption" class="la-label" x="32" y="544">Players are sharded by player_id: hash(player_id) mod 4 places five of them on each server, db-0 to db-3.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="544">Lemur's profile names player 8577, and hash(8577) mod 4 = 1, so the router asks db-1 alone. The other servers never see it.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.5000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="544">The global top 3 by rating names no player, so the router asks all four servers at once, each for its own top 3.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.6900" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="544">The router merges answers as they arrive. Busy db-2 answers last and holds the best rating, so the leaderboard waits for it.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6900" values="0;1"/></text>
+</svg>
