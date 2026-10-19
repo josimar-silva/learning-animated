@@ -1,0 +1,401 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" data-loop="20s">
+  <title>Finding one key</title>
+  <desc>An animation in four steps. Player 4127 signs in, and the game loads the profile through the index on players(player_id), a B-tree with one root page, three internal pages, and nine leaf pages, each holding two keys. The search reads the root, where 4127 falls between the separators 3608 and 6302, so it takes the middle downlink. The internal page below sends it down the leftmost downlink, because 4127 is below 4581. The leaf holds 4127 and a pointer to its row in the players table, and Tapir's profile loads. The lookup took three page reads, one per level. A dashed fourth level then shows that one more level would multiply the keys within reach by the fanout of 3, from 18 to 54, for one more page read.</desc>
+  <style>
+/* LA-STYLE:START */
+:root {
+  --color-stage: #0e0b16;
+  --color-surface: #191426;
+  --color-ink: #ece9f7;
+  --color-ink-muted: #a9a3ca;
+  --color-grid: #302a4d;
+  --color-cell: #2a2246;
+  --color-cell-stroke: #7c6ac4;
+  --color-cell-ink: #e2ddf5;
+  --color-cell-new: #4a3410;
+  --color-amber: #f6a723;
+  --color-emerald: #34d399;
+  --color-green: #10b981;
+  --color-sky: #38bdf8;
+  --color-sky-light: #7dd3fc;
+  --color-violet: #9075e8;
+  --color-violet-deep: #221b3e;
+  --color-lime: #65a30d;
+  --color-lime-deep: #1e2610;
+  --color-slate: #8992aa;
+  --color-pink: #f472b6;
+  --color-red: #f87171;
+  --color-flow: #a8a1cf;
+  --color-flow-strong: #f1edff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --text-title: 20px;
+  --text-label: 13px;
+  --text-offset: 12px;
+}
+.fill-stage { fill: var(--color-stage); }
+.stroke-stage { stroke: var(--color-stage); }
+.fill-surface { fill: var(--color-surface); }
+.stroke-surface { stroke: var(--color-surface); }
+.fill-ink { fill: var(--color-ink); }
+.stroke-ink { stroke: var(--color-ink); }
+.fill-ink-muted { fill: var(--color-ink-muted); }
+.stroke-ink-muted { stroke: var(--color-ink-muted); }
+.fill-grid { fill: var(--color-grid); }
+.stroke-grid { stroke: var(--color-grid); }
+.fill-cell { fill: var(--color-cell); }
+.stroke-cell { stroke: var(--color-cell); }
+.fill-cell-stroke { fill: var(--color-cell-stroke); }
+.stroke-cell-stroke { stroke: var(--color-cell-stroke); }
+.fill-cell-ink { fill: var(--color-cell-ink); }
+.stroke-cell-ink { stroke: var(--color-cell-ink); }
+.fill-cell-new { fill: var(--color-cell-new); }
+.stroke-cell-new { stroke: var(--color-cell-new); }
+.fill-amber { fill: var(--color-amber); }
+.stroke-amber { stroke: var(--color-amber); }
+.fill-emerald { fill: var(--color-emerald); }
+.stroke-emerald { stroke: var(--color-emerald); }
+.fill-green { fill: var(--color-green); }
+.stroke-green { stroke: var(--color-green); }
+.fill-sky { fill: var(--color-sky); }
+.stroke-sky { stroke: var(--color-sky); }
+.fill-sky-light { fill: var(--color-sky-light); }
+.stroke-sky-light { stroke: var(--color-sky-light); }
+.fill-violet { fill: var(--color-violet); }
+.stroke-violet { stroke: var(--color-violet); }
+.fill-violet-deep { fill: var(--color-violet-deep); }
+.stroke-violet-deep { stroke: var(--color-violet-deep); }
+.fill-lime { fill: var(--color-lime); }
+.stroke-lime { stroke: var(--color-lime); }
+.fill-lime-deep { fill: var(--color-lime-deep); }
+.stroke-lime-deep { stroke: var(--color-lime-deep); }
+.fill-slate { fill: var(--color-slate); }
+.stroke-slate { stroke: var(--color-slate); }
+.fill-pink { fill: var(--color-pink); }
+.stroke-pink { stroke: var(--color-pink); }
+.fill-red { fill: var(--color-red); }
+.stroke-red { stroke: var(--color-red); }
+.fill-flow { fill: var(--color-flow); }
+.stroke-flow { stroke: var(--color-flow); }
+.fill-flow-strong { fill: var(--color-flow-strong); }
+.stroke-flow-strong { stroke: var(--color-flow-strong); }
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+.text-title { font-size: var(--text-title); }
+.text-label { font-size: var(--text-label); }
+.text-offset { font-size: var(--text-offset); }
+.fill-none { fill: none; }
+.stroke-none { stroke: none; }
+.stroke-1\.5 { stroke-width: 1.5; }
+.stroke-2\.5 { stroke-width: 2.5; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.anchor-start { text-anchor: start; }
+.anchor-middle { text-anchor: middle; }
+.anchor-end { text-anchor: end; }
+.halo { paint-order: stroke; stroke: var(--color-stage); stroke-width: 3px; stroke-linejoin: round; }
+.la-canvas { fill: var(--color-surface); stroke: var(--color-grid); }
+.la-card { fill: var(--color-violet-deep); stroke: var(--color-violet); stroke-width: 1.5; }
+.la-cell { fill: var(--color-cell); stroke: var(--color-cell-stroke); stroke-width: 1.5; }
+.la-cell-new { fill: var(--color-cell-new); stroke: var(--color-amber); stroke-width: 1.5; }
+.la-cell-tail { fill: var(--color-surface); stroke: var(--color-cell-stroke); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.la-offset { font-family: var(--font-mono); font-size: var(--text-offset); fill: var(--color-cell-ink); }
+.la-title { font-family: var(--font-sans); font-size: var(--text-title); font-weight: 600; fill: var(--color-ink); }
+.la-label { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink); }
+.la-note { font-family: var(--font-sans); font-size: var(--text-label); fill: var(--color-ink-muted); }
+.la-arrow { fill: none; stroke: var(--color-flow); stroke-width: 1.5; }
+.la-flow-dot { fill: var(--color-amber); }
+.la-read-marker { fill: none; stroke: var(--color-emerald); stroke-width: 2.5; }
+/* LA-STYLE:END */
+</style>
+  <defs>
+    <marker id="head" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path class="fill-flow" d="M 0 0 L 8 4 L 0 8 Z"/>
+    </marker>
+    <marker id="head-read" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path class="fill-emerald" d="M 0 0 L 8 4 L 0 8 Z"/>
+    </marker>
+    <marker id="head-key" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path class="fill-amber" d="M 0 0 L 8 4 L 0 8 Z"/>
+    </marker>
+  </defs>
+  <rect class="fill-stage" width="1000" height="520"/>
+  <text class="la-title" x="32" y="44">Finding one key</text>
+  <text class="la-note" x="32" y="68">Player 4127 signs in, and the index on players(player_id) reads one page per level.</text>
+  <text data-role="query" class="fill-ink font-mono text-offset" x="32" y="90">SELECT * FROM players WHERE player_id = 4127</text>
+  <g data-role="reach-table">
+    <text class="fill-ink-muted font-sans text-offset anchor-middle" x="748" y="30">levels</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-middle" x="820" y="30">page reads</text>
+    <text class="fill-ink-muted font-sans text-offset anchor-middle" x="912" y="30">keys within reach</text>
+    <path class="fill-none stroke-grid stroke-1.5" d="M 632 38 H 968"/>
+    <g data-role="reach" data-levels="3">
+      <text class="fill-ink-muted font-sans text-offset" x="632" y="54">this tree</text>
+      <text data-column="levels" class="fill-ink font-mono text-label anchor-middle" x="748" y="54">3</text>
+      <g data-column="reads">
+      <text data-role="read-count" class="fill-ink font-mono text-label font-bold anchor-middle" x="820" y="54">0<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250" values="1;0"/></text>
+      <text data-role="read-count" class="fill-ink font-mono text-label font-bold anchor-middle" x="820" y="54">1<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.2000" values="0;1;0"/></text>
+      <text data-role="read-count" class="fill-ink font-mono text-label font-bold anchor-middle" x="820" y="54">2<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.4000" values="0;1;0"/></text>
+      <text data-role="read-count" class="fill-ink font-mono text-label font-bold anchor-middle" x="820" y="54">3<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000" values="0;1"/></text>
+      </g>
+      <text data-column="keys" class="fill-ink font-mono text-label anchor-middle" x="912" y="54">18</text>
+    </g>
+    <g data-role="reach" data-levels="4">
+      <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/>
+      <text class="fill-ink-muted font-sans text-offset" x="632" y="76">one more level</text>
+      <text data-column="levels" class="fill-ink font-mono text-label anchor-middle" x="748" y="76">4</text>
+      <text data-column="reads" class="fill-ink font-mono text-label anchor-middle" x="820" y="76">4</text>
+      <text data-column="keys" class="fill-ink font-mono text-label anchor-middle" x="912" y="76">54</text>
+    </g>
+  </g>
+  <text class="fill-ink-muted font-sans text-offset" x="32" y="347">leaf pages</text>
+  <text class="fill-ink-muted font-sans text-offset" x="32" y="263">internal pages</text>
+  <text class="fill-ink-muted font-sans text-offset" x="32" y="179">root page</text>
+  <g data-role="extra-level">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/>
+    <text class="fill-ink-muted font-sans text-offset" x="32" y="117">new root</text>
+    <rect class="la-cell-tail" x="444" y="98" width="112" height="30" rx="6"/>
+    <rect class="la-cell-tail" x="460" y="102" width="34" height="22" rx="3"/>
+    <rect class="la-cell-tail" x="506" y="102" width="34" height="22" rx="3"/>
+    <circle class="fill-flow" cx="454" cy="113" r="2.5"/>
+    <circle class="fill-flow" cx="500" cy="113" r="2.5"/>
+    <circle class="fill-flow" cx="546" cy="113" r="2.5"/>
+    <rect class="la-cell-tail" x="224" y="160" width="112" height="30" rx="6"/>
+    <text class="la-note anchor-middle" x="280" y="179">18 more keys</text>
+    <rect class="la-cell-tail" x="664" y="160" width="112" height="30" rx="6"/>
+    <text class="la-note anchor-middle" x="720" y="179">18 more keys</text>
+    <path data-role="extra-downlink" data-to="tree-left" class="la-arrow" d="M 454 113 V 128 L 280 159" stroke-dasharray="4 3" marker-end="url(#head)"/>
+    <path data-role="extra-downlink" data-to="root" class="la-arrow" d="M 500 113 V 128 L 500 159" stroke-dasharray="4 3" marker-end="url(#head)"/>
+    <path data-role="extra-downlink" data-to="tree-right" class="la-arrow" d="M 546 113 V 128 L 720 159" stroke-dasharray="4 3" marker-end="url(#head)"/>
+  </g>
+  <g data-role="page" data-page="root" data-level="2">
+    <rect data-role="frame" class="la-card" x="444" y="160" width="112" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="460" y="164" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="477" y="179">3608</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="506" y="164" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="523" y="179">6302</text>
+    </g>
+    <circle class="fill-flow" cx="454" cy="175" r="2.5"/>
+    <circle class="fill-flow" cx="500" cy="175" r="2.5"/>
+    <circle class="fill-flow" cx="546" cy="175" r="2.5"/>
+  </g>
+  <g data-role="page" data-page="internal-1" data-level="1">
+    <rect data-role="frame" class="la-card" x="172" y="244" width="112" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="188" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="205" y="263">1830</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="234" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="251" y="263">2477</text>
+    </g>
+    <circle class="fill-flow" cx="182" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="228" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="274" cy="259" r="2.5"/>
+  </g>
+  <g data-role="page" data-page="internal-2" data-level="1">
+    <rect data-role="frame" class="la-card" x="444" y="244" width="112" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="460" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="477" y="263">4581</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="506" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="523" y="263">5214</text>
+    </g>
+    <circle class="fill-flow" cx="454" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="500" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="546" cy="259" r="2.5"/>
+  </g>
+  <g data-role="page" data-page="internal-3" data-level="1">
+    <rect data-role="frame" class="la-card" x="716" y="244" width="112" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="732" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="749" y="263">7085</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="778" y="248" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="795" y="263">8090</text>
+    </g>
+    <circle class="fill-flow" cx="726" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="772" cy="259" r="2.5"/>
+    <circle class="fill-flow" cx="818" cy="259" r="2.5"/>
+  </g>
+  <g data-role="page" data-page="leaf-1" data-level="0">
+    <rect data-role="frame" class="la-card" x="103" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="107" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="124" y="347">1042</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="143" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="160" y="347">1385</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-2" data-level="0">
+    <rect data-role="frame" class="la-card" x="189" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="193" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="210" y="347">1830</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="229" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="246" y="347">2104</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-3" data-level="0">
+    <rect data-role="frame" class="la-card" x="275" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="279" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="296" y="347">2477</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="315" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="332" y="347">2981</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-4" data-level="0">
+    <rect data-role="frame" class="la-card" x="375" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="379" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="396" y="347">3608</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="415" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="432" y="347">4127</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-5" data-level="0">
+    <rect data-role="frame" class="la-card" x="461" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="465" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="482" y="347">4581</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="501" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="518" y="347">4930</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-6" data-level="0">
+    <rect data-role="frame" class="la-card" x="547" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="551" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="568" y="347">5214</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="587" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="604" y="347">5560</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-7" data-level="0">
+    <rect data-role="frame" class="la-card" x="647" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="651" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="668" y="347">6302</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="687" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="704" y="347">6730</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-8" data-level="0">
+    <rect data-role="frame" class="la-card" x="733" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="737" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="754" y="347">7085</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="773" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="790" y="347">7611</text>
+    </g>
+  </g>
+  <g data-role="page" data-page="leaf-9" data-level="0">
+    <rect data-role="frame" class="la-card" x="819" y="328" width="78" height="30" rx="6"/>
+    <g data-role="entry">
+      <rect class="la-cell" x="823" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="840" y="347">8090</text>
+    </g>
+    <g data-role="entry">
+      <rect class="la-cell" x="859" y="332" width="34" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="876" y="347">8812</text>
+    </g>
+  </g>
+  <path data-role="downlink" data-from="root" data-to="internal-1" data-slot="0" class="la-arrow" d="M 454 175 V 190 L 228 243" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="root" data-to="internal-2" data-slot="1" class="la-arrow" d="M 500 175 V 190 L 500 243" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="root" data-to="internal-3" data-slot="2" class="la-arrow" d="M 546 175 V 190 L 772 243" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-1" data-to="leaf-1" data-slot="0" class="la-arrow" d="M 182 259 V 274 L 142 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-1" data-to="leaf-2" data-slot="1" class="la-arrow" d="M 228 259 V 274 L 228 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-1" data-to="leaf-3" data-slot="2" class="la-arrow" d="M 274 259 V 274 L 314 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-2" data-to="leaf-4" data-slot="0" class="la-arrow" d="M 454 259 V 274 L 414 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-2" data-to="leaf-5" data-slot="1" class="la-arrow" d="M 500 259 V 274 L 500 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-2" data-to="leaf-6" data-slot="2" class="la-arrow" d="M 546 259 V 274 L 586 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-3" data-to="leaf-7" data-slot="0" class="la-arrow" d="M 726 259 V 274 L 686 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-3" data-to="leaf-8" data-slot="1" class="la-arrow" d="M 772 259 V 274 L 772 327" marker-end="url(#head)"/>
+  <path data-role="downlink" data-from="internal-3" data-to="leaf-9" data-slot="2" class="la-arrow" d="M 818 259 V 274 L 858 327" marker-end="url(#head)"/>
+  <path data-role="followed" data-from="root" data-to="internal-2" class="fill-none stroke-emerald stroke-2.5" d="M 500 175 V 190 L 500 243" marker-end="url(#head-read)"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1000" values="0;1"/></path>
+  <path data-role="followed" data-from="internal-2" data-to="leaf-4" class="fill-none stroke-emerald stroke-2.5" d="M 454 259 V 274 L 414 327" marker-end="url(#head-read)"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2750" values="0;1"/></path>
+  <rect data-role="reading" data-page="root" class="fill-none stroke-amber stroke-2.5" x="444" y="160" width="112" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0250;0.1500" values="0;1;0"/></rect>
+  <rect data-role="read" data-page="root" class="la-read-marker" x="444" y="160" width="112" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.1500" values="0;1"/></rect>
+  <rect data-role="reading" data-page="internal-2" class="fill-none stroke-amber stroke-2.5" x="444" y="244" width="112" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.3500" values="0;1;0"/></rect>
+  <rect data-role="read" data-page="internal-2" class="la-read-marker" x="444" y="244" width="112" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.3500" values="0;1"/></rect>
+  <rect data-role="reading" data-page="leaf-4" class="fill-none stroke-amber stroke-2.5" x="375" y="328" width="78" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.5500" values="0;1;0"/></rect>
+  <rect data-role="read" data-page="leaf-4" class="la-read-marker" x="375" y="328" width="78" height="30" rx="6"><animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5500" values="0;1"/></rect>
+  <text data-role="compare" data-page="root" class="fill-ink font-mono text-offset" x="570" y="179">3608 &lt; 4127 &lt; 6302<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0500;0.2000" values="0;1;0"/></text>
+  <text data-role="compare" data-page="internal-2" class="fill-ink font-mono text-offset" x="570" y="263">4127 &lt; 4581<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2250;0.4000" values="0;1;0"/></text>
+  <g data-role="table">
+    <rect class="la-card" x="110" y="394" width="690" height="36" rx="8"/>
+    <text class="la-label" x="124" y="416">players table</text>
+    <g data-role="row" data-player="5214">
+      <rect class="la-cell" x="234" y="401" width="128" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="298" y="416">5214 Dingo 7650</text>
+    </g>
+    <g data-role="row" data-player="4127">
+      <rect class="la-cell" x="368" y="401" width="128" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="432" y="416">4127 Tapir 8410</text>
+    </g>
+    <g data-role="row" data-player="1042">
+      <rect class="la-cell" x="502" y="401" width="128" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="566" y="416">1042 Koala 8640</text>
+    </g>
+    <g data-role="row" data-player="2981">
+      <rect class="la-cell" x="636" y="401" width="128" height="22" rx="3"/>
+      <text class="la-offset anchor-middle" x="700" y="416">2981 Badger 6450</text>
+    </g>
+    <text class="la-note" x="774" y="416">…</text>
+  </g>
+  <g data-role="row-pointer" data-player="4127">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000" values="0;1"/>
+    <path class="fill-none stroke-amber stroke-1.5" d="M 432 354 V 399" marker-end="url(#head-key)"/>
+  </g>
+  <circle class="la-flow-dot" r="4">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5000;0.5300" values="0;1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.5000;0.5300;1.0000" values="432,354;432,354;432,399;432,399"/>
+  </circle>
+  <g data-role="fetched" data-player="4127">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.5300" values="0;1"/>
+    <rect class="la-cell-new" x="368" y="401" width="128" height="22" rx="3"/>
+    <text class="la-offset anchor-middle" x="432" y="416">4127 Tapir 8410</text>
+  </g>
+  <g data-role="found" data-key="4127">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="0;1"/>
+    <rect class="la-cell-new" x="415" y="332" width="34" height="22" rx="3"/>
+    <text class="la-offset anchor-middle" x="432" y="347">4127</text>
+  </g>
+  <g data-role="search-key">
+    <animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4500" values="1;0"/>
+    <animateTransform attributeName="transform" type="translate" dur="20s" repeatCount="indefinite" calcMode="linear" keyTimes="0.0000;0.0250;0.1500;0.1762;0.2000;0.2250;0.2500;0.3500;0.3735;0.4000;0.4250;0.4500;1.0000" values="500,112;500,146;500,146;500,190;500,230;500,230;454,230;454,230;454,274;424.4,314;424.4,314;432,343;432,343"/>
+    <rect class="fill-cell-new stroke-amber stroke-1.5" x="-19" y="-9" width="38" height="18" rx="4"/>
+    <text class="fill-cell-ink font-mono text-offset anchor-middle" x="0" y="4">4127</text>
+  </g>
+  <rect class="fill-none stroke-amber stroke-2.5" x="32" y="448" width="22" height="12" rx="3"/>
+  <text class="fill-ink-muted font-sans text-offset" x="62" y="458">page being read</text>
+  <rect class="la-read-marker" x="166" y="448" width="22" height="12" rx="3"/>
+  <text class="fill-ink-muted font-sans text-offset" x="196" y="458">page read</text>
+  <text class="fill-ink-muted font-sans text-offset anchor-end" x="968" y="458">Each page here holds two keys. A real index page holds a few hundred.</text>
+  <text data-role="caption" class="la-label" x="32" y="498">Player 4127 signs in. The root's separators send 4127 to one child: it falls between 3608 and 6302, so the search takes the middle downlink.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000" values="1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="498">An internal page narrows it down again: 4127 is below 4581, so the search takes the leftmost downlink to a leaf.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.2000;0.4000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="498">The leaf holds 4127 and a pointer to its row in the players table, and Tapir's profile loads.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.4000;0.6000" values="0;1;0"/></text>
+  <text data-role="caption" class="la-label" x="32" y="498">That took three page reads, one per level. One more level would multiply the keys within reach by the fanout, 3 here.<animate attributeName="opacity" dur="20s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.6000" values="0;1"/></text>
+</svg>
